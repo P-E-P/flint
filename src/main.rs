@@ -2,12 +2,15 @@
 #![no_main]
 use core::panic::PanicInfo;
 
+mod vga;
+
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
 static WELCOME_MESSAGE: &[u8] = b"Booting flint...";
+static LOAD: &[u8] = b"|/-\\";
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -20,5 +23,13 @@ pub extern "C" fn _start() -> ! {
         }
     }
 
+    vga::text::print_something();
+
+    for i in 0.. {
+        unsafe {
+            *vga_buffer.offset(WELCOME_MESSAGE.len() as isize * 2) = LOAD[i % LOAD.len()] as u8;
+            *vga_buffer.offset(WELCOME_MESSAGE.len() as isize * 2 + 1) = 0xf;
+        }
+    }
     loop {}
 }
