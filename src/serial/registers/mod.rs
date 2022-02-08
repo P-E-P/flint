@@ -1,6 +1,10 @@
-pub mod thr;
+pub mod dlh;
+pub mod dll;
+pub mod ier;
+pub mod iir;
 pub mod lsr;
 pub mod rbr;
+pub mod thr;
 
 pub trait Register {
     type Value;

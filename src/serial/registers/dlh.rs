@@ -1,17 +1,20 @@
 use super::Register;
-use crate::io::inb;
+use crate::io::{inb, outb};
 
-pub struct ReceiverBuffer {
+pub struct DivisorLatchLowByte {
     pub address: u16,
 }
 
-impl Register for ReceiverBuffer {
+impl Register for DivisorLatchLowByte {
     type Value = u8;
+
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address) }
     }
 
     fn write(&self, value: Self::Value) {
-        unimplemented!("This register is read only");
+        unsafe {
+            outb(value, self.address);
+        }
     }
 }
