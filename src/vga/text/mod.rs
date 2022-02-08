@@ -1,5 +1,5 @@
-use volatile::Volatile;
 use core::fmt;
+use volatile::Volatile;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
@@ -26,11 +26,24 @@ pub enum Color {
     White = 15,
 }
 
+/// An in-memory representation of the VGA text color codes.
+/// This structure can be split as the following fields:
+///
+/// +-------+-----------------+-----------------+
+/// | blink | background code | foreground code |
+/// +-------+-----------------+-----------------+
+///
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 struct ColorCode(u8);
 
 impl ColorCode {
+    /// Create a new [`ColorCode`] from a background and foreground [`Color`]
+    ///
+    /// # Arguments
+    ///
+    /// * `foreground` - The foreground color.
+    /// * `background` - The background color.
     fn new(foreground: Color, background: Color) -> ColorCode {
         ColorCode((background as u8) << 4 | (foreground as u8))
     }
@@ -47,7 +60,6 @@ struct ScreenChar {
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
-
 
 pub struct Writer {
     column: usize,
@@ -86,6 +98,7 @@ impl Writer {
         }
     }
 
+    /// Shift all lines up in the vga text mode buffer and clear the last line.
     fn new_line(&mut self) {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {

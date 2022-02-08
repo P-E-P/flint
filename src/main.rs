@@ -2,6 +2,8 @@
 #![no_main]
 use core::panic::PanicInfo;
 
+mod io;
+mod serial;
 mod vga;
 
 #[panic_handler]
