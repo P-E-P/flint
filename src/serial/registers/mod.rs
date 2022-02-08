@@ -1,5 +1,6 @@
 pub mod thr;
 pub mod lsr;
+pub mod rbr;
 
 pub trait Register {
     type Value;
