@@ -2,7 +2,7 @@ use crate::io;
 use core::fmt;
 use registers::{
     lcr::LineControlRegister, lsr::LineStatusRegister, rbr::ReceiverBuffer,
-    thr::TransmitterHoldingBuffer, ReadRegister, Register,
+    thr::TransmitterHoldingBuffer, WriteRegister, ReadRegister, Register,
 };
 
 mod registers;
@@ -31,6 +31,10 @@ impl Serial {
         Serial { com_port }
     }
 
+    pub fn initialize(&self) {
+        
+    }
+
     /// Determine whether the current serial port can be used to write data on
     /// the serial bus.
     fn can_write(&self) -> bool {
@@ -47,7 +51,7 @@ impl Serial {
         while !self.can_write() {
             io::pause();
         }
-        todo!("Implement the end of this function")
+        self.transmitter_holding_buffer().write(byte);
     }
 
     pub fn write_string(&mut self, s: &str) {
