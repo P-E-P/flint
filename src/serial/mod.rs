@@ -1,8 +1,9 @@
 use crate::io;
 use core::fmt;
 use registers::{
-    lcr::LineControlRegister, lsr::LineStatusRegister, rbr::ReceiverBuffer,
-    thr::TransmitterHoldingBuffer, WriteRegister, ReadRegister, Register,
+    dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lcr::LineControlRegister,
+    lsr::LineStatusRegister, rbr::ReceiverBuffer, thr::TransmitterHoldingBuffer, ReadRegister,
+    Register, WriteRegister,
 };
 
 mod registers;
@@ -14,14 +15,6 @@ const COM2: ComPort = 0x2F8;
 const COM3: ComPort = 0x3E8;
 const COM4: ComPort = 0x2E8;
 
-struct DivisorLatchValue(usize);
-
-impl DivisorLatchValue {
-    fn new(baud_rate: usize) -> Self {
-        DivisorLatchValue(115200 / baud_rate)
-    }
-}
-
 struct Serial {
     com_port: ComPort,
 }
@@ -32,7 +25,13 @@ impl Serial {
     }
 
     pub fn initialize(&self) {
-        
+        self.set_baud_rate(38400);
+    }
+
+    pub fn set_baud_rate(&self, baud_rate: usize) {
+        let dlv = 115200 / baud_rate;
+        self.divisor_latch_low_byte().write((dlv & 0xff) as u8);
+        self.divisor_latch_high_byte().write((dlv >> 8) as u8);
     }
 
     /// Determine whether the current serial port can be used to write data on
@@ -56,7 +55,13 @@ impl Serial {
 
     pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
-            self.write_byte(byte);
+            match byte {
+                b'\n' => {
+                    self.write_byte(b'\r');
+                    self.write_byte(b'\n');
+                }
+                _ => self.write_byte(byte),
+            }
         }
     }
 
@@ -85,6 +90,20 @@ impl Serial {
     fn receiver_buffer(&self) -> ReceiverBuffer {
         ReceiverBuffer {
             address: self.com_port as u16,
+        }
+    }
+
+    fn divisor_latch_low_byte(&self) -> DivisorLatchLowByte {
+        DivisorLatchLowByte {
+            address: self.com_port as u16,
+            lcr: self.line_control_register(),
+        }
+    }
+
+    fn divisor_latch_high_byte(&self) -> DivisorLatchHighByte {
+        DivisorLatchHighByte {
+            address: self.com_port as u16 + 1,
+            lcr: self.line_control_register(),
         }
     }
 }
