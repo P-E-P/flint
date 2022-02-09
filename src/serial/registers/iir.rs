@@ -41,16 +41,14 @@ pub enum FifoStatus {
     Enabled = 3,
 }
 
-impl TryFrom<u8> for FifoStatus {
-    type Error = &'static str;
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
+impl From<u8> for FifoStatus {
+    fn from(value: u8) -> Self {
         match value {
-            0 => Ok(FifoStatus::NoFifo),
-            1 => Ok(FifoStatus::Reserved),
-            2 => Ok(FifoStatus::EnabledNotFunctioning),
-            3 => Ok(FifoStatus::Enabled),
-            _ => Err("Invalid value for fifo status"),
+            0 => FifoStatus::NoFifo,
+            1 => FifoStatus::Reserved,
+            2 => FifoStatus::EnabledNotFunctioning,
+            3 => FifoStatus::Enabled,
+            _ => panic!("Invalid value for fifo status"),
         }
     }
 }
@@ -67,29 +65,25 @@ pub enum InterrupEventType {
     Reserved3 = 7,
 }
 
-impl TryFrom<u8> for InterrupEventType {
-    type Error = &'static str;
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
+impl From<u8> for InterrupEventType {
+    fn from(value: u8) -> Self {
         match value {
-            0 => Ok(InterrupEventType::ModemStatus),
-            1 => Ok(InterrupEventType::TransmitterHoldingRegisterEmpty),
-            2 => Ok(InterrupEventType::ReceivedDataAvailable),
-            3 => Ok(InterrupEventType::ReceiverLineStatus),
-            4 => Ok(InterrupEventType::Reserved1),
-            5 => Ok(InterrupEventType::Reserved2),
-            6 => Ok(InterrupEventType::TimeoutInterruptPending),
-            7 => Ok(InterrupEventType::Reserved3),
-            _ => Err("Invalid value for interrupt event type"),
+            0 => InterrupEventType::ModemStatus,
+            1 => InterrupEventType::TransmitterHoldingRegisterEmpty,
+            2 => InterrupEventType::ReceivedDataAvailable,
+            3 => InterrupEventType::ReceiverLineStatus,
+            4 => InterrupEventType::Reserved1,
+            5 => InterrupEventType::Reserved2,
+            6 => InterrupEventType::TimeoutInterruptPending,
+            7 => InterrupEventType::Reserved3,
+            _ => panic!("Invalid value for interrupt event type"),
         }
     }
 }
 
 impl InterruptIdentification {
     pub fn fifo_status(&self) -> FifoStatus {
-        ((self.0 & flags::FIFO_STATUS) >> 6)
-            .try_into()
-            .expect("Invalid fifo status value")
+        ((self.0 & flags::FIFO_STATUS) >> 6).into()
     }
 
     pub fn fifo_enabled(&self) -> bool {
@@ -97,9 +91,7 @@ impl InterruptIdentification {
     }
 
     pub fn interrupt_event_type(&self) -> InterrupEventType {
-        ((self.0 & flags::INTERRUPT_EVENT_TYPE) >> 1)
-            .try_into()
-            .expect("Invalid interrupt event value")
+        ((self.0 & flags::INTERRUPT_EVENT_TYPE) >> 1).into()
     }
 
     pub fn interrupt_pending(&self) -> bool {
