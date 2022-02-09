@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
 pub struct InterruptEnableRegister {
@@ -7,11 +7,15 @@ pub struct InterruptEnableRegister {
 
 impl Register for InterruptEnableRegister {
     type Value = InterruptEnable;
+}
 
+impl ReadRegister for InterruptEnableRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
     }
+}
 
+impl WriteRegister for InterruptEnableRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);

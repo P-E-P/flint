@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
 pub struct ModemControlRegister {
@@ -7,11 +7,15 @@ pub struct ModemControlRegister {
 
 impl Register for ModemControlRegister {
     type Value = ModemControl;
+}
 
+impl ReadRegister for ModemControlRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
     }
+}
 
+impl WriteRegister for ModemControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);

@@ -1,20 +1,24 @@
-use super::Register;
+use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
-pub struct DivisorLatchLowByte {
+pub struct DivisorLatchHighByte {
     pub address: u16,
 }
 
-impl Register for DivisorLatchLowByte {
+impl Register for DivisorLatchHighByte {
     type Value = u8;
+}
 
-    fn read(&self) -> Self::Value {
-        unsafe { inb(self.address) }
-    }
-
+impl WriteRegister for DivisorLatchHighByte {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value, self.address);
         }
+    }
+}
+
+impl ReadRegister for DivisorLatchHighByte {
+    fn read(&self) -> Self::Value {
+        unsafe { inb(self.address) }
     }
 }

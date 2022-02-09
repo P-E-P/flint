@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register};
 use crate::io::inb;
 
 pub struct InterruptIdentificationRegister {
@@ -7,13 +7,11 @@ pub struct InterruptIdentificationRegister {
 
 impl Register for InterruptIdentificationRegister {
     type Value = InterruptIdentification;
+}
 
+impl ReadRegister for InterruptIdentificationRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
-    }
-
-    fn write(&self, value: Self::Value) {
-        unimplemented!("This register is read only!");
     }
 }
 

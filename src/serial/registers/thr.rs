@@ -1,4 +1,4 @@
-use super::Register;
+use super::{Register, WriteRegister};
 use crate::io::outb;
 
 pub struct TransmitterHoldingBuffer {
@@ -7,10 +7,9 @@ pub struct TransmitterHoldingBuffer {
 
 impl Register for TransmitterHoldingBuffer {
     type Value = u8;
-    fn read(&self) -> Self::Value {
-        unimplemented!("This register is write only");
-    }
+}
 
+impl WriteRegister for TransmitterHoldingBuffer {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value, self.address);

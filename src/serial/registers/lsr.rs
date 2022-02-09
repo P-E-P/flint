@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register};
 use crate::io::inb;
 
 pub struct LineStatusRegister {
@@ -7,12 +7,11 @@ pub struct LineStatusRegister {
 
 impl Register for LineStatusRegister {
     type Value = LineStatus;
+}
+
+impl ReadRegister for LineStatusRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
-    }
-
-    fn write(&self, value: Self::Value) {
-        unimplemented!("This register is read only");
     }
 }
 

@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register};
 use crate::io::inb;
 
 pub struct ModemStatusRegister {
@@ -7,13 +7,11 @@ pub struct ModemStatusRegister {
 
 impl Register for ModemStatusRegister {
     type Value = ModemStatus;
+}
 
+impl ReadRegister for ModemStatusRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
-    }
-
-    fn write(&self, value: Self::Value) {
-        unimplemented!("Modem status register is read only!");
     }
 }
 

@@ -1,4 +1,4 @@
-use super::Register;
+use super::{Register, WriteRegister};
 use crate::io::outb;
 
 pub struct FifoControlRegister {
@@ -7,11 +7,9 @@ pub struct FifoControlRegister {
 
 impl Register for FifoControlRegister {
     type Value = FifoControl;
+}
 
-    fn read(&self) -> Self::Value {
-        unimplemented!("This register is write only!");
-    }
-
+impl WriteRegister for FifoControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);

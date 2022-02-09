@@ -13,8 +13,12 @@ pub mod thr;
 
 pub trait Register {
     type Value;
+}
 
+pub trait ReadRegister: Register {
     fn read(&self) -> Self::Value;
+}
 
+pub trait WriteRegister: Register {
     fn write(&self, value: Self::Value);
 }

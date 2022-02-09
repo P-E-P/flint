@@ -1,4 +1,4 @@
-use super::Register;
+use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
 pub struct LineControlRegister {
@@ -7,11 +7,15 @@ pub struct LineControlRegister {
 
 impl Register for LineControlRegister {
     type Value = LineControl;
+}
 
+impl ReadRegister for LineControlRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
     }
+}
 
+impl WriteRegister for LineControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);

@@ -1,6 +1,6 @@
 use crate::io;
 use core::fmt;
-use registers::{lsr::LineStatusRegister, Register};
+use registers::{lsr::LineStatusRegister, ReadRegister, Register};
 
 mod registers;
 
