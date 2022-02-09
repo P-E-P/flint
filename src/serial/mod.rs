@@ -1,6 +1,9 @@
 use crate::io;
 use core::fmt;
-use registers::{lsr::LineStatusRegister, ReadRegister, Register};
+use registers::{
+    lcr::LineControlRegister, lsr::LineStatusRegister, rbr::ReceiverBuffer,
+    thr::TransmitterHoldingBuffer, ReadRegister, Register,
+};
 
 mod registers;
 
@@ -53,7 +56,27 @@ impl Serial {
 
     fn line_status_register(&self) -> LineStatusRegister {
         LineStatusRegister {
+            address: self.com_port as u16 + 5,
+        }
+    }
+
+    fn line_control_register(&self) -> LineControlRegister {
+        LineControlRegister {
             address: self.com_port as u16 + 3,
+        }
+    }
+
+    fn transmitter_holding_buffer(&self) -> TransmitterHoldingBuffer {
+        TransmitterHoldingBuffer {
+            address: self.com_port as u16,
+            lcr: self.line_control_register(),
+        }
+    }
+
+    fn receiver_buffer(&self) -> ReceiverBuffer {
+        ReceiverBuffer {
+            address: self.com_port as u16,
+            lcr: self.line_control_register(),
         }
     }
 }

@@ -2,7 +2,7 @@ use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
 pub struct LineControlRegister {
-    address: u16,
+    pub address: u16,
 }
 
 impl Register for LineControlRegister {

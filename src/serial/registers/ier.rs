@@ -1,8 +1,10 @@
+use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
 pub struct InterruptEnableRegister {
     pub address: u16,
+    pub lcr: LineControlRegister,
 }
 
 impl Register for InterruptEnableRegister {

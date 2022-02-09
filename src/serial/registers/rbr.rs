@@ -1,8 +1,10 @@
+use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register};
 use crate::io::inb;
 
 pub struct ReceiverBuffer {
     pub address: u16,
+    pub lcr: LineControlRegister,
 }
 
 impl Register for ReceiverBuffer {
