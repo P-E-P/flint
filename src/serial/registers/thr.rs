@@ -4,7 +4,6 @@ use crate::io::outb;
 
 pub struct TransmitterHoldingBuffer {
     pub address: u16,
-    pub lcr: LineControlRegister,
 }
 
 impl Register for TransmitterHoldingBuffer {
@@ -12,6 +11,10 @@ impl Register for TransmitterHoldingBuffer {
 }
 
 impl WriteRegister for TransmitterHoldingBuffer {
+    /// Note: For performance reason we rely on the fact that DLAB is always
+    /// unset, as this function will be called many times compared to the
+    /// configuration options with the DLAB bit set. Otherwise we would have to
+    /// unset it in every call.
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value, self.address);

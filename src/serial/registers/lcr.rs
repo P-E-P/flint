@@ -23,6 +23,17 @@ impl WriteRegister for LineControlRegister {
     }
 }
 
+impl LineControlRegister {
+    pub fn set_dlab(&self, value: bool) {
+        let current = self.read();
+        if value {
+            self.write(LineControl(current.0 | flags::DLAB));
+        } else {
+            self.write(LineControl(current.0 & !flags::DLAB));
+        }
+    }
+}
+
 pub struct LineControl(u8);
 
 impl From<u8> for LineControl {

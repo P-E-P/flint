@@ -13,14 +13,19 @@ impl Register for DivisorLatchLowByte {
 
 impl ReadRegister for DivisorLatchLowByte {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address) }
+        self.lcr.set_dlab(true);
+        let result = unsafe { inb(self.address) };
+        self.lcr.set_dlab(false);
+        result
     }
 }
 
 impl WriteRegister for DivisorLatchLowByte {
     fn write(&self, value: Self::Value) {
+        self.lcr.set_dlab(true);
         unsafe {
             outb(value, self.address);
         }
+        self.lcr.set_dlab(false);
     }
 }

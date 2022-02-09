@@ -74,7 +74,6 @@ impl Serial {
     fn transmitter_holding_buffer(&self) -> TransmitterHoldingBuffer {
         TransmitterHoldingBuffer {
             address: self.com_port as u16,
-            lcr: self.line_control_register(),
         }
     }
 
@@ -82,7 +81,6 @@ impl Serial {
     fn receiver_buffer(&self) -> ReceiverBuffer {
         ReceiverBuffer {
             address: self.com_port as u16,
-            lcr: self.line_control_register(),
         }
     }
 }
