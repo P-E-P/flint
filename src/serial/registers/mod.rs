@@ -5,6 +5,7 @@ pub mod ier;
 pub mod iir;
 pub mod lcr;
 pub mod lsr;
+pub mod mcr;
 pub mod rbr;
 pub mod thr;
 
