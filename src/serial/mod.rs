@@ -31,6 +31,8 @@ impl Serial {
         Serial { com_port }
     }
 
+    /// Determine whether the current serial port can be used to write data on
+    /// the serial bus.
     fn can_write(&self) -> bool {
         let register = self.line_status_register().read();
         register.empty_data_holding_registers() && register.empty_transmitter_holding_register()
@@ -54,18 +56,21 @@ impl Serial {
         }
     }
 
+    /// Get a line status register handle from the serial port.
     fn line_status_register(&self) -> LineStatusRegister {
         LineStatusRegister {
             address: self.com_port as u16 + 5,
         }
     }
 
+    /// Get a line control register handle from the serial port.
     fn line_control_register(&self) -> LineControlRegister {
         LineControlRegister {
             address: self.com_port as u16 + 3,
         }
     }
 
+    /// Get a transmitter holding buffer handle from the serial port.
     fn transmitter_holding_buffer(&self) -> TransmitterHoldingBuffer {
         TransmitterHoldingBuffer {
             address: self.com_port as u16,
@@ -73,6 +78,7 @@ impl Serial {
         }
     }
 
+    /// Get a receiver buffer handle from the serial port.
     fn receiver_buffer(&self) -> ReceiverBuffer {
         ReceiverBuffer {
             address: self.com_port as u16,
