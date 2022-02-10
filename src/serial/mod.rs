@@ -7,6 +7,7 @@ use registers::{
 
 use registers::fcr::{self, FifoControl, FifoControlRegister};
 use registers::ier::{self, InterruptEnable, InterruptEnableRegister};
+use registers::iir::{self, InterruptIdentification, InterruptIdentificationRegister};
 use registers::lcr::{self, LineControl, LineControlRegister};
 
 mod registers;
@@ -136,6 +137,12 @@ impl Serial {
     fn interrupt_enable_register(&self) -> InterruptEnableRegister {
         InterruptEnableRegister {
             address: self.com_port as u16 + 1,
+        }
+    }
+
+    fn interrupt_identification_register(&self) -> InterruptIdentificationRegister {
+        InterruptIdentificationRegister {
+            address: self.com_port as u16 + 2,
         }
     }
 }
