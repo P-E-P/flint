@@ -1,3 +1,4 @@
+#![no_std]
 use core::arch::asm;
 
 pub unsafe fn outb(value: u8, port: u16) {

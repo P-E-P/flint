@@ -1,4 +1,6 @@
-use crate::io;
+#![no_std]
+
+use io;
 use core::fmt;
 use registers::{
     dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lsr::LineStatusRegister,

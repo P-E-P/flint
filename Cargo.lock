@@ -13,7 +13,20 @@ name = "flint"
 version = "0.1.0"
 dependencies = [
  "bootloader",
+ "io",
+ "serial",
  "volatile",
+]
+
+[[package]]
+name = "io"
+version = "0.1.0"
+
+[[package]]
+name = "serial"
+version = "0.1.0"
+dependencies = [
+ "io",
 ]
 
 [[package]]

@@ -2,10 +2,8 @@
 #![no_main]
 use core::panic::PanicInfo;
 
-use crate::serial::Serial;
+use serial::Serial;
 
-mod io;
-mod serial;
 mod vga;
 
 #[panic_handler]
