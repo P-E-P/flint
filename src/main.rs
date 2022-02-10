@@ -2,6 +2,8 @@
 #![no_main]
 use core::panic::PanicInfo;
 
+use crate::serial::Serial;
+
 mod io;
 mod serial;
 mod vga;
@@ -17,6 +19,10 @@ static LOAD: &[u8] = b"|/-\\";
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
+
+    let serial = Serial::new(serial::COM1);
+    serial.initialize();
+    serial.write_string("Testing serial\nEven on multiple lines");
 
     for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {
         unsafe {

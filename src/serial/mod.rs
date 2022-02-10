@@ -1,21 +1,24 @@
 use crate::io;
 use core::fmt;
 use registers::{
-    dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lcr::LineControlRegister,
-    lsr::LineStatusRegister, rbr::ReceiverBuffer, thr::TransmitterHoldingBuffer, ReadRegister,
-    Register, WriteRegister,
+    dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lsr::LineStatusRegister,
+    rbr::ReceiverBuffer, thr::TransmitterHoldingBuffer, ReadRegister, Register, WriteRegister,
 };
+
+use registers::fcr::{self, FifoControl, FifoControlRegister};
+use registers::ier::{self, InterruptEnable, InterruptEnableRegister};
+use registers::lcr::{self, LineControl, LineControlRegister};
 
 mod registers;
 
 type ComPort = usize;
 
-const COM1: ComPort = 0x3F8;
-const COM2: ComPort = 0x2F8;
-const COM3: ComPort = 0x3E8;
-const COM4: ComPort = 0x2E8;
+pub const COM1: ComPort = 0x3F8;
+pub const COM2: ComPort = 0x2F8;
+pub const COM3: ComPort = 0x3E8;
+pub const COM4: ComPort = 0x2E8;
 
-struct Serial {
+pub struct Serial {
     com_port: ComPort,
 }
 
@@ -26,6 +29,23 @@ impl Serial {
 
     pub fn initialize(&self) {
         self.set_baud_rate(38400);
+        // 8 bit length, no parity
+        self.line_control_register().write(LineControl(
+            lcr::flags::WordLengthBits::Eight as u8
+                | lcr::flags::StopBit::OneStop as u8
+                | lcr::flags::Parity::NoParity as u8,
+        ));
+        // Enable FIFO, clear, 14 bits
+        self.fifo_control_register().write(FifoControl(
+            fcr::flags::TriggerLevel::Itl14 as u8
+                | fcr::flags::ENABLE_FIFOS
+                | fcr::flags::CLEAR_TRANSMIT_FIFO
+                | fcr::flags::CLEAR_RECEIVE_FIFO,
+        ));
+        // Enable interrupts
+        self.interrupt_enable_register().write(InterruptEnable(
+            ier::flags::RECEIVED_DATA_AVAILABLE_INTERRUPT,
+        ));
     }
 
     pub fn set_baud_rate(&self, baud_rate: usize) {
@@ -46,14 +66,14 @@ impl Serial {
     /// # Arguments
     ///
     /// * `byte` - The value to write on the serial bus.
-    pub fn write_byte(&mut self, byte: u8) {
+    pub fn write_byte(&self, byte: u8) {
         while !self.can_write() {
             io::pause();
         }
         self.transmitter_holding_buffer().write(byte);
     }
 
-    pub fn write_string(&mut self, s: &str) {
+    pub fn write_string(&self, s: &str) {
         for byte in s.bytes() {
             match byte {
                 b'\n' => {
@@ -104,6 +124,18 @@ impl Serial {
         DivisorLatchHighByte {
             address: self.com_port as u16 + 1,
             lcr: self.line_control_register(),
+        }
+    }
+
+    fn fifo_control_register(&self) -> FifoControlRegister {
+        FifoControlRegister {
+            address: self.com_port as u16 + 2,
+        }
+    }
+
+    fn interrupt_enable_register(&self) -> InterruptEnableRegister {
+        InterruptEnableRegister {
+            address: self.com_port as u16 + 1,
         }
     }
 }

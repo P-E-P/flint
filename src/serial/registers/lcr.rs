@@ -34,7 +34,7 @@ impl LineControlRegister {
     }
 }
 
-pub struct LineControl(u8);
+pub struct LineControl(pub u8);
 
 impl From<u8> for LineControl {
     fn from(value: u8) -> Self {
@@ -48,64 +48,67 @@ pub mod flags {
     pub const PARITY: u8 = 0b00111000;
     pub const STOP_BIT: u8 = 0b00000100;
     pub const WORD_LENGTH: u8 = 0b00000011;
-}
 
-#[repr(u8)]
-pub enum Parity {
-    NoParity = 0,
-    OddParity = 1,
-    EvenParity = 3,
-    Mark = 5,
-    Space = 7,
-}
+    pub const PARITY_OFFSET: u8 = 3;
+    pub const STOP_BIT_OFFSET: u8 = 2;
 
-impl TryFrom<u8> for Parity {
-    type Error = &'static str;
+    #[repr(u8)]
+    pub enum Parity {
+        NoParity = 0 << PARITY_OFFSET,
+        OddParity = 1 << PARITY_OFFSET,
+        EvenParity = 3 << PARITY_OFFSET,
+        Mark = 5 << PARITY_OFFSET,
+        Space = 7 << PARITY_OFFSET,
+    }
 
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        match value {
-            0 => Ok(Parity::NoParity),
-            1 => Ok(Parity::OddParity),
-            3 => Ok(Parity::EvenParity),
-            5 => Ok(Parity::Mark),
-            7 => Ok(Parity::Space),
-            _ => Err("Invalid value for parity selection."),
+    impl TryFrom<u8> for Parity {
+        type Error = &'static str;
+
+        fn try_from(value: u8) -> Result<Self, Self::Error> {
+            match value {
+                0 => Ok(Parity::NoParity),
+                1 => Ok(Parity::OddParity),
+                3 => Ok(Parity::EvenParity),
+                5 => Ok(Parity::Mark),
+                7 => Ok(Parity::Space),
+                _ => Err("Invalid value for parity selection."),
+            }
         }
     }
-}
 
-#[repr(u8)]
-pub enum StopBit {
-    OneStop = 0,
-    TwoStop = 1,
-}
+    #[repr(u8)]
+    pub enum StopBit {
+        OneStop = 0 << STOP_BIT_OFFSET,
+        TwoStop = 1 << STOP_BIT_OFFSET,
+    }
 
-impl From<u8> for StopBit {
-    fn from(value: u8) -> Self {
-        match value {
-            0 => StopBit::OneStop,
-            1 => StopBit::TwoStop,
-            _ => panic!("Invalid value for stop bits."),
+    impl From<u8> for StopBit {
+        fn from(value: u8) -> Self {
+            match value {
+                0 => StopBit::OneStop,
+                1 => StopBit::TwoStop,
+                _ => panic!("Invalid value for stop bits."),
+            }
         }
     }
-}
 
-#[repr(u8)]
-pub enum WordLengthBits {
-    Five = 0,
-    Six = 1,
-    Seven = 2,
-    Eight = 3,
-}
+    #[repr(u8)]
+    pub enum WordLengthBits {
+        Five = 0,
+        Six = 1,
+        Seven = 2,
+        Eight = 3,
+    }
 
-impl From<u8> for WordLengthBits {
-    fn from(value: u8) -> Self {
-        match value {
-            0 => WordLengthBits::Five,
-            1 => WordLengthBits::Six,
-            2 => WordLengthBits::Seven,
-            3 => WordLengthBits::Eight,
-            _ => panic!("Invalid value for word length"),
+    impl From<u8> for WordLengthBits {
+        fn from(value: u8) -> Self {
+            match value {
+                0 => WordLengthBits::Five,
+                1 => WordLengthBits::Six,
+                2 => WordLengthBits::Seven,
+                3 => WordLengthBits::Eight,
+                _ => panic!("Invalid value for word length"),
+            }
         }
     }
 }
@@ -119,17 +122,17 @@ impl LineControl {
         self.0 & flags::BREAK_ENABLE != 0
     }
 
-    pub fn parity(&self) -> Parity {
+    pub fn parity(&self) -> flags::Parity {
         ((self.0 & flags::PARITY) >> 3)
             .try_into()
             .expect("Invalid parity value")
     }
 
-    pub fn stop_bits(&self) -> StopBit {
+    pub fn stop_bits(&self) -> flags::StopBit {
         ((self.0 & flags::STOP_BIT) >> 2).into()
     }
 
-    pub fn word_length(&self) -> WordLengthBits {
+    pub fn word_length(&self) -> flags::WordLengthBits {
         (self.0 & flags::WORD_LENGTH).into()
     }
 }

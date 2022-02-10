@@ -4,7 +4,6 @@ use crate::io::{inb, outb};
 
 pub struct InterruptEnableRegister {
     pub address: u16,
-    pub lcr: LineControlRegister,
 }
 
 impl Register for InterruptEnableRegister {
@@ -36,7 +35,7 @@ pub mod flags {
     pub const RECEIVED_DATA_AVAILABLE_INTERRUPT: u8 = 0b00000001;
 }
 
-pub struct InterruptEnable(u8);
+pub struct InterruptEnable(pub u8);
 
 impl From<u8> for InterruptEnable {
     fn from(value: u8) -> Self {
