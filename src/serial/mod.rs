@@ -114,6 +114,7 @@ impl Serial {
         }
     }
 
+    /// Get a dll handle from the serial port.
     fn divisor_latch_low_byte(&self) -> DivisorLatchLowByte {
         DivisorLatchLowByte {
             address: self.com_port as u16,
@@ -121,6 +122,7 @@ impl Serial {
         }
     }
 
+    /// Get a dlh handle from the serial port.
     fn divisor_latch_high_byte(&self) -> DivisorLatchHighByte {
         DivisorLatchHighByte {
             address: self.com_port as u16 + 1,
@@ -128,18 +130,21 @@ impl Serial {
         }
     }
 
+    /// Get a fifo control register handle from the serial port.
     fn fifo_control_register(&self) -> FifoControlRegister {
         FifoControlRegister {
             address: self.com_port as u16 + 2,
         }
     }
 
+    /// Get an interrupt enable register handle from the serial port.
     fn interrupt_enable_register(&self) -> InterruptEnableRegister {
         InterruptEnableRegister {
             address: self.com_port as u16 + 1,
         }
     }
 
+    /// Get an interrupt identification register handle from the serial port.
     fn interrupt_identification_register(&self) -> InterruptIdentificationRegister {
         InterruptIdentificationRegister {
             address: self.com_port as u16 + 2,
