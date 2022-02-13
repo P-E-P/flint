@@ -105,9 +105,7 @@ impl Serial {
 
     /// Get a transmitter holding buffer handle from the serial port.
     fn transmitter_holding_buffer(&self) -> TransmitterHoldingBuffer {
-        TransmitterHoldingBuffer {
-            address: self.com_port as u16,
-        }
+        TransmitterHoldingBuffer::from(self.com_port)
     }
 
     /// Get a receiver buffer handle from the serial port.
