@@ -136,9 +136,7 @@ impl Serial {
 
     /// Get an interrupt enable register handle from the serial port.
     fn interrupt_enable_register(&self) -> InterruptEnableRegister {
-        InterruptEnableRegister {
-            address: self.com_port as u16 + 1,
-        }
+        InterruptEnableRegister::from(self.com_port)
     }
 
     /// Get an interrupt identification register handle from the serial port.

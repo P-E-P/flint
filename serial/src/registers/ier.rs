@@ -1,6 +1,9 @@
 use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register, WriteRegister};
+use crate::ComPort;
 use crate::io::{inb, outb};
+
+const IER_OFFSET: u16 = 1;
 
 pub struct InterruptEnableRegister {
     pub address: u16,
@@ -20,6 +23,14 @@ impl WriteRegister for InterruptEnableRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);
+        }
+    }
+}
+
+impl From<ComPort> for InterruptEnableRegister {
+    fn from(port: ComPort) -> Self {
+        InterruptEnableRegister {
+            address: port as u16 + IER_OFFSET,
         }
     }
 }
