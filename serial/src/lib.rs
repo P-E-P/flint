@@ -131,9 +131,7 @@ impl Serial {
 
     /// Get a fifo control register handle from the serial port.
     fn fifo_control_register(&self) -> FifoControlRegister {
-        FifoControlRegister {
-            address: self.com_port as u16 + 2,
-        }
+        FifoControlRegister::from(self.com_port)
     }
 
     /// Get an interrupt enable register handle from the serial port.

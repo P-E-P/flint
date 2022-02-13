@@ -1,5 +1,8 @@
 use super::{Register, WriteRegister};
+use crate::ComPort;
 use crate::io::outb;
+
+const FCR_OFFSET: u16 = 2;
 
 pub struct FifoControlRegister {
     pub address: u16,
@@ -13,6 +16,14 @@ impl WriteRegister for FifoControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);
+        }
+    }
+}
+
+impl From<ComPort> for FifoControlRegister {
+    fn from(port: ComPort) -> Self {
+        FifoControlRegister {
+            address: port as u16 + FCR_OFFSET,
         }
     }
 }
