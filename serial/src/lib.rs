@@ -25,30 +25,35 @@ pub struct Serial {
     com_port: ComPort,
 }
 
-impl Serial {
-    pub fn new(com_port: ComPort) -> Self {
-        Serial { com_port }
-    }
-
-    pub fn initialize(&self) {
-        self.set_baud_rate(38400);
+impl Default for Serial {
+    fn default() -> Self {
+        let result = Serial::new(COM1);
+        result.set_baud_rate(38400);
         // 8 bit length, no parity
-        self.line_control_register().write(LineControl(
+        result.line_control_register().write(LineControl(
             lcr::flags::WordLengthBits::Eight as u8
                 | lcr::flags::StopBit::OneStop as u8
                 | lcr::flags::Parity::NoParity as u8,
         ));
         // Enable FIFO, clear, 14 bits
-        self.fifo_control_register().write(FifoControl(
+        result.fifo_control_register().write(FifoControl(
             fcr::flags::TriggerLevel::Itl14 as u8
                 | fcr::flags::ENABLE_FIFOS
                 | fcr::flags::CLEAR_TRANSMIT_FIFO
                 | fcr::flags::CLEAR_RECEIVE_FIFO,
         ));
         // Enable interrupts
-        self.interrupt_enable_register().write(InterruptEnable(
+        result.interrupt_enable_register().write(InterruptEnable(
             ier::flags::RECEIVED_DATA_AVAILABLE_INTERRUPT,
         ));
+        result
+    }
+}
+
+impl Serial {
+    pub fn new(com_port: ComPort) -> Self {
+        Serial { com_port }
+
     }
 
     pub fn set_baud_rate(&self, baud_rate: usize) {
