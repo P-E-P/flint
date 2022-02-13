@@ -95,9 +95,7 @@ impl Serial {
 
     /// Get a line status register handle from the serial port.
     fn line_status_register(&self) -> LineStatusRegister {
-        LineStatusRegister {
-            address: self.com_port as u16 + 5,
-        }
+        LineStatusRegister::from(self.com_port)
     }
 
     /// Get a line control register handle from the serial port.
