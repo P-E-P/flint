@@ -1,8 +1,11 @@
 use super::{ReadRegister, Register, WriteRegister};
+use crate::ComPort;
 use crate::io::{inb, outb};
 
+const LCR_OFFSET: u16 = 3;
+
 pub struct LineControlRegister {
-    pub address: u16,
+    address: u16,
 }
 
 impl Register for LineControlRegister {
@@ -24,6 +27,12 @@ impl WriteRegister for LineControlRegister {
 }
 
 impl LineControlRegister {
+    pub fn new(port: ComPort) -> Self {
+        LineControlRegister {
+            address: port as u16 + LCR_OFFSET,
+        }
+    }
+
     pub fn set_dlab(&self, value: bool) {
         let current = self.read();
         if value {

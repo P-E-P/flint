@@ -102,9 +102,7 @@ impl Serial {
 
     /// Get a line control register handle from the serial port.
     fn line_control_register(&self) -> LineControlRegister {
-        LineControlRegister {
-            address: self.com_port as u16 + 3,
-        }
+        LineControlRegister::new(self.com_port)
     }
 
     /// Get a transmitter holding buffer handle from the serial port.
