@@ -1,5 +1,8 @@
 use super::{ReadRegister, Register};
+use crate::ComPort;
 use crate::io::inb;
+
+const IIR_OFFSET: u16 = 2;
 
 pub struct InterruptIdentificationRegister {
     pub address: u16,
@@ -12,6 +15,14 @@ impl Register for InterruptIdentificationRegister {
 impl ReadRegister for InterruptIdentificationRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
+    }
+}
+
+impl From<ComPort> for InterruptIdentificationRegister {
+    fn from(port: ComPort) -> Self {
+        InterruptIdentificationRegister {
+            address: port as u16 + IIR_OFFSET,
+        }
     }
 }
 

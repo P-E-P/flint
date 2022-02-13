@@ -141,9 +141,7 @@ impl Serial {
 
     /// Get an interrupt identification register handle from the serial port.
     fn interrupt_identification_register(&self) -> InterruptIdentificationRegister {
-        InterruptIdentificationRegister {
-            address: self.com_port as u16 + 2,
-        }
+        InterruptIdentificationRegister::from(self.com_port)
     }
 }
 
