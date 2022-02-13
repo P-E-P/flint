@@ -110,9 +110,7 @@ impl Serial {
 
     /// Get a receiver buffer handle from the serial port.
     fn receiver_buffer(&self) -> ReceiverBuffer {
-        ReceiverBuffer {
-            address: self.com_port as u16,
-        }
+        ReceiverBuffer::from(self.com_port)
     }
 
     /// Get a dll handle from the serial port.
