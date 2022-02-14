@@ -3,6 +3,15 @@ name = "flint"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+
+members = [
+    "serial",
+    "io",
+]
+
 [dependencies]
 bootloader = "0.9.8"
 volatile = "0.2.6"
+serial = { path = "./serial" }
+io = { path = "./io" }
