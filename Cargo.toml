@@ -13,6 +13,10 @@ members = [
 [dependencies]
 bootloader = "0.9.8"
 volatile = "0.2.6"
-lazy_static = { version = "1.4.0", features = [ "spin_no_std" ] }
-serial = { path = "./serial" }
-io = { path = "./io" }
+serial = { path = "./serial", optional = true }
+io = { path = "./io", optional = true }
+
+
+[features]
+default = [ "serial_log" ]
+serial_log = [ "serial" ]

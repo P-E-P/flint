@@ -1,21 +1,11 @@
-use lazy_static::lazy_static;
 use core::fmt::Write;
 use core::fmt;
-use serial::Serial;
-
-static mut OUT: Option<Serial> = None;
-
-fn get_serial() -> &'static mut Serial {
-    unsafe {
-        if OUT.is_none() {
-            OUT = Some(Serial::default());
-        }
-        OUT.as_mut().unwrap()
-    }
-}
+#[cfg(feature = "serial_log")]
+use serial;
 
 pub fn print_fmt(args: fmt::Arguments) {
-    get_serial().write_fmt(args);
+    #[cfg(feature = "serial_log")]
+    serial::get_default().write_fmt(args.clone());
 }
 
 #[macro_export]
