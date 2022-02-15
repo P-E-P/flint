@@ -21,6 +21,17 @@ pub const COM2: ComPort = 0x2F8;
 pub const COM3: ComPort = 0x3E8;
 pub const COM4: ComPort = 0x2E8;
 
+static mut DEFAULT: Option<Serial> = None;
+
+pub fn get_default() -> &'static mut Serial {
+    unsafe {
+        if DEFAULT.is_none() {
+            DEFAULT = Some(Serial::default());
+        }
+        DEFAULT.as_mut().unwrap()
+    }
+}
+
 pub struct Serial {
     com_port: ComPort,
 }

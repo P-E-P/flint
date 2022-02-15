@@ -9,11 +9,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a62c8f6168cd106687ee36a2b71a46c4144d73399f72814104d33094b8092fd2"
 
 [[package]]
+name = "cfg-if"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
 name = "flint"
 version = "0.1.0"
 dependencies = [
  "bootloader",
  "io",
+ "log",
  "serial",
  "volatile",
 ]
@@ -21,6 +28,15 @@ dependencies = [
 [[package]]
 name = "io"
 version = "0.1.0"
+
+[[package]]
+name = "log"
+version = "0.4.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
+dependencies = [
+ "cfg-if",
+]
 
 [[package]]
 name = "serial"

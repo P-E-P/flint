@@ -2,9 +2,9 @@
 #![no_main]
 use core::panic::PanicInfo;
 
-use serial::Serial;
-
 mod vga;
+#[macro_use]
+mod klog;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -18,8 +18,10 @@ static LOAD: &[u8] = b"|/-\\";
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
 
-    let serial = Serial::default();
-    serial.write_string("Testing serial\nEven on multiple lines");
+    klog::init();
+
+    log::info!("Information message");
+    log::error!("Error message");
 
     for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {
         unsafe {

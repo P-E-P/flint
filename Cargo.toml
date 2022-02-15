@@ -13,5 +13,11 @@ members = [
 [dependencies]
 bootloader = "0.9.8"
 volatile = "0.2.6"
-serial = { path = "./serial" }
-io = { path = "./io" }
+log = "0.4.14"
+serial = { path = "./serial", optional = true }
+io = { path = "./io", optional = true }
+
+
+[features]
+default = [ "serial_log" ]
+serial_log = [ "serial" ]
