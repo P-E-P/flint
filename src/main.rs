@@ -18,7 +18,7 @@ static LOAD: &[u8] = b"|/-\\";
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
 
-    klog::init();
+    klog::init().ok();
 
     log::info!("Information message");
     log::error!("Error message");

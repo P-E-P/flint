@@ -34,6 +34,5 @@ impl Log for Logger {
 }
 
 pub fn init() -> Result<(), SetLoggerError> {
-    log::set_logger(&LOGGER).map(|()| log::set_max_level(LevelFilter::Info)).ok();
-    Ok(())
+    log::set_logger(&LOGGER).map(|()| log::set_max_level(LevelFilter::Info))
 }
