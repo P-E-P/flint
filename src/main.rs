@@ -23,19 +23,12 @@ pub extern "C" fn _start() -> ! {
     log::info!("Information message");
     log::error!("Error message");
 
-    for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {
-        unsafe {
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-        }
-    }
-
     vga::text::print_something();
 
     for i in 0.. {
         unsafe {
-            *vga_buffer.offset(WELCOME_MESSAGE.len() as isize * 2) = LOAD[i % LOAD.len()] as u8;
-            *vga_buffer.offset(WELCOME_MESSAGE.len() as isize * 2 + 1) = 0xf;
+            *vga_buffer.offset(79 as isize * 2) = LOAD[i % LOAD.len()] as u8;
+            *vga_buffer.offset(79 as isize * 2 + 1) = 0xf;
         }
     }
     loop {}
