@@ -8,6 +8,7 @@ mod klog;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
+    log::error!("Kernel Panic!");
     loop {}
 }
 
