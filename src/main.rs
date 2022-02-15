@@ -11,7 +11,6 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-static WELCOME_MESSAGE: &[u8] = b"Booting flint...";
 static LOAD: &[u8] = b"|/-\\";
 
 #[no_mangle]
