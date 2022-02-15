@@ -25,30 +25,35 @@ pub struct Serial {
     com_port: ComPort,
 }
 
-impl Serial {
-    pub fn new(com_port: ComPort) -> Self {
-        Serial { com_port }
-    }
-
-    pub fn initialize(&self) {
-        self.set_baud_rate(38400);
+impl Default for Serial {
+    fn default() -> Self {
+        let result = Serial::new(COM1);
+        result.set_baud_rate(38400);
         // 8 bit length, no parity
-        self.line_control_register().write(LineControl(
+        result.line_control_register().write(LineControl(
             lcr::flags::WordLengthBits::Eight as u8
                 | lcr::flags::StopBit::OneStop as u8
                 | lcr::flags::Parity::NoParity as u8,
         ));
         // Enable FIFO, clear, 14 bits
-        self.fifo_control_register().write(FifoControl(
+        result.fifo_control_register().write(FifoControl(
             fcr::flags::TriggerLevel::Itl14 as u8
                 | fcr::flags::ENABLE_FIFOS
                 | fcr::flags::CLEAR_TRANSMIT_FIFO
                 | fcr::flags::CLEAR_RECEIVE_FIFO,
         ));
         // Enable interrupts
-        self.interrupt_enable_register().write(InterruptEnable(
+        result.interrupt_enable_register().write(InterruptEnable(
             ier::flags::RECEIVED_DATA_AVAILABLE_INTERRUPT,
         ));
+        result
+    }
+}
+
+impl Serial {
+    pub fn new(com_port: ComPort) -> Self {
+        Serial { com_port }
+
     }
 
     pub fn set_baud_rate(&self, baud_rate: usize) {
@@ -90,30 +95,22 @@ impl Serial {
 
     /// Get a line status register handle from the serial port.
     fn line_status_register(&self) -> LineStatusRegister {
-        LineStatusRegister {
-            address: self.com_port as u16 + 5,
-        }
+        LineStatusRegister::from(self.com_port)
     }
 
     /// Get a line control register handle from the serial port.
     fn line_control_register(&self) -> LineControlRegister {
-        LineControlRegister {
-            address: self.com_port as u16 + 3,
-        }
+        LineControlRegister::from(self.com_port)
     }
 
     /// Get a transmitter holding buffer handle from the serial port.
     fn transmitter_holding_buffer(&self) -> TransmitterHoldingBuffer {
-        TransmitterHoldingBuffer {
-            address: self.com_port as u16,
-        }
+        TransmitterHoldingBuffer::from(self.com_port)
     }
 
     /// Get a receiver buffer handle from the serial port.
     fn receiver_buffer(&self) -> ReceiverBuffer {
-        ReceiverBuffer {
-            address: self.com_port as u16,
-        }
+        ReceiverBuffer::from(self.com_port)
     }
 
     /// Get a dll handle from the serial port.
@@ -134,23 +131,17 @@ impl Serial {
 
     /// Get a fifo control register handle from the serial port.
     fn fifo_control_register(&self) -> FifoControlRegister {
-        FifoControlRegister {
-            address: self.com_port as u16 + 2,
-        }
+        FifoControlRegister::from(self.com_port)
     }
 
     /// Get an interrupt enable register handle from the serial port.
     fn interrupt_enable_register(&self) -> InterruptEnableRegister {
-        InterruptEnableRegister {
-            address: self.com_port as u16 + 1,
-        }
+        InterruptEnableRegister::from(self.com_port)
     }
 
     /// Get an interrupt identification register handle from the serial port.
     fn interrupt_identification_register(&self) -> InterruptIdentificationRegister {
-        InterruptIdentificationRegister {
-            address: self.com_port as u16 + 2,
-        }
+        InterruptIdentificationRegister::from(self.com_port)
     }
 }
 

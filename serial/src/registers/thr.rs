@@ -1,6 +1,9 @@
 use super::lcr::LineControlRegister;
 use super::{Register, WriteRegister};
+use crate::ComPort;
 use crate::io::outb;
+
+const THR_OFFSET: u16 = 0;
 
 pub struct TransmitterHoldingBuffer {
     pub address: u16,
@@ -18,6 +21,14 @@ impl WriteRegister for TransmitterHoldingBuffer {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value, self.address);
+        }
+    }
+}
+
+impl From<ComPort> for TransmitterHoldingBuffer {
+    fn from(port: ComPort) -> Self {
+        TransmitterHoldingBuffer {
+            address: port as u16 + THR_OFFSET,
         }
     }
 }

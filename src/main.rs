@@ -18,8 +18,7 @@ static LOAD: &[u8] = b"|/-\\";
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
 
-    let serial = Serial::new(serial::COM1);
-    serial.initialize();
+    let serial = Serial::default();
     serial.write_string("Testing serial\nEven on multiple lines");
 
     for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {

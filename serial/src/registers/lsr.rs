@@ -1,5 +1,8 @@
 use super::{ReadRegister, Register};
+use crate::ComPort;
 use crate::io::inb;
+
+const LSR_OFFSET: u16 = 5;
 
 pub struct LineStatusRegister {
     pub address: u16,
@@ -12,6 +15,14 @@ impl Register for LineStatusRegister {
 impl ReadRegister for LineStatusRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
+    }
+}
+
+impl From<ComPort> for LineStatusRegister {
+    fn from(port: ComPort) -> Self {
+        LineStatusRegister {
+            address: port as u16 + LSR_OFFSET,
+        }
     }
 }
 

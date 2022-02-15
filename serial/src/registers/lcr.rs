@@ -1,5 +1,8 @@
 use super::{ReadRegister, Register, WriteRegister};
+use crate::ComPort;
 use crate::io::{inb, outb};
+
+const LCR_OFFSET: u16 = 3;
 
 pub struct LineControlRegister {
     pub address: u16,
@@ -19,6 +22,14 @@ impl WriteRegister for LineControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);
+        }
+    }
+}
+
+impl From<ComPort> for LineControlRegister {
+    fn from(port: ComPort) -> Self {
+        LineControlRegister {
+            address: port as u16 + LCR_OFFSET,
         }
     }
 }

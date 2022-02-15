@@ -1,6 +1,9 @@
 use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register};
+use crate::ComPort;
 use crate::io::inb;
+
+const RBR_OFFSET: u16 = 0;
 
 pub struct ReceiverBuffer {
     pub address: u16,
@@ -17,5 +20,13 @@ impl ReadRegister for ReceiverBuffer {
     /// unset it in every call.
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address) }
+    }
+}
+
+impl From<ComPort> for ReceiverBuffer {
+    fn from(port: ComPort) -> Self {
+        ReceiverBuffer {
+            address: port as u16 + RBR_OFFSET,
+        }
     }
 }
