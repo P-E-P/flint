@@ -1,7 +1,7 @@
 #![no_std]
 
-use io;
 use core::fmt;
+use io;
 use registers::{
     dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lsr::LineStatusRegister,
     rbr::ReceiverBuffer, thr::TransmitterHoldingBuffer, ReadRegister, Register, WriteRegister,
@@ -64,7 +64,6 @@ impl Default for Serial {
 impl Serial {
     pub fn new(com_port: ComPort) -> Self {
         Serial { com_port }
-
     }
 
     pub fn set_baud_rate(&self, baud_rate: usize) {

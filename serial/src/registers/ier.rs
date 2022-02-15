@@ -1,7 +1,7 @@
 use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register, WriteRegister};
-use crate::ComPort;
 use crate::io::{inb, outb};
+use crate::ComPort;
 
 const IER_OFFSET: u16 = 1;
 

@@ -1,6 +1,6 @@
 use super::{Register, WriteRegister};
-use crate::ComPort;
 use crate::io::outb;
+use crate::ComPort;
 
 const FCR_OFFSET: u16 = 2;
 

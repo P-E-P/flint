@@ -1,8 +1,8 @@
-use core::fmt::Write;
 use core::fmt;
+use core::fmt::Write;
+use log::{Level, LevelFilter, Log, Metadata, Record, SetLoggerError};
 #[cfg(feature = "serial_log")]
 use serial;
-use log::{Log, Record, Level, Metadata, SetLoggerError, LevelFilter};
 
 pub fn print_fmt(args: fmt::Arguments) {
     #[cfg(feature = "serial_log")]

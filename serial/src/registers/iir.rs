@@ -1,6 +1,6 @@
 use super::{ReadRegister, Register};
-use crate::ComPort;
 use crate::io::inb;
+use crate::ComPort;
 
 const IIR_OFFSET: u16 = 2;
 

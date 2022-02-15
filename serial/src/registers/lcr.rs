@@ -1,6 +1,6 @@
 use super::{ReadRegister, Register, WriteRegister};
-use crate::ComPort;
 use crate::io::{inb, outb};
+use crate::ComPort;
 
 const LCR_OFFSET: u16 = 3;
 
