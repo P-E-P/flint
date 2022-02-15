@@ -1,10 +1,10 @@
 #![no_std]
 #![no_main]
 use core::panic::PanicInfo;
-
 use serial::Serial;
 
 mod vga;
+#[macro_use]
 mod log;
 
 #[panic_handler]
@@ -19,7 +19,7 @@ static LOAD: &[u8] = b"|/-\\";
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
 
-    log::printk("Testing some things.....");
+    printk!("Testing some things.....");
 
     for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {
         unsafe {
