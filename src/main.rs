@@ -4,7 +4,7 @@ use core::panic::PanicInfo;
 
 mod vga;
 #[macro_use]
-mod log;
+mod klog;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -18,7 +18,10 @@ static LOAD: &[u8] = b"|/-\\";
 pub extern "C" fn _start() -> ! {
     let vga_buffer = 0xb8000 as *mut u8;
 
-    printk!("Testing some things.....");
+    klog::init();
+
+    log::info!("Information message");
+    log::error!("Error message");
 
     for (i, &byte) in WELCOME_MESSAGE.iter().enumerate() {
         unsafe {
