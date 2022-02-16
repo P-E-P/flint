@@ -1,4 +1,3 @@
-use super::lcr::LineControlRegister;
 use super::{Register, WriteRegister};
 use crate::io::outb;
 use crate::ComPort;
