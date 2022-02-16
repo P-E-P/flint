@@ -1,5 +1,8 @@
 use super::{ReadRegister, Register};
 use crate::io::inb;
+use crate::ComPort;
+
+const MSR_OFFSET: u16 = 6;
 
 pub struct ModemStatusRegister {
     address: u16,
@@ -12,6 +15,14 @@ impl Register for ModemStatusRegister {
 impl ReadRegister for ModemStatusRegister {
     fn read(&self) -> Self::Value {
         unsafe { inb(self.address).into() }
+    }
+}
+
+impl From<ComPort> for ModemStatusRegister {
+    fn from(port: ComPort) -> Self {
+        ModemStatusRegister {
+            address: port as u16 + MSR_OFFSET,
+        }
     }
 }
 

@@ -2,17 +2,24 @@
 
 use core::fmt;
 use io;
+
 use registers::{
-    dlh::DivisorLatchHighByte, dll::DivisorLatchLowByte, lsr::LineStatusRegister,
-    rbr::ReceiverBuffer, thr::TransmitterHoldingBuffer, ReadRegister, Register, WriteRegister,
+    dll::DivisorLatchLowByte,
+    dlh::DivisorLatchHighByte,
+    fcr::{self, FifoControl, FifoControlRegister},
+    ier::{self, InterruptEnable, InterruptEnableRegister},
+    iir::InterruptIdentificationRegister,
+    lcr::{self, LineControl, LineControlRegister},
+    lsr::LineStatusRegister,
+    mcr::ModemControlRegister,
+    msr::ModemStatusRegister,
+    rbr::ReceiverBuffer,
+    sr::ScratchRegister,
+    thr::TransmitterHoldingBuffer,
+    ReadRegister, WriteRegister,
 };
 
-use registers::fcr::{self, FifoControl, FifoControlRegister};
-use registers::ier::{self, InterruptEnable, InterruptEnableRegister};
-use registers::iir::{self, InterruptIdentification, InterruptIdentificationRegister};
-use registers::lcr::{self, LineControl, LineControlRegister};
-
-mod registers;
+pub mod registers;
 
 type ComPort = usize;
 
@@ -180,6 +187,21 @@ impl Serial {
     /// Get an [`InterruptIdentificationRegister`] handle from the serial port.
     pub fn interrupt_identification_register(&self) -> InterruptIdentificationRegister {
         InterruptIdentificationRegister::from(self.com_port)
+    }
+
+    /// Get a [`ModemStatusRegister`] handle from the serial port.
+    pub fn modem_status_register(&self) -> ModemStatusRegister {
+        ModemStatusRegister::from(self.com_port)
+    }
+
+    /// Get a [`ModemControlRegister`] handle from the serial port.
+    pub fn model_control_register(&self) -> ModemControlRegister {
+        ModemControlRegister::from(self.com_port)
+    }
+
+    /// Get a [`ScratchRegister`] handle from the serial port.
+    pub fn scratch_register(&self) -> ScratchRegister {
+        ScratchRegister::from(self.com_port)
     }
 }
 

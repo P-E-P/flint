@@ -1,5 +1,8 @@
 use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
+use crate::ComPort;
+
+const MCR_OFFSET: u16 = 4;
 
 pub struct ModemControlRegister {
     address: u16,
@@ -19,6 +22,14 @@ impl WriteRegister for ModemControlRegister {
     fn write(&self, value: Self::Value) {
         unsafe {
             outb(value.0, self.address);
+        }
+    }
+}
+
+impl From<ComPort> for ModemControlRegister {
+    fn from(port: ComPort) -> Self {
+        ModemControlRegister {
+            address: port as u16 + MCR_OFFSET,
         }
     }
 }
