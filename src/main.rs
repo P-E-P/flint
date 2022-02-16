@@ -7,8 +7,8 @@ mod vga;
 mod klog;
 
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    log::error!("Kernel Panic!");
+fn panic(info: &PanicInfo) -> ! {
+    log::error!("Kernel Panic!:\n{}", info);
     loop {}
 }
 
