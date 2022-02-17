@@ -1,9 +1,23 @@
+//! A module containing the operations accessible for a [`DivisorLatchHighByte`]
+//! register.
+//!
+//! # Note
+//!
+//! This module assume that the `DLAB` value is always set to false as the most
+//! used registers require an unset `DLAB` bit. It will therefore set the `DLAB`
+//! value to `false` after modifying the register's value.
+
 use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register, WriteRegister};
 use crate::io::{inb, outb};
 
+/// A structure containing the informations to identify a
+/// [`DivisorLatchHighByte`] register along some utility values.
 pub struct DivisorLatchHighByte {
+    /// The port address of the [`DivisorLatchHighByte`].
     pub address: u16,
+    /// A [`LineControlRegister`] from the same serial device to control the
+    /// `DLAB` value.
     pub lcr: LineControlRegister,
 }
 
