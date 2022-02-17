@@ -4,8 +4,8 @@ use core::fmt;
 use io;
 
 use registers::{
-    dll::DivisorLatchLowByte,
     dlh::DivisorLatchHighByte,
+    dll::DivisorLatchLowByte,
     fcr::{self, FifoControl, FifoControlRegister},
     ier::{self, InterruptEnable, InterruptEnableRegister},
     iir::InterruptIdentificationRegister,
@@ -70,7 +70,7 @@ impl Default for Serial {
         ));
         // Enable FIFO, clear, 14 bits
         result.fifo_control_register().write(FifoControl(
-            fcr::flags::TriggerLevel::Itl14 as u8
+            fcr::flags::TriggerLevel16::Itl14 as u8
                 | fcr::flags::ENABLE_FIFOS
                 | fcr::flags::CLEAR_TRANSMIT_FIFO
                 | fcr::flags::CLEAR_RECEIVE_FIFO,
