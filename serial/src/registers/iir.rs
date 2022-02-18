@@ -1,9 +1,15 @@
+//! A module containing the operations, internal fields and flags aaccessible
+//! for an [`InterruptIdentificationRegister`].
 use super::{ReadRegister, Register};
 use crate::io::inb;
 use crate::ComPort;
 
+/// The offset of the [`InterruptIdentificationRegister`] relatively to the
+/// UART's base port address.
 const IIR_OFFSET: u16 = 2;
 
+/// A structure containing the informations to identify an
+/// [`InterruptIdentificationRegister`].
 pub struct InterruptIdentificationRegister {
     pub address: u16,
 }
@@ -26,6 +32,7 @@ impl From<ComPort> for InterruptIdentificationRegister {
     }
 }
 
+/// Internal value of the [`InterruptIdentificationRegister`].
 pub struct InterruptIdentification(u8);
 
 impl From<u8> for InterruptIdentification {
@@ -34,15 +41,30 @@ impl From<u8> for InterruptIdentification {
     }
 }
 
+/// Flags values and bitmasks for the InterruptIdentificationRegister's internal
+/// value.
 pub mod flags {
+    /// Fifo status bitmask.
     pub const FIFO_STATUS: u8 = 0b11000000;
+    /// 64 byte fifo enabled bitmask.
     pub const FIFO_ENABLED: u8 = 0b00100000;
     pub const RESERVED: u8 = 0b00010000;
+    /// Interrupt even type bitmask.
     pub const INTERRUPT_EVENT_TYPE: u8 = 0b00001110;
+    /// Interrupt pending bitmask.
     pub const INTERRUPT_PENDING: u8 = 0b00000001;
 
+    /// [`FifoStatus`] field's offset.
     pub const FIFO_STATUS_OFFSET: u8 = 6;
+    /// [`InterrupEventType`] field's offset.
     pub const INTERUPT_EVENT_TYPE_OFFSET: u8 = 1;
+
+    /// An enumeration of all possible fifo status values.
+    ///
+    /// # Note
+    ///
+    /// The `u8` representation of this enum has already been shifted to the
+    /// field's position.
     #[repr(u8)]
     pub enum FifoStatus {
         NoFifo = 0 << FIFO_STATUS_OFFSET,
@@ -63,6 +85,12 @@ pub mod flags {
         }
     }
 
+    /// An enumeration of all possible interrupt event type values.
+    ///
+    /// # Note
+    ///
+    /// The `u8` representation of this enum has already been shifted to the
+    /// field's position.
     #[repr(u8)]
     pub enum InterrupEventType {
         ModemStatus = 0 << INTERUPT_EVENT_TYPE_OFFSET,
@@ -93,18 +121,22 @@ pub mod flags {
 }
 
 impl InterruptIdentification {
+    /// Get the [`FifoStatus`]'s field from the register value.
     pub fn fifo_status(&self) -> flags::FifoStatus {
         ((self.0 & flags::FIFO_STATUS) >> flags::FIFO_STATUS_OFFSET).into()
     }
 
+    /// Whether the fifo has been enabled.
     pub fn fifo_enabled(&self) -> bool {
         self.0 & flags::FIFO_ENABLED != 0
     }
 
+    /// Get the [`InterrupEventType`]'s field from the register value.
     pub fn interrupt_event_type(&self) -> flags::InterrupEventType {
         ((self.0 & flags::INTERRUPT_EVENT_TYPE) >> flags::INTERUPT_EVENT_TYPE_OFFSET).into()
     }
 
+    /// Whether an interrupt is pending.
     pub fn interrupt_pending(&self) -> bool {
         self.0 & flags::INTERRUPT_PENDING != 0
     }
