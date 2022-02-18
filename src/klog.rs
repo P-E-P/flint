@@ -9,11 +9,14 @@ pub fn print_fmt(args: fmt::Arguments) {
     serial::get_default().write_fmt(args.clone()).ok();
 }
 
+macro_rules! println {
+    () => (print!("\n"));
+    ($($arg:tt)*) => (print!("{}\n", format_args!($($arg)*)));
+}
+
 #[macro_export]
-macro_rules! printk {
-    ($($args: tt)*) => {
-        crate::klog::print_fmt(format_args!($($args)*))
-    };
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::klog::print_fmt(format_args!($($arg)*)));
 }
 
 struct Logger;
@@ -26,7 +29,7 @@ impl Log for Logger {
 
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            printk!("[{}] {}\n", record.level(), record.args());
+            println!("[{}] {}\n", record.level(), record.args());
         }
     }
 
