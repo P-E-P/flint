@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "arch"
+version = "0.1.0"
+
+[[package]]
 name = "bootloader"
 version = "0.9.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -18,16 +22,12 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "flint"
 version = "0.1.0"
 dependencies = [
+ "arch",
  "bootloader",
- "io",
  "log",
  "serial",
  "volatile",
 ]
-
-[[package]]
-name = "io"
-version = "0.1.0"
 
 [[package]]
 name = "log"
@@ -42,7 +42,7 @@ dependencies = [
 name = "serial"
 version = "0.1.0"
 dependencies = [
- "io",
+ "arch",
 ]
 
 [[package]]

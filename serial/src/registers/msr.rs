@@ -1,5 +1,5 @@
 use super::{ReadRegister, Register};
-use crate::io::inb;
+use crate::arch::inb;
 use crate::ComPort;
 
 const MSR_OFFSET: u16 = 6;

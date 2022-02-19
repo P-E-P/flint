@@ -1,7 +1,7 @@
 //! A module containing the operations, internal fields and flags aaccessible
 //! for an [`InterruptIdentificationRegister`].
 use super::{ReadRegister, Register};
-use crate::io::inb;
+use crate::arch::inb;
 use crate::ComPort;
 
 /// The offset of the [`InterruptIdentificationRegister`] relatively to the

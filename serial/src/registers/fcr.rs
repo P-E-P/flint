@@ -2,7 +2,7 @@
 //! a [`FifoControlRegister`].
 
 use super::{Register, WriteRegister};
-use crate::io::outb;
+use crate::arch::outb;
 use crate::ComPort;
 
 /// The offset of the [`FifoControlRegister`] relatively to the UART's base

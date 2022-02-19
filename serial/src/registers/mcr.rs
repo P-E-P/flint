@@ -1,5 +1,5 @@
 use super::{ReadRegister, Register, WriteRegister};
-use crate::io::{inb, outb};
+use crate::arch::{inb, outb};
 use crate::ComPort;
 
 const MCR_OFFSET: u16 = 4;

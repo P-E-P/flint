@@ -1,5 +1,5 @@
 use super::{Register, WriteRegister};
-use crate::io::outb;
+use crate::arch::outb;
 use crate::ComPort;
 
 const THR_OFFSET: u16 = 0;

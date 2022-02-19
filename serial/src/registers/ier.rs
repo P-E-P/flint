@@ -2,7 +2,7 @@
 //! a [`InterruptEnableRegister`].
 
 use super::{ReadRegister, Register, WriteRegister};
-use crate::io::{inb, outb};
+use crate::arch::{inb, outb};
 use crate::ComPort;
 
 /// The offset of the [`InterruptEnableRegister`] relatively to the UART's base

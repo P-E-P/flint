@@ -1,5 +1,5 @@
 use super::{ReadRegister, Register};
-use crate::io::inb;
+use crate::arch::inb;
 use crate::ComPort;
 
 const RBR_OFFSET: u16 = 0;

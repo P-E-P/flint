@@ -1,7 +1,7 @@
 #![no_std]
 
 use core::fmt;
-use io;
+use arch;
 
 use registers::{
     dlh::DivisorLatchHighByte,
@@ -101,7 +101,7 @@ impl Serial {
     /// * `byte` - The value to write on the serial bus.
     pub fn write_byte(&self, byte: u8) {
         while !self.can_write() {
-            io::pause();
+            arch::pause();
         }
         self.transmitter_holding_buffer().write(byte);
     }

@@ -9,7 +9,7 @@
 
 use super::lcr::LineControlRegister;
 use super::{ReadRegister, Register, WriteRegister};
-use crate::io::{inb, outb};
+use crate::arch::{inb, outb};
 
 /// A structure containing the informations to identify a
 /// [`DivisorLatchHighByte`] register along some utility values.
