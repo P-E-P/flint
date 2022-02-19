@@ -15,7 +15,7 @@ bootloader = "0.9.8"
 volatile = "0.2.6"
 log = "0.4.14"
 serial = { path = "./serial", optional = true }
-arch = { path = "./arch", optional = true }
+arch = { path = "./arch" }
 
 
 [features]
@@ -25,3 +25,4 @@ vga_log = []
 
 [package.metadata.bootimage]
 test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
+test-success-exit-code = 33

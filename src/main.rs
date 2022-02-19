@@ -5,6 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+use arch::outdw;
 
 mod vga;
 #[macro_use]
@@ -16,6 +17,8 @@ fn test_runner(tests: &[&dyn Fn()]) {
     for test in tests {
         test();
     }
+
+    exit_qemu(QemuExitCode::Success);
 }
 
 #[test_case]
@@ -23,6 +26,20 @@ fn trivial_assertion() {
     print!("trivial assertion... ");
     assert_eq!(1, 1);
     println!("[ok]");
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum QemuExitCode {
+    Success = 0x10,
+    Failed = 0x11,
+}
+
+/// Call Qemu IO mapped debug exit.
+pub fn exit_qemu(exit_code: QemuExitCode) {
+    unsafe {
+        outdw(exit_code as u32, 0xf4);
+    }
 }
 
 #[panic_handler]
