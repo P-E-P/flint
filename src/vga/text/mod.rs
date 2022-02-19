@@ -121,19 +121,14 @@ impl Writer {
     }
 }
 
-pub fn print_something() {
-    let mut writer = Writer {
-        column: 0,
-        color_code: ColorCode::new(Color::Cyan, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-
-    writer.write_byte(b'H');
-    writer.write_string("ello ");
-    writer.write_string("Wörld!\n");
-    writer.write_string("New line!\n");
-    writer.write_string("Another line!\n");
-    writer.write_string("This is definitely Another very long line that should be split as the buffer is not large enough to hold it entirely!\n");
+impl Default for Writer {
+    fn default() -> Self {
+        Writer {
+            column: 0,
+            color_code: ColorCode::new(Color::White, Color::Black),
+            buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+        }
+    }
 }
 
 impl fmt::Write for Writer {

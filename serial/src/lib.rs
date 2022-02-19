@@ -32,20 +32,6 @@ pub const COM3: ComPort = 0x3E8;
 /// UART IO port 4 address
 pub const COM4: ComPort = 0x2E8;
 
-/// An option containing the default serial to use for communication.
-static mut DEFAULT: Option<Serial> = None;
-
-/// Retrieve a mutable reference to the default serial, initialize it before
-/// returning it in case it was not set previously.
-pub fn get_default() -> &'static mut Serial {
-    unsafe {
-        if DEFAULT.is_none() {
-            DEFAULT = Some(Serial::default());
-        }
-        DEFAULT.as_mut().unwrap()
-    }
-}
-
 /// A structure representing an UART device accessible through a given IO port.
 pub struct Serial {
     /// The UART port address
