@@ -36,6 +36,24 @@ pub unsafe fn inw(port: u16) -> u16 {
     result
 }
 
+pub unsafe fn outdw(value: u32, port: u16) {
+    asm!("out dx, eax",
+        in("dx") port,
+        in("eax") value,
+        options(nomem, nostack)
+    );
+}
+
+pub unsafe fn indw(port: u16) -> u32 {
+    let result: u32;
+    asm!("in eax, dx",
+        out("eax") result,
+        in("dx") port,
+        options(nomem, nostack)
+    );
+    result
+}
+
 pub fn pause() {
     unsafe {
         asm!("pause");
