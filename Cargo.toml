@@ -22,3 +22,6 @@ io = { path = "./io", optional = true }
 default = [ "serial_log", "vga_log" ]
 serial_log = [ "serial" ]
 vga_log = []
+
+[package.metadata.bootimage]
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
