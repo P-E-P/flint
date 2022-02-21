@@ -43,11 +43,23 @@ mod vga_logger {
     }
 }
 
+/// Print a precompiled format string and it's arguments to the default serial
+/// output.
+pub fn serial_print(args: fmt::Arguments) {
+    serial_logger::default().write_fmt(args).ok();
+}
+
+/// Print a precompiled format string and it's arguments to the default vga
+/// output.
+pub fn vga_print(args: fmt::Arguments) {
+    vga_logger::default().write_fmt(args).ok();
+}
+
 pub fn print_fmt(args: fmt::Arguments) {
     #[cfg(feature = "serial_log")]
-    serial_logger::default().write_fmt(args.clone()).ok();
+    serial_print(args.clone());
     #[cfg(feature = "vga_log")]
-    vga_logger::default().write_fmt(args.clone()).ok();
+    vga_print(args.clone());
 }
 
 macro_rules! println {
