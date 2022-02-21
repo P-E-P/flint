@@ -146,18 +146,12 @@ impl Serial {
 
     /// Get a [`DivisorLatchLowByte`] handle from the serial port.
     pub fn divisor_latch_low_byte(&self) -> DivisorLatchLowByte {
-        DivisorLatchLowByte {
-            address: self.com_port as u16,
-            lcr: self.line_control_register(),
-        }
+        DivisorLatchLowByte::from_com(self.com_port as u16, self.line_control_register())
     }
 
     /// Get a [`DivisorLatchHighByte`] handle from the serial port.
     pub fn divisor_latch_high_byte(&self) -> DivisorLatchHighByte {
-        DivisorLatchHighByte {
-            address: self.com_port as u16 + 1,
-            lcr: self.line_control_register(),
-        }
+        DivisorLatchHighByte::from_com(self.com_port as u16, self.line_control_register())
     }
 
     /// Get a [`FifoControlRegister`] handle from the serial port.

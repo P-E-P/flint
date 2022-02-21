@@ -13,14 +13,28 @@ use arch::io::{
     register::{ReadRegister, Register, WriteRegister},
 };
 
+/// The offset of the [`DivisorLatchHighByte`] relatively to the UART's base
+/// address.
+pub const DLH_OFFSET: u16 = 1;
+
 /// A structure containing the informations to identify a
 /// [`DivisorLatchHighByte`] register along some utility values.
 pub struct DivisorLatchHighByte {
     /// The port address of the [`DivisorLatchHighByte`].
-    pub address: u16,
+    address: u16,
     /// A [`LineControlRegister`] from the same serial device to control the
     /// `DLAB` value.
-    pub lcr: LineControlRegister,
+    lcr: LineControlRegister,
+}
+
+impl DivisorLatchHighByte {
+    pub fn new(address: u16, lcr: LineControlRegister) -> Self {
+        DivisorLatchHighByte { address, lcr }
+    }
+
+    pub fn from_com(com: u16, lcr: LineControlRegister) -> Self {
+        DivisorLatchHighByte::new(com + DLH_OFFSET, lcr)
+    }
 }
 
 impl Register for DivisorLatchHighByte {
