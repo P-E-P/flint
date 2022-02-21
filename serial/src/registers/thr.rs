@@ -1,6 +1,8 @@
-use super::{Register, WriteRegister};
-use crate::arch::outb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{Register, WriteRegister},
+};
 
 const THR_OFFSET: u16 = 0;
 
@@ -18,9 +20,7 @@ impl WriteRegister for TransmitterHoldingBuffer {
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value, self.address);
-        }
+        Port::<u8>::new(self.address).write(value);
     }
 }
 

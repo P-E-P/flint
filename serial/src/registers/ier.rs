@@ -1,9 +1,10 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`InterruptEnableRegister`].
-
-use super::{ReadRegister, Register, WriteRegister};
-use crate::arch::{inb, outb};
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register, WriteRegister},
+};
 
 /// The offset of the [`InterruptEnableRegister`] relatively to the UART's base
 /// port address.
@@ -22,15 +23,13 @@ impl Register for InterruptEnableRegister {
 
 impl ReadRegister for InterruptEnableRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        Port::<u8>::new(self.address).read().into()
     }
 }
 
 impl WriteRegister for InterruptEnableRegister {
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value.0, self.address);
-        }
+        Port::<u8>::new(self.address).write(value.0);
     }
 }
 

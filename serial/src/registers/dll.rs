@@ -8,8 +8,10 @@
 //! value to `false` after modifying the register's value.
 
 use super::lcr::LineControlRegister;
-use super::{ReadRegister, Register, WriteRegister};
-use crate::arch::{inb, outb};
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register, WriteRegister},
+};
 
 /// A structure containing the informations to identify a
 /// [`DivisorLatchLowByte`] register along some utility values.
@@ -28,7 +30,7 @@ impl Register for DivisorLatchLowByte {
 impl ReadRegister for DivisorLatchLowByte {
     fn read(&self) -> Self::Value {
         self.lcr.set_dlab(true);
-        let result = unsafe { inb(self.address) };
+        let result = Port::new(self.address).read();
         self.lcr.set_dlab(false);
         result
     }
@@ -37,9 +39,7 @@ impl ReadRegister for DivisorLatchLowByte {
 impl WriteRegister for DivisorLatchLowByte {
     fn write(&self, value: Self::Value) {
         self.lcr.set_dlab(true);
-        unsafe {
-            outb(value, self.address);
-        }
+        Port::new(self.address).write(value);
         self.lcr.set_dlab(false);
     }
 }

@@ -1,8 +1,10 @@
 //! A module containing the operations, internal fields and flags aaccessible
 //! for an [`InterruptIdentificationRegister`].
-use super::{ReadRegister, Register};
-use crate::arch::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 /// The offset of the [`InterruptIdentificationRegister`] relatively to the
 /// UART's base port address.
@@ -20,7 +22,7 @@ impl Register for InterruptIdentificationRegister {
 
 impl ReadRegister for InterruptIdentificationRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        Port::<u8>::new(self.address).read().into()
     }
 }
 

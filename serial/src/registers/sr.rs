@@ -1,6 +1,8 @@
-use super::{ReadRegister, Register, WriteRegister};
-use crate::arch::{inb, outb};
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register, WriteRegister},
+};
 
 const SR_OFFSET: u16 = 7;
 
@@ -14,15 +16,13 @@ impl Register for ScratchRegister {
 
 impl ReadRegister for ScratchRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address) }
+        Port::<u8>::new(self.address).read()
     }
 }
 
 impl WriteRegister for ScratchRegister {
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value, self.address);
-        }
+        Port::<u8>::new(self.address).write(value);
     }
 }
 

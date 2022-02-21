@@ -1,6 +1,8 @@
-use super::{ReadRegister, Register};
-use crate::arch::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 const RBR_OFFSET: u16 = 0;
 
@@ -18,7 +20,7 @@ impl ReadRegister for ReceiverBuffer {
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address) }
+        Port::<u8>::new(self.address).read()
     }
 }
 

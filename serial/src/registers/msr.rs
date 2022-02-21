@@ -1,6 +1,8 @@
-use super::{ReadRegister, Register};
-use crate::arch::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 const MSR_OFFSET: u16 = 6;
 
@@ -14,7 +16,7 @@ impl Register for ModemStatusRegister {
 
 impl ReadRegister for ModemStatusRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        Port::<u8>::new(self.address).read().into()
     }
 }
 

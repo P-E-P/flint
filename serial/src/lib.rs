@@ -1,8 +1,9 @@
 #![no_std]
 
-use core::fmt;
 use arch;
+use core::fmt;
 
+use arch::io::register::{ReadRegister, WriteRegister};
 use registers::{
     dlh::DivisorLatchHighByte,
     dll::DivisorLatchLowByte,
@@ -16,7 +17,6 @@ use registers::{
     rbr::ReceiverBuffer,
     sr::ScratchRegister,
     thr::TransmitterHoldingBuffer,
-    ReadRegister, WriteRegister,
 };
 
 pub mod registers;

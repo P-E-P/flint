@@ -1,9 +1,11 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`FifoControlRegister`].
 
-use super::{Register, WriteRegister};
-use crate::arch::outb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{Register, WriteRegister},
+};
 
 /// The offset of the [`FifoControlRegister`] relatively to the UART's base
 /// address.
@@ -22,9 +24,7 @@ impl Register for FifoControlRegister {
 
 impl WriteRegister for FifoControlRegister {
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value.0, self.address);
-        }
+        Port::new(self.address).write(value.0);
     }
 }
 

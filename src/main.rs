@@ -4,8 +4,9 @@
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use arch::io::port::Port;
+use arch::io::register::WriteRegister;
 use core::panic::PanicInfo;
-use arch::outdw;
 
 mod vga;
 #[macro_use]
@@ -37,9 +38,7 @@ pub enum QemuExitCode {
 
 /// Call Qemu IO mapped debug exit.
 pub fn exit_qemu(exit_code: QemuExitCode) {
-    unsafe {
-        outdw(exit_code as u32, 0xf4);
-    }
+    Port::<u32>::new(0xf4).write(exit_code as u32);
 }
 
 #[panic_handler]
