@@ -1,8 +1,9 @@
 #![no_std]
 
+use arch;
 use core::fmt;
-use io;
 
+use arch::io::register::{ReadRegister, WriteRegister};
 use registers::{
     dlh::DivisorLatchHighByte,
     dll::DivisorLatchLowByte,
@@ -16,7 +17,6 @@ use registers::{
     rbr::ReceiverBuffer,
     sr::ScratchRegister,
     thr::TransmitterHoldingBuffer,
-    ReadRegister, WriteRegister,
 };
 
 pub mod registers;
@@ -31,20 +31,6 @@ pub const COM2: ComPort = 0x2F8;
 pub const COM3: ComPort = 0x3E8;
 /// UART IO port 4 address
 pub const COM4: ComPort = 0x2E8;
-
-/// An option containing the default serial to use for communication.
-static mut DEFAULT: Option<Serial> = None;
-
-/// Retrieve a mutable reference to the default serial, initialize it before
-/// returning it in case it was not set previously.
-pub fn get_default() -> &'static mut Serial {
-    unsafe {
-        if DEFAULT.is_none() {
-            DEFAULT = Some(Serial::default());
-        }
-        DEFAULT.as_mut().unwrap()
-    }
-}
 
 /// A structure representing an UART device accessible through a given IO port.
 pub struct Serial {
@@ -115,7 +101,7 @@ impl Serial {
     /// * `byte` - The value to write on the serial bus.
     pub fn write_byte(&self, byte: u8) {
         while !self.can_write() {
-            io::pause();
+            arch::pause();
         }
         self.transmitter_holding_buffer().write(byte);
     }
@@ -160,18 +146,12 @@ impl Serial {
 
     /// Get a [`DivisorLatchLowByte`] handle from the serial port.
     pub fn divisor_latch_low_byte(&self) -> DivisorLatchLowByte {
-        DivisorLatchLowByte {
-            address: self.com_port as u16,
-            lcr: self.line_control_register(),
-        }
+        DivisorLatchLowByte::from_com(self.com_port as u16, self.line_control_register())
     }
 
     /// Get a [`DivisorLatchHighByte`] handle from the serial port.
     pub fn divisor_latch_high_byte(&self) -> DivisorLatchHighByte {
-        DivisorLatchHighByte {
-            address: self.com_port as u16 + 1,
-            lcr: self.line_control_register(),
-        }
+        DivisorLatchHighByte::from_com(self.com_port as u16, self.line_control_register())
     }
 
     /// Get a [`FifoControlRegister`] handle from the serial port.

@@ -1,11 +1,21 @@
-use super::{Register, WriteRegister};
-use crate::io::outb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{Register, WriteRegister},
+};
 
 const THR_OFFSET: u16 = 0;
 
 pub struct TransmitterHoldingBuffer {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl TransmitterHoldingBuffer {
+    pub fn new(address: u16) -> Self {
+        TransmitterHoldingBuffer {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for TransmitterHoldingBuffer {
@@ -18,16 +28,12 @@ impl WriteRegister for TransmitterHoldingBuffer {
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value, self.address);
-        }
+        self.port.write(value);
     }
 }
 
 impl From<ComPort> for TransmitterHoldingBuffer {
     fn from(port: ComPort) -> Self {
-        TransmitterHoldingBuffer {
-            address: port as u16 + THR_OFFSET,
-        }
+        TransmitterHoldingBuffer::new(port as u16 + THR_OFFSET)
     }
 }

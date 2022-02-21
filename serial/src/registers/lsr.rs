@@ -1,11 +1,21 @@
-use super::{ReadRegister, Register};
-use crate::io::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 const LSR_OFFSET: u16 = 5;
 
 pub struct LineStatusRegister {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl LineStatusRegister {
+    pub fn new(address: u16) -> Self {
+        LineStatusRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for LineStatusRegister {
@@ -14,15 +24,13 @@ impl Register for LineStatusRegister {
 
 impl ReadRegister for LineStatusRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        self.port.read().into()
     }
 }
 
 impl From<ComPort> for LineStatusRegister {
     fn from(port: ComPort) -> Self {
-        LineStatusRegister {
-            address: port as u16 + LSR_OFFSET,
-        }
+        LineStatusRegister::new(port as u16 + LSR_OFFSET)
     }
 }
 

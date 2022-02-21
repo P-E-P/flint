@@ -1,11 +1,21 @@
-use super::{ReadRegister, Register};
-use crate::io::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 const MSR_OFFSET: u16 = 6;
 
 pub struct ModemStatusRegister {
-    address: u16,
+    port: Port<u8>,
+}
+
+impl ModemStatusRegister {
+    pub fn new(address: u16) -> Self {
+        ModemStatusRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for ModemStatusRegister {
@@ -14,15 +24,13 @@ impl Register for ModemStatusRegister {
 
 impl ReadRegister for ModemStatusRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        self.port.read().into()
     }
 }
 
 impl From<ComPort> for ModemStatusRegister {
     fn from(port: ComPort) -> Self {
-        ModemStatusRegister {
-            address: port as u16 + MSR_OFFSET,
-        }
+        ModemStatusRegister::new(port as u16 + MSR_OFFSET)
     }
 }
 

@@ -1,11 +1,21 @@
-use super::{ReadRegister, Register, WriteRegister};
-use crate::io::{inb, outb};
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register, WriteRegister},
+};
 
 const MCR_OFFSET: u16 = 4;
 
 pub struct ModemControlRegister {
-    address: u16,
+    port: Port<u8>,
+}
+
+impl ModemControlRegister {
+    pub fn new(address: u16) -> Self {
+        ModemControlRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for ModemControlRegister {
@@ -14,23 +24,19 @@ impl Register for ModemControlRegister {
 
 impl ReadRegister for ModemControlRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        self.port.read().into()
     }
 }
 
 impl WriteRegister for ModemControlRegister {
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value.0, self.address);
-        }
+        self.port.write(value.0);
     }
 }
 
 impl From<ComPort> for ModemControlRegister {
     fn from(port: ComPort) -> Self {
-        ModemControlRegister {
-            address: port as u16 + MCR_OFFSET,
-        }
+        ModemControlRegister::new(port as u16 + MCR_OFFSET)
     }
 }
 

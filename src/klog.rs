@@ -1,12 +1,65 @@
 use core::fmt;
 use core::fmt::Write;
 use log::{Level, LevelFilter, Log, Metadata, Record, SetLoggerError};
+
 #[cfg(feature = "serial_log")]
-use serial;
+mod serial_logger {
+    use serial::Serial;
+    /// An option containing the default serial to use for communication.
+    static mut DEFAULT: Option<Serial> = None;
+
+    /// Retrieve a mutable reference to the default serial.
+    ///
+    /// # Note
+    /// This function will initialize the default serial during it's first call.
+    pub fn default() -> &'static mut Serial {
+        unsafe {
+            if DEFAULT.is_none() {
+                DEFAULT = Some(Serial::default());
+            }
+            DEFAULT.as_mut().unwrap()
+        }
+    }
+}
+
+#[cfg(feature = "vga_log")]
+mod vga_logger {
+    use crate::vga::text::Writer;
+
+    /// An option containing the default vga writer to use for communication.
+    static mut DEFAULT: Option<Writer> = None;
+
+    /// Retrieve a mutable reference to the default vga writer
+    ///
+    /// # Note
+    /// This function will initialize the default serial during it's first call.
+    pub fn default() -> &'static mut Writer {
+        unsafe {
+            if DEFAULT.is_none() {
+                DEFAULT = Some(Writer::default());
+            }
+            DEFAULT.as_mut().unwrap()
+        }
+    }
+}
+
+/// Print a precompiled format string and it's arguments to the default serial
+/// output.
+pub fn serial_print(args: fmt::Arguments) {
+    serial_logger::default().write_fmt(args).ok();
+}
+
+/// Print a precompiled format string and it's arguments to the default vga
+/// output.
+pub fn vga_print(args: fmt::Arguments) {
+    vga_logger::default().write_fmt(args).ok();
+}
 
 pub fn print_fmt(args: fmt::Arguments) {
     #[cfg(feature = "serial_log")]
-    serial::get_default().write_fmt(args.clone()).ok();
+    serial_print(args.clone());
+    #[cfg(feature = "vga_log")]
+    vga_print(args.clone());
 }
 
 macro_rules! println {

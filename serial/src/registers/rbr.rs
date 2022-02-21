@@ -1,11 +1,21 @@
-use super::{ReadRegister, Register};
-use crate::io::inb;
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register},
+};
 
 const RBR_OFFSET: u16 = 0;
 
 pub struct ReceiverBuffer {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl ReceiverBuffer {
+    pub fn new(address: u16) -> Self {
+        ReceiverBuffer {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for ReceiverBuffer {
@@ -18,14 +28,12 @@ impl ReadRegister for ReceiverBuffer {
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address) }
+        self.port.read()
     }
 }
 
 impl From<ComPort> for ReceiverBuffer {
     fn from(port: ComPort) -> Self {
-        ReceiverBuffer {
-            address: port as u16 + RBR_OFFSET,
-        }
+        ReceiverBuffer::new(port as u16 + RBR_OFFSET)
     }
 }

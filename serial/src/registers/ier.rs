@@ -1,9 +1,10 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`InterruptEnableRegister`].
-
-use super::{ReadRegister, Register, WriteRegister};
-use crate::io::{inb, outb};
 use crate::ComPort;
+use arch::io::{
+    port::Port,
+    register::{ReadRegister, Register, WriteRegister},
+};
 
 /// The offset of the [`InterruptEnableRegister`] relatively to the UART's base
 /// port address.
@@ -12,8 +13,16 @@ const IER_OFFSET: u16 = 1;
 /// A structure containing the informations to identify a
 /// [`InterruptEnableRegister`].
 pub struct InterruptEnableRegister {
-    /// The port address of the [`InterruptEnableRegister`].
-    pub address: u16,
+    /// The port of the [`InterruptEnableRegister`].
+    port: Port<u8>,
+}
+
+impl InterruptEnableRegister {
+    pub fn new(address: u16) -> Self {
+        InterruptEnableRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for InterruptEnableRegister {
@@ -22,23 +31,19 @@ impl Register for InterruptEnableRegister {
 
 impl ReadRegister for InterruptEnableRegister {
     fn read(&self) -> Self::Value {
-        unsafe { inb(self.address).into() }
+        self.port.read().into()
     }
 }
 
 impl WriteRegister for InterruptEnableRegister {
     fn write(&self, value: Self::Value) {
-        unsafe {
-            outb(value.0, self.address);
-        }
+        self.port.write(value.0);
     }
 }
 
 impl From<ComPort> for InterruptEnableRegister {
     fn from(port: ComPort) -> Self {
-        InterruptEnableRegister {
-            address: port as u16 + IER_OFFSET,
-        }
+        InterruptEnableRegister::new(port as u16 + IER_OFFSET)
     }
 }
 
