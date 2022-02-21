@@ -7,7 +7,15 @@ use arch::io::{
 const THR_OFFSET: u16 = 0;
 
 pub struct TransmitterHoldingBuffer {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl TransmitterHoldingBuffer {
+    pub fn new(address: u16) -> Self {
+        TransmitterHoldingBuffer {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for TransmitterHoldingBuffer {
@@ -20,14 +28,12 @@ impl WriteRegister for TransmitterHoldingBuffer {
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
     fn write(&self, value: Self::Value) {
-        Port::<u8>::new(self.address).write(value);
+        self.port.write(value);
     }
 }
 
 impl From<ComPort> for TransmitterHoldingBuffer {
     fn from(port: ComPort) -> Self {
-        TransmitterHoldingBuffer {
-            address: port as u16 + THR_OFFSET,
-        }
+        TransmitterHoldingBuffer::new(port as u16 + THR_OFFSET)
     }
 }

@@ -7,7 +7,15 @@ use arch::io::{
 const SR_OFFSET: u16 = 7;
 
 pub struct ScratchRegister {
-    address: u16,
+    port: Port<u8>,
+}
+
+impl ScratchRegister {
+    pub fn new(address: u16) -> Self {
+        ScratchRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for ScratchRegister {
@@ -16,20 +24,18 @@ impl Register for ScratchRegister {
 
 impl ReadRegister for ScratchRegister {
     fn read(&self) -> Self::Value {
-        Port::<u8>::new(self.address).read()
+        self.port.read()
     }
 }
 
 impl WriteRegister for ScratchRegister {
     fn write(&self, value: Self::Value) {
-        Port::<u8>::new(self.address).write(value);
+        self.port.write(value);
     }
 }
 
 impl From<ComPort> for ScratchRegister {
     fn from(port: ComPort) -> Self {
-        ScratchRegister {
-            address: port as u16 + SR_OFFSET,
-        }
+        ScratchRegister::new(port as u16 + SR_OFFSET)
     }
 }

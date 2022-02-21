@@ -14,8 +14,16 @@ pub const FCR_OFFSET: u16 = 2;
 /// A structure containing the informations to identify a
 /// [`FifoControlRegister`].
 pub struct FifoControlRegister {
-    /// The port address of the [`FifoControlRegister`].
-    pub address: u16,
+    /// The port of the [`FifoControlRegister`].
+    port: Port<u8>,
+}
+
+impl FifoControlRegister {
+    pub fn new(address: u16) -> Self {
+        FifoControlRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for FifoControlRegister {
@@ -24,15 +32,13 @@ impl Register for FifoControlRegister {
 
 impl WriteRegister for FifoControlRegister {
     fn write(&self, value: Self::Value) {
-        Port::new(self.address).write(value.0);
+        self.port.write(value.0);
     }
 }
 
 impl From<ComPort> for FifoControlRegister {
     fn from(port: ComPort) -> Self {
-        FifoControlRegister {
-            address: port as u16 + FCR_OFFSET,
-        }
+        FifoControlRegister::new(port as u16 + FCR_OFFSET)
     }
 }
 

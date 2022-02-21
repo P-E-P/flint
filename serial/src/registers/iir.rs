@@ -13,7 +13,15 @@ const IIR_OFFSET: u16 = 2;
 /// A structure containing the informations to identify an
 /// [`InterruptIdentificationRegister`].
 pub struct InterruptIdentificationRegister {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl InterruptIdentificationRegister {
+    pub fn new(address: u16) -> Self {
+        InterruptIdentificationRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for InterruptIdentificationRegister {
@@ -22,15 +30,13 @@ impl Register for InterruptIdentificationRegister {
 
 impl ReadRegister for InterruptIdentificationRegister {
     fn read(&self) -> Self::Value {
-        Port::<u8>::new(self.address).read().into()
+        self.port.read().into()
     }
 }
 
 impl From<ComPort> for InterruptIdentificationRegister {
     fn from(port: ComPort) -> Self {
-        InterruptIdentificationRegister {
-            address: port as u16 + IIR_OFFSET,
-        }
+        InterruptIdentificationRegister::new(port as u16 + IIR_OFFSET)
     }
 }
 

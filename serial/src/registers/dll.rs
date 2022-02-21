@@ -20,8 +20,8 @@ pub const DLL_OFFSET: u16 = 0;
 /// A structure containing the informations to identify a
 /// [`DivisorLatchLowByte`] register along some utility values.
 pub struct DivisorLatchLowByte {
-    /// The port address of the [`DivisorLatchLowByte`].
-    address: u16,
+    /// The port of the [`DivisorLatchLowByte`].
+    port: Port<u8>,
     /// A [`LineControlRegister`] from the same serial device to control the
     /// `DLAB` value.
     lcr: LineControlRegister,
@@ -29,7 +29,10 @@ pub struct DivisorLatchLowByte {
 
 impl DivisorLatchLowByte {
     pub fn new(address: u16, lcr: LineControlRegister) -> Self {
-        DivisorLatchLowByte { address, lcr }
+        DivisorLatchLowByte {
+            port: Port::new(address),
+            lcr,
+        }
     }
 
     pub fn from_com(com: u16, lcr: LineControlRegister) -> Self {
@@ -44,7 +47,7 @@ impl Register for DivisorLatchLowByte {
 impl ReadRegister for DivisorLatchLowByte {
     fn read(&self) -> Self::Value {
         self.lcr.set_dlab(true);
-        let result = Port::new(self.address).read();
+        let result = self.port.read();
         self.lcr.set_dlab(false);
         result
     }
@@ -53,7 +56,7 @@ impl ReadRegister for DivisorLatchLowByte {
 impl WriteRegister for DivisorLatchLowByte {
     fn write(&self, value: Self::Value) {
         self.lcr.set_dlab(true);
-        Port::new(self.address).write(value);
+        self.port.write(value);
         self.lcr.set_dlab(false);
     }
 }

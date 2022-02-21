@@ -7,7 +7,15 @@ use arch::io::{
 const LSR_OFFSET: u16 = 5;
 
 pub struct LineStatusRegister {
-    pub address: u16,
+    port: Port<u8>,
+}
+
+impl LineStatusRegister {
+    pub fn new(address: u16) -> Self {
+        LineStatusRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for LineStatusRegister {
@@ -16,15 +24,13 @@ impl Register for LineStatusRegister {
 
 impl ReadRegister for LineStatusRegister {
     fn read(&self) -> Self::Value {
-        Port::<u8>::new(self.address).read().into()
+        self.port.read().into()
     }
 }
 
 impl From<ComPort> for LineStatusRegister {
     fn from(port: ComPort) -> Self {
-        LineStatusRegister {
-            address: port as u16 + LSR_OFFSET,
-        }
+        LineStatusRegister::new(port as u16 + LSR_OFFSET)
     }
 }
 

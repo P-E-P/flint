@@ -7,7 +7,15 @@ use arch::io::{
 const MCR_OFFSET: u16 = 4;
 
 pub struct ModemControlRegister {
-    address: u16,
+    port: Port<u8>,
+}
+
+impl ModemControlRegister {
+    pub fn new(address: u16) -> Self {
+        ModemControlRegister {
+            port: Port::new(address),
+        }
+    }
 }
 
 impl Register for ModemControlRegister {
@@ -16,21 +24,19 @@ impl Register for ModemControlRegister {
 
 impl ReadRegister for ModemControlRegister {
     fn read(&self) -> Self::Value {
-        Port::<u8>::new(self.address).read().into()
+        self.port.read().into()
     }
 }
 
 impl WriteRegister for ModemControlRegister {
     fn write(&self, value: Self::Value) {
-        Port::<u8>::new(self.address).write(value.0);
+        self.port.write(value.0);
     }
 }
 
 impl From<ComPort> for ModemControlRegister {
     fn from(port: ComPort) -> Self {
-        ModemControlRegister {
-            address: port as u16 + MCR_OFFSET,
-        }
+        ModemControlRegister::new(port as u16 + MCR_OFFSET)
     }
 }
 
