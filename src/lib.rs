@@ -8,6 +8,7 @@ use arch::io::port::Port;
 use arch::io::register::WriteRegister;
 use core::panic::PanicInfo;
 
+pub mod mm;
 pub mod vga;
 #[macro_use]
 pub mod klog;
