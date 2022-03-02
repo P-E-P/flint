@@ -54,11 +54,11 @@ impl Upper {
         Self(setbits!(self.0, value, S))
     }
 
-    pub fn descriptor_privilege_level(self, value: u32) -> Self {
+    pub fn privilege_level(self, value: u32) -> Self {
         Self(setbits!(self.0, value, DPL))
     }
 
-    pub fn segment_present(self, value: u32) -> Self {
+    pub fn present(self, value: u32) -> Self {
         Self(setbits!(self.0, value, P))
     }
 
@@ -132,38 +132,38 @@ mod tests {
     }
 
     #[test_case]
-    fn desc_privilege_level_kernel() {
-        let value = Upper(0).descriptor_privilege_level(0).0;
+    fn privilege_level_kernel() {
+        let value = Upper(0).privilege_level(0).0;
         assert_eq!(value, 0);
     }
 
     #[test_case]
-    fn desc_privilege_level_userland() {
-        let value = Upper(0).descriptor_privilege_level(3).0;
+    fn privilege_level_userland() {
+        let value = Upper(0).privilege_level(3).0;
         assert_eq!(value, 0x6000);
     }
 
     #[test_case]
-    fn desc_privilege_level_overflow() {
-        let value = Upper(0).descriptor_privilege_level(4).0;
+    fn privilege_level_overflow() {
+        let value = Upper(0).privilege_level(4).0;
         assert_eq!(value, 0x0000);
     }
 
     #[test_case]
-    fn segment_present() {
-        let value = Upper(0).segment_present(1).0;
+    fn present() {
+        let value = Upper(0).present(1).0;
         assert_eq!(value, 0x8000);
     }
 
     #[test_case]
-    fn segment_not_present() {
-        let value = Upper(0).segment_present(0).0;
+    fn not_present() {
+        let value = Upper(0).present(0).0;
         assert_eq!(value, 0)
     }
 
     #[test_case]
-    fn segment_present_overflow() {
-        let value = Upper(0).segment_present(3).0;
+    fn present_overflow() {
+        let value = Upper(0).present(3).0;
         assert_eq!(value, 0x8000);
     }
 
