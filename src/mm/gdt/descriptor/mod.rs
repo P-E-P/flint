@@ -46,21 +46,38 @@ pub enum DescriptorType {
 }
 
 pub enum SegmentType {
-    // TODO: Provide a better abstraction. Change this u8 to some flags.
-    Data(u8),
-    Code(u8),
+    /// Data segment representation.
+    Data {
+        accessed: bool,
+        write: bool,
+        expand_down: bool,
+    },
+    /// Code segment representation.
+    Code {
+        accessed: bool,
+        read: bool,
+        conforming: bool,
+    },
 }
 
 impl From<SegmentType> for u32 {
     fn from(value: SegmentType) -> Self {
         match value {
-            SegmentType::Data(p) => (p & 0x7),
-            SegmentType::Code(p) => 0x8 | (p & 0x7),
+            SegmentType::Data {
+                accessed,
+                write,
+                expand_down,
+            } => u32::from(accessed) << 2 | u32::from(write) << 1 | u32::from(expand_down),
+            SegmentType::Code {
+                accessed,
+                read,
+                conforming,
+            } => 0x8 | u32::from(accessed) << 2 | u32::from(read) << 1 | u32::from(conforming),
         }
-        .into()
     }
 }
 
+#[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
     upper: upper::Upper,
