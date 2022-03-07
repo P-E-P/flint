@@ -1,9 +1,11 @@
-use core::fmt;
+use core::arch::asm;
+use core::ptr::addr_of;
+use core::{fmt, mem};
 use descriptor::{
     DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
     SegmentType,
 };
-use log::{info, trace, debug};
+use log::{debug, info, trace};
 
 pub mod descriptor;
 
@@ -14,7 +16,17 @@ pub struct GlobalDescriptorTable([SegmentDescriptor; GDT_LEN]);
 impl GlobalDescriptorTable {
     fn load(self) {
         trace!("Loading global descriptor table...");
-        todo!("Implement lgdt");
+
+        let gdtr = GlobalDescriptorTableRegister::new(
+            (GDT_LEN * mem::size_of::<SegmentDescriptor>())
+                .try_into()
+                .expect("Gdt length does not fit in a u16, cannot set GDTR"),
+            addr_of!(self),
+        );
+
+        unsafe {
+            asm!("lgdt [{}]", in(reg) addr_of!(gdtr));
+        }
     }
 }
 
@@ -36,7 +48,16 @@ struct GlobalDescriptorTableRegister {
     size: u16,
     /// Linear base address. Should be 32 bits in protected mode and 64 bits
     /// in IA-32e mode.
-    offset: usize,
+    offset: *const GlobalDescriptorTable,
+}
+
+impl GlobalDescriptorTableRegister {
+    pub fn new(size: u16, address: *const GlobalDescriptorTable) -> Self {
+        GlobalDescriptorTableRegister {
+            size,
+            offset: address,
+        }
+    }
 }
 
 pub fn setup_gdt() {

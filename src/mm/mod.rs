@@ -1,5 +1,5 @@
-use log::trace;
 use arch::mm;
+use log::trace;
 
 pub fn setup() {
     trace!("Setting up memory");
