@@ -42,7 +42,7 @@ pub mod flags {
 }
 
 #[repr(C, packed)]
-#[derive(Default, Copy, Clone)]
+#[derive(Default, Copy, Clone, Debug)]
 pub struct Upper(pub u32);
 
 impl Upper {

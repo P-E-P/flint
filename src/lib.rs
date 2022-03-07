@@ -69,3 +69,7 @@ pub enum QemuExitCode {
 pub fn exit_qemu(exit_code: QemuExitCode) {
     Port::<u32>::new(0xf4).write(exit_code as u32);
 }
+
+pub fn setup() {
+    mm::setup();
+}

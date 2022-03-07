@@ -1,3 +1,5 @@
+use core::fmt;
+
 /// Offset the bits of the given identifier by it's offset.
 macro_rules! offset {
     ($n: ident) => {
@@ -164,5 +166,11 @@ impl SegmentDescriptor {
             lower: self.lower,
             upper: self.upper.granularity(granularity as u32),
         }
+    }
+}
+
+impl fmt::Display for SegmentDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:08X?};{:08X?}", self.upper, self.lower)
     }
 }

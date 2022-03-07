@@ -32,5 +32,7 @@ pub extern "C" fn _start() -> ! {
     #[cfg(test)]
     test_main();
 
+    flint::setup();
+
     loop {}
 }
