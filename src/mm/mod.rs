@@ -1,6 +1,7 @@
-pub mod gdt;
+use log::trace;
+use arch::mm;
 
 pub fn setup() {
-    #[cfg(target_arch = "x86_64")]
-    gdt::setup_gdt();
+    trace!("Setting up memory");
+    mm::setup();
 }
