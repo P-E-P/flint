@@ -134,9 +134,15 @@ impl SegmentDescriptor {
     }
 
     pub fn ia32e_mode(self, mode: bool) -> Self {
+        let mut upper = self.upper.ia32e_mode(mode.into());
+        //If L-bit is set, then D-bit must be cleared
+        // cf. Intel 3.4.5 "L (64 bit code segment) flag"
+        if mode {
+            upper = upper.default_operation_size(DefaultOperationSize::Segment16Bits as u32);
+        }
         Self {
             lower: self.lower,
-            upper: self.upper.ia32e_mode(mode.into()),
+            upper,
         }
     }
 
