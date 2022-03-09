@@ -79,6 +79,8 @@ impl From<SegmentType> for u32 {
     }
 }
 
+/// A segment descriptor structure that can be used directly by the
+/// processor.
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
@@ -93,6 +95,8 @@ impl Default for SegmentDescriptor {
 }
 
 impl SegmentDescriptor {
+    /// Create a new [`SegmentDescriptor`] from an address and a limit
+    /// with all other flags set to their default value.
     pub fn new(base: u32, limit: u32) -> Self {
         let base_low = base & 0xff;
         let base_mid = (base & 0xff) >> 8;
@@ -112,6 +116,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Change the type of the segment by another [`SegmentType`].
     pub fn segment_type(self, seg_type: SegmentType) -> Self {
         Self {
             lower: self.lower,
@@ -119,6 +124,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Change the descriptor type by another [`DescriptorType`].
     pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
         Self {
             lower: self.lower,
@@ -126,6 +132,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set or clear the available bit of the [`SegmentDescriptor`].
     pub fn available(self, avl: bool) -> Self {
         Self {
             lower: self.lower,
@@ -133,6 +140,8 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set or clear the 64-bit code segment flag. If the bit is set, also
+    /// clear the D flag.
     pub fn ia32e_mode(self, mode: bool) -> Self {
         let mut upper = self.upper.ia32e_mode(mode.into());
         //If L-bit is set, then D-bit must be cleared
@@ -146,6 +155,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set the privilege level of the segment.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         Self {
             lower: self.lower,
@@ -153,6 +163,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set or clear the presence bit of the segment.
     pub fn present(self, present: bool) -> Self {
         Self {
             lower: self.lower,
@@ -160,6 +171,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set the default operation size of the segment.
     pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
         Self {
             lower: self.lower,
@@ -167,6 +179,7 @@ impl SegmentDescriptor {
         }
     }
 
+    /// Set the granularity of the segment.
     pub fn granularity(self, granularity: Granularity) -> Self {
         Self {
             lower: self.lower,
