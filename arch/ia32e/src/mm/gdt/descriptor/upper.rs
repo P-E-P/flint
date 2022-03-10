@@ -83,7 +83,7 @@ impl Upper {
         Self(setbits!(self.0, value, TYPE))
     }
 
-    /// Changes the bit 12 `S` in the upper part.
+    /// Changes bit 12 `S` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -95,7 +95,7 @@ impl Upper {
         Self(setbits!(self.0, value, S))
     }
 
-    /// Changes the bits 13-14 `DPL` in the upper part.
+    /// Changes bits 13-14 `DPL` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -107,7 +107,7 @@ impl Upper {
         Self(setbits!(self.0, value, DPL))
     }
 
-    /// Change the bit 15 `P` in the upper part.
+    /// Change bit 15 `P` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -119,7 +119,7 @@ impl Upper {
         Self(setbits!(self.0, value, P))
     }
 
-    /// Changes the bit 20 `AVL` in the upper part.
+    /// Changes bit 20 `AVL` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -131,7 +131,7 @@ impl Upper {
         Self(setbits!(self.0, value, AVL))
     }
 
-    /// Changes the bit 21 `L` in the upper part.
+    /// Changes bit 21 `L` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -143,7 +143,7 @@ impl Upper {
         Self(setbits!(self.0, value, L))
     }
 
-    /// Changes the bit 22 `D/B` in the upper part.
+    /// Changes bit 22 `D/B` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -155,7 +155,7 @@ impl Upper {
         Self(setbits!(self.0, value, DB))
     }
 
-    /// Changes the bit 23 `G` in the upper part.
+    /// Changes bit 23 `G` in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -167,7 +167,7 @@ impl Upper {
         Self(setbits!(self.0, value, G))
     }
 
-    /// Changes the bits 0-7 in the upper part.
+    /// Changes bits 0-7 in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -179,7 +179,7 @@ impl Upper {
         Self(setbits!(self.0, value, BASE_MID))
     }
 
-    /// Changes the bits 24-31 in the upper part.
+    /// Changes bits 24-31 in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+
@@ -191,7 +191,7 @@ impl Upper {
         Self(setbits!(self.0, value, BASE_HIGH))
     }
 
-    /// Changes the bits 16-19 in the upper part.
+    /// Changes bits 16-19 in the upper part.
     /// ```
     /// 31          24 23 22 21 20 19  16 15 14 13 12 11 8 7   0
     /// +-------------+--+--+--+--+------+--+-----+--+----+-----+

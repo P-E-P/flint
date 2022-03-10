@@ -1,5 +1,7 @@
 pub mod offsets {
+    /// Limit low part offset (0:15)
     pub const LIMIT_LOW: u8 = 0;
+    /// Base address low part offset (0:15)
     pub const BASE_LOW: u8 = 16;
 }
 
@@ -10,7 +12,9 @@ pub mod bits {
 
 pub mod flags {
     use super::{bits, offsets};
+    /// Limit low part bitmask (0:15)
     pub const LIMIT_LOW: u32 = offset!(LIMIT_LOW);
+    /// Base address low part bitmask (0:15)
     pub const BASE_LOW: u32 = offset!(BASE_LOW);
 }
 
@@ -19,10 +23,14 @@ pub mod flags {
 pub struct Lower(pub u32);
 
 impl Lower {
+    /// Changes bits 0-15 in the lower part. Those bits correspond to the
+    /// bits 0:15 of the segment limit.
     pub fn limit_low(&self, limit_low: u32) -> Self {
         Self(setbits!(self.0, limit_low, LIMIT_LOW))
     }
 
+    /// Changes bits 16-31 in the lower part. This bits correspond to the
+    /// bits 0:15 of the segment base address.
     pub fn base_low(&self, base_low: u32) -> Self {
         Self(setbits!(self.0, base_low, BASE_LOW))
     }
