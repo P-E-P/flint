@@ -1,3 +1,40 @@
 #![no_std]
 
+pub mod io;
+#[cfg(target_arch = "x86_64")]
 pub use ia32e::*;
+
+trait InOut {
+    unsafe fn in_reg(address: u16) -> Self;
+    unsafe fn out_reg(address: u16, value: Self);
+}
+
+impl InOut for u8 {
+    unsafe fn in_reg(address: u16) -> Self {
+        in_byte(address)
+    }
+
+    unsafe fn out_reg(address: u16, value: Self) {
+        out_byte(address, value);
+    }
+}
+
+impl InOut for u16 {
+    unsafe fn in_reg(address: u16) -> Self {
+        in_word(address)
+    }
+
+    unsafe fn out_reg(address: u16, value: Self) {
+        out_word(address, value);
+    }
+}
+
+impl InOut for u32 {
+    unsafe fn in_reg(address: u16) -> Self {
+        in_double_word(address)
+    }
+
+    unsafe fn out_reg(address: u16, value: Self) {
+        out_double_word(address, value);
+    }
+}
