@@ -23,13 +23,13 @@ impl Register for ModemControlRegister {
 }
 
 impl ReadRegister for ModemControlRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }
 
 impl WriteRegister for ModemControlRegister {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value.0);
     }
 }

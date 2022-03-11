@@ -45,7 +45,7 @@ impl Register for DivisorLatchLowByte {
 }
 
 impl ReadRegister for DivisorLatchLowByte {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.lcr.set_dlab(true);
         let result = self.port.read();
         self.lcr.set_dlab(false);
@@ -54,7 +54,7 @@ impl ReadRegister for DivisorLatchLowByte {
 }
 
 impl WriteRegister for DivisorLatchLowByte {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.lcr.set_dlab(true);
         self.port.write(value);
         self.lcr.set_dlab(false);

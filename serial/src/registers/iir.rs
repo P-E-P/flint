@@ -29,7 +29,7 @@ impl Register for InterruptIdentificationRegister {
 }
 
 impl ReadRegister for InterruptIdentificationRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }

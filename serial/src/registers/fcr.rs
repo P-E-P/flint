@@ -31,7 +31,7 @@ impl Register for FifoControlRegister {
 }
 
 impl WriteRegister for FifoControlRegister {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value.0);
     }
 }

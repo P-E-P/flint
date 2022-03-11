@@ -45,7 +45,7 @@ impl Register for DivisorLatchHighByte {
 }
 
 impl WriteRegister for DivisorLatchHighByte {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.lcr.set_dlab(true);
         self.port.write(value);
         self.lcr.set_dlab(false);
@@ -53,7 +53,7 @@ impl WriteRegister for DivisorLatchHighByte {
 }
 
 impl ReadRegister for DivisorLatchHighByte {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.lcr.set_dlab(true);
         let result = self.port.read();
         self.lcr.set_dlab(false);

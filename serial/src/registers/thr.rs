@@ -27,7 +27,7 @@ impl WriteRegister for TransmitterHoldingBuffer {
     /// unset, as this function will be called many times compared to the
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value);
     }
 }

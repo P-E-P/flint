@@ -23,7 +23,7 @@ impl Register for LineStatusRegister {
 }
 
 impl ReadRegister for LineStatusRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }

@@ -23,13 +23,13 @@ impl Register for LineControlRegister {
 }
 
 impl ReadRegister for LineControlRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }
 
 impl WriteRegister for LineControlRegister {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value.0);
     }
 }
@@ -41,7 +41,7 @@ impl From<ComPort> for LineControlRegister {
 }
 
 impl LineControlRegister {
-    pub fn set_dlab(&self, value: bool) {
+    pub unsafe fn set_dlab(&self, value: bool) {
         let current = self.read();
         if value {
             self.write(LineControl(current.0 | flags::DLAB));

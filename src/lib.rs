@@ -67,7 +67,9 @@ pub enum QemuExitCode {
 
 /// Call Qemu IO mapped debug exit.
 pub fn exit_qemu(exit_code: QemuExitCode) {
-    Port::<u32>::new(0xf4).write(exit_code as u32);
+    unsafe {
+        Port::<u32>::new(0xf4).write(exit_code as u32);
+    }
 }
 
 pub fn setup() {

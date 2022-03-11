@@ -27,7 +27,7 @@ impl ReadRegister for ReceiverBuffer {
     /// unset, as this function will be called many times compared to the
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read()
     }
 }

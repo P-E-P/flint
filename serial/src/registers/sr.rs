@@ -23,13 +23,13 @@ impl Register for ScratchRegister {
 }
 
 impl ReadRegister for ScratchRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read()
     }
 }
 
 impl WriteRegister for ScratchRegister {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value);
     }
 }

@@ -21,13 +21,13 @@ impl<T: InOut> Register for Port<T> {
 }
 
 impl<T: InOut> ReadRegister for Port<T> {
-    fn read(&self) -> Self::Value {
-        unsafe { InOut::in_reg(self.address) }
+    unsafe fn read(&self) -> Self::Value {
+        InOut::in_reg(self.address)
     }
 }
 
 impl<T: InOut> WriteRegister for Port<T> {
-    fn write(&self, value: Self::Value) {
-        unsafe { InOut::out_reg(self.address, value) }
+    unsafe fn write(&self, value: Self::Value) {
+        InOut::out_reg(self.address, value)
     }
 }

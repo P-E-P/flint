@@ -30,13 +30,13 @@ impl Register for InterruptEnableRegister {
 }
 
 impl ReadRegister for InterruptEnableRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }
 
 impl WriteRegister for InterruptEnableRegister {
-    fn write(&self, value: Self::Value) {
+    unsafe fn write(&self, value: Self::Value) {
         self.port.write(value.0);
     }
 }

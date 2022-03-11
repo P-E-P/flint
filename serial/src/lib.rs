@@ -48,24 +48,26 @@ impl Default for Serial {
     fn default() -> Self {
         let result = Serial::new(COM1);
         result.set_baud_rate(38400);
-        // 8 bit length, no parity
-        result.line_control_register().write(LineControl(
-            lcr::flags::WordLengthBits::Eight as u8
-                | lcr::flags::StopBit::OneStop as u8
-                | lcr::flags::Parity::NoParity as u8,
-        ));
-        // Enable FIFO, clear, 14 bits
-        result.fifo_control_register().write(FifoControl(
-            fcr::flags::TriggerLevel16::Itl14 as u8
-                | fcr::flags::ENABLE_FIFOS
-                | fcr::flags::CLEAR_TRANSMIT_FIFO
-                | fcr::flags::CLEAR_RECEIVE_FIFO,
-        ));
-        // Enable interrupts
-        result.interrupt_enable_register().write(InterruptEnable(
-            ier::flags::RECEIVED_DATA_AVAILABLE_INTERRUPT,
-        ));
-        result
+        unsafe {
+            // 8 bit length, no parity
+            result.line_control_register().write(LineControl(
+                lcr::flags::WordLengthBits::Eight as u8
+                    | lcr::flags::StopBit::OneStop as u8
+                    | lcr::flags::Parity::NoParity as u8,
+            ));
+            // Enable FIFO, clear, 14 bits
+            result.fifo_control_register().write(FifoControl(
+                fcr::flags::TriggerLevel16::Itl14 as u8
+                    | fcr::flags::ENABLE_FIFOS
+                    | fcr::flags::CLEAR_TRANSMIT_FIFO
+                    | fcr::flags::CLEAR_RECEIVE_FIFO,
+            ));
+            // Enable interrupts
+            result.interrupt_enable_register().write(InterruptEnable(
+                ier::flags::RECEIVED_DATA_AVAILABLE_INTERRUPT,
+            ));
+            result
+        }
     }
 }
 
@@ -82,15 +84,19 @@ impl Serial {
     /// Set the transfer speed of an UART by setting it's DLL and DLH registers.
     pub fn set_baud_rate(&self, baud_rate: usize) {
         let dlv = 115200 / baud_rate;
-        self.divisor_latch_low_byte().write((dlv & 0xff) as u8);
-        self.divisor_latch_high_byte().write((dlv >> 8) as u8);
+        unsafe {
+            self.divisor_latch_low_byte().write((dlv & 0xff) as u8);
+            self.divisor_latch_high_byte().write((dlv >> 8) as u8);
+        }
     }
 
     /// Determine whether data can be written safely to the data buffer register
     /// of the UART.
     fn can_write(&self) -> bool {
-        let register = self.line_status_register().read();
-        register.empty_data_holding_registers() && register.empty_transmitter_holding_register()
+        unsafe {
+            let register = self.line_status_register().read();
+            register.empty_data_holding_registers() && register.empty_transmitter_holding_register()
+        }
     }
 
     /// Write a byte to the serial bus of a given Serial structure. Waits for
@@ -103,7 +109,9 @@ impl Serial {
         while !self.can_write() {
             arch::pause();
         }
-        self.transmitter_holding_buffer().write(byte);
+        unsafe {
+            self.transmitter_holding_buffer().write(byte);
+        }
     }
 
     /// Write a string to the data buffer of the [`Serial`]. This function will

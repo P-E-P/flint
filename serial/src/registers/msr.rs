@@ -23,7 +23,7 @@ impl Register for ModemStatusRegister {
 }
 
 impl ReadRegister for ModemStatusRegister {
-    fn read(&self) -> Self::Value {
+    unsafe fn read(&self) -> Self::Value {
         self.port.read().into()
     }
 }
