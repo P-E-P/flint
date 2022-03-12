@@ -106,9 +106,7 @@ impl Serial {
     ///
     /// * `byte` - The value to write on the serial bus.
     pub fn write_byte(&self, byte: u8) {
-        while !self.can_write() {
-            arch::pause();
-        }
+        arch::spin_loop(|| { !self.can_write() });
         unsafe {
             self.transmitter_holding_buffer().write(byte);
         }

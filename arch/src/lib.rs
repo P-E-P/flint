@@ -38,3 +38,11 @@ impl InOut for u32 {
         out_double_word(address, value);
     }
 }
+
+pub fn spin_loop<F>(loop_condition: F)
+where F: Fn() -> bool,
+{
+    while loop_condition() {
+        pause();
+    }
+}
