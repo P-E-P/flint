@@ -39,6 +39,8 @@ impl InOut for u32 {
     }
 }
 
+/// A spinloop function that accepts a loop condition and will loop over arch
+/// specific instructions.
 pub fn spin_loop<F>(loop_condition: F)
 where F: Fn() -> bool,
 {
