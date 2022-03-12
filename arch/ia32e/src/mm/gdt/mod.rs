@@ -1,13 +1,11 @@
 use core::arch::asm;
 use core::ptr::addr_of;
 use core::{fmt, mem};
-use descriptor::{
+use super::descriptor::{
     DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
     SegmentType,
 };
 use log::{debug, info, trace};
-
-pub mod descriptor;
 
 const GDT_LEN: usize = 5;
 
