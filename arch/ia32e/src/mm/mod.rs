@@ -1,4 +1,3 @@
-pub mod descriptor;
 pub mod gdt;
 
 pub fn setup() {

@@ -1,4 +1,4 @@
-use super::descriptor::{
+use crate::descriptor::segment::{
     DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
     SegmentType,
 };
