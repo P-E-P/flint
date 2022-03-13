@@ -1,6 +1,6 @@
 use core::arch::asm;
 
-pub mod descriptor;
+pub mod gate;
 
 /// Disable maskable external interrupts.
 pub unsafe fn disable() {
