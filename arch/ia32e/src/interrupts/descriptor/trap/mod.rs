@@ -4,20 +4,21 @@ mod lower;
 mod upper;
 
 #[derive(Default, Copy, Clone)]
-pub struct InterruptGate {
+pub struct TrapGate {
     pub upper: upper::Upper,
     pub lower: lower::Lower,
 }
 
-impl InterruptGate {
+impl TrapGate {
     pub fn new(offset: u32, segment_selector: u16) -> Self {
         let offset_low = offset & 0xFFFF;
         let offset_high = offset >> 16;
-        InterruptGate {
+        TrapGate {
             lower: lower::Lower::default()
                 .offset_low(offset_low)
                 .segment_selector(segment_selector.into()),
-            upper: upper::Upper::default().offset_high(offset_high).present(1),
+            upper: upper::Upper::default()
+                .offset_high(offset_high).present(1),
         }
     }
 
