@@ -1,11 +1,11 @@
-use core::arch::asm;
-use core::ptr::addr_of;
-use core::{fmt, mem};
 use super::descriptor::{
     DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
     SegmentType,
 };
-use log::{debug, info, trace};
+use core::arch::asm;
+use core::ptr::addr_of;
+use core::{fmt, mem};
+use log::{debug, trace};
 
 const GDT_LEN: usize = 5;
 
@@ -65,7 +65,6 @@ pub fn setup_gdt() {
         SegmentDescriptor::default(),
         // Kernel code
         SegmentDescriptor::new(0, 0xFFFF)
-            .present(true)
             .segment_type(SegmentType::Code {
                 accessed: false,
                 read: true,
@@ -77,7 +76,6 @@ pub fn setup_gdt() {
             .granularity(Granularity::FourKByte),
         // Kernel data
         SegmentDescriptor::new(0, 0xFFFF)
-            .present(true)
             .segment_type(SegmentType::Data {
                 accessed: false,
                 write: true,
@@ -89,7 +87,6 @@ pub fn setup_gdt() {
             .granularity(Granularity::FourKByte),
         // User code
         SegmentDescriptor::new(0, 0xFFFF)
-            .present(true)
             .segment_type(SegmentType::Code {
                 accessed: false,
                 read: true,
@@ -101,7 +98,6 @@ pub fn setup_gdt() {
             .granularity(Granularity::FourKByte),
         // User data
         SegmentDescriptor::new(0, 0xFFFF)
-            .present(true)
             .segment_type(SegmentType::Data {
                 accessed: false,
                 write: true,

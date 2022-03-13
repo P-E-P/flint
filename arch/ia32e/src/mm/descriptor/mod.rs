@@ -94,7 +94,8 @@ impl SegmentDescriptor {
             upper: upper::Upper::default()
                 .base_high(base_high)
                 .base_mid(base_mid)
-                .limit_high(limit_high),
+                .limit_high(limit_high)
+                .present(1),
         }
     }
 

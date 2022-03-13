@@ -1,5 +1,5 @@
-pub mod gdt;
 pub mod descriptor;
+pub mod gdt;
 
 pub fn setup() {
     #[cfg(target_arch = "x86_64")]
