@@ -1,6 +1,6 @@
 use super::{PrivilegeLevel, GateSize};
+use super::lower;
 
-mod lower;
 mod upper;
 
 #[derive(Default, Copy, Clone)]

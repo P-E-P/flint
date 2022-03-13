@@ -1,3 +1,7 @@
+//! Common lower part for trap gate and interrupt gate.
+//! This module provides the common structure for the lower part of the trap
+//! gate descriptor and the interrupt gate descriptor.
+
 pub mod offsets {
     pub const OFFSET_LOW: u8 = 0;
     pub const SEGMENT_SELECTOR: u8 = 16;

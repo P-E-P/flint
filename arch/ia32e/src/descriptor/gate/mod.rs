@@ -6,6 +6,8 @@ pub mod interrupt;
 pub mod trap;
 pub mod task;
 
+mod lower;
+
 #[repr(u8)]
 pub enum PrivilegeLevel {
     Kernel = 0,
