@@ -18,8 +18,15 @@ pub mod flags {
 }
 
 #[repr(C, packed)]
-#[derive(Default, Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Upper(pub u32);
+
+impl Default for Upper {
+    fn default() -> Self {
+        // Set task gate's "101" bits in the proper field.
+        Self(0x5 << 8)
+    }
+}
 
 impl Upper {
     pub fn present(self, value: u32) -> Self {
