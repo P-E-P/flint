@@ -9,6 +9,7 @@ members = [
     "serial",
     "arch",
     "arch/ia32e",
+    "arch/ia32",
 ]
 
 [dependencies]

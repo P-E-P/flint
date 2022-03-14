@@ -6,6 +6,7 @@ version = 3
 name = "arch"
 version = "0.1.0"
 dependencies = [
+ "ia32",
  "ia32e",
  "log",
 ]
@@ -41,9 +42,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "ia32"
+version = "0.1.0"
+dependencies = [
+ "log",
+]
+
+[[package]]
 name = "ia32e"
 version = "0.1.0"
 dependencies = [
+ "ia32",
  "log",
 ]
 

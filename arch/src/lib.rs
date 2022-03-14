@@ -1,8 +1,11 @@
 #![no_std]
 
 pub mod io;
+pub mod mm;
+#[cfg(target_arch = "x86")]
+use ia32::*;
 #[cfg(target_arch = "x86_64")]
-pub use ia32e::*;
+use ia32e::*;
 
 trait InOut {
     unsafe fn in_reg(address: u16) -> Self;
