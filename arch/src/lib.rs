@@ -1,7 +1,7 @@
 #![no_std]
 
-pub mod io;
 pub mod interrupts;
+pub mod io;
 pub mod mm;
 #[cfg(target_arch = "x86")]
 use ia32::*;

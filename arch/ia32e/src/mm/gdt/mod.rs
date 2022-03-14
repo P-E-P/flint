@@ -3,8 +3,8 @@ use ia32::descriptor::segment::{
     SegmentType,
 };
 
-use log::{debug, trace};
 use ia32::mm::gdt::GlobalDescriptorTable;
+use log::{debug, trace};
 
 pub fn setup_gdt() {
     trace!("Setting up 64bits gdt...");
