@@ -1,6 +1,7 @@
 #![no_std]
 
 use core::arch::asm;
+pub use ia32::interrupts;
 
 pub mod mm;
 

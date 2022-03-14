@@ -8,7 +8,8 @@ use arch::io::port::Port;
 use arch::io::register::WriteRegister;
 use core::panic::PanicInfo;
 
-pub mod mm;
+mod mm;
+mod interrupts;
 pub mod vga;
 #[macro_use]
 pub mod klog;
@@ -74,4 +75,5 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 
 pub fn setup() {
     mm::setup();
+    interrupts::setup();
 }
