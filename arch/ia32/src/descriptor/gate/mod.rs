@@ -1,4 +1,5 @@
 pub use super::PrivilegeLevel;
+use core::fmt;
 use interrupt::InterruptGate;
 use task::TaskGate;
 use trap::TrapGate;
@@ -15,8 +16,15 @@ pub enum GateSize {
     Gate32Bits = 1,
 }
 
+#[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate(u64);
+
+impl fmt::Display for Gate {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:08X?};{:08X?}", self.0 >> 32, self.0 & 0xffffffff)
+    }
+}
 
 macro_rules! gate {
     ($g: expr) => {
