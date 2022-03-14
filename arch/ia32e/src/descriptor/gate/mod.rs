@@ -1,3 +1,4 @@
+pub use super::PrivilegeLevel;
 use interrupt::InterruptGate;
 use task::TaskGate;
 use trap::TrapGate;
@@ -7,14 +8,6 @@ pub mod task;
 pub mod trap;
 
 mod lower;
-
-#[repr(u8)]
-pub enum PrivilegeLevel {
-    Kernel = 0,
-    Unused1 = 1,
-    Unused2 = 2,
-    Userland = 3,
-}
 
 #[repr(u8)]
 pub enum GateSize {

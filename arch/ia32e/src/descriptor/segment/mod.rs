@@ -1,15 +1,8 @@
+pub use super::PrivilegeLevel;
 use core::fmt;
 
 mod lower;
 mod upper;
-
-#[repr(u8)]
-pub enum PrivilegeLevel {
-    Kernel = 0,
-    Unused1 = 1,
-    Unused2 = 2,
-    Userland = 3,
-}
 
 #[repr(u8)]
 pub enum DefaultOperationSize {
