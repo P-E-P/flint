@@ -1,5 +1,5 @@
-use super::{PrivilegeLevel, GateSize};
 use super::lower;
+use super::{GateSize, PrivilegeLevel};
 
 mod upper;
 

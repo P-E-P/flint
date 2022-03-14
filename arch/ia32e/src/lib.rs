@@ -18,8 +18,8 @@ macro_rules! setbits {
     };
 }
 
-pub mod interrupts;
 pub mod descriptor;
+pub mod interrupts;
 pub mod mm;
 
 use core::arch::asm;

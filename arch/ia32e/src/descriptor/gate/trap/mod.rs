@@ -1,5 +1,5 @@
-use super::{PrivilegeLevel, GateSize};
 use super::lower;
+use super::{GateSize, PrivilegeLevel};
 
 mod upper;
 
@@ -17,8 +17,7 @@ impl TrapGate {
             lower: lower::Lower::default()
                 .offset_low(offset_low)
                 .segment_selector(segment_selector.into()),
-            upper: upper::Upper::default()
-                .offset_high(offset_high).present(1),
+            upper: upper::Upper::default().offset_high(offset_high).present(1),
         }
     }
 
