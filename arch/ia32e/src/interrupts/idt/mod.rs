@@ -52,5 +52,5 @@ impl InterruptDescriptorTableRegister {
 
 pub fn setup_idt() {
     trace!("Setting up idt...");
-    todo!("Implement idt setup");
+    todo!("Set up 64 bit idt");
 }

@@ -1,9 +1,10 @@
 #![no_std]
 
 use core::arch::asm;
-pub use ia32::interrupts;
 
 pub mod mm;
+pub mod interrupts;
+pub mod descriptor;
 
 pub unsafe fn in_byte(address: u16) -> u8 {
     let result: u8;
