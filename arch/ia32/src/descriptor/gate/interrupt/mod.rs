@@ -4,6 +4,7 @@ use super::{GateSize, PrivilegeLevel};
 mod upper;
 
 #[derive(Default, Copy, Clone)]
+#[repr(C, packed)]
 pub struct InterruptGate {
     pub upper: upper::Upper,
     pub lower: lower::Lower,

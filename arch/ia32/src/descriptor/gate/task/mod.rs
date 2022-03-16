@@ -4,6 +4,7 @@ mod lower;
 mod upper;
 
 #[derive(Default, Copy, Clone)]
+#[repr(C, packed)]
 pub struct TaskGate {
     pub upper: upper::Upper,
     pub lower: lower::Lower,
