@@ -57,9 +57,9 @@ pub fn vga_print(args: fmt::Arguments) {
 
 pub fn print_fmt(args: fmt::Arguments) {
     #[cfg(feature = "serial_log")]
-    serial_print(args.clone());
+    serial_print(args);
     #[cfg(feature = "vga_log")]
-    vga_print(args.clone());
+    vga_print(args);
 }
 
 macro_rules! println {
