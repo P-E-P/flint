@@ -95,24 +95,24 @@ impl SegmentDescriptor {
     /// Change the type of the segment by another [`SegmentType`].
     pub fn segment_type(self, seg_type: SegmentType) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.segment_type(seg_type.into()),
+            ..self
         }
     }
 
     /// Change the descriptor type by another [`DescriptorType`].
     pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.descriptor_type(desc_type as u32),
+            ..self
         }
     }
 
     /// Set or clear the available bit of the [`SegmentDescriptor`].
     pub fn available(self, avl: bool) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.available(avl.into()),
+            ..self
         }
     }
 
@@ -126,40 +126,40 @@ impl SegmentDescriptor {
             upper = upper.default_operation_size(DefaultOperationSize::Segment16Bits as u32);
         }
         Self {
-            lower: self.lower,
             upper,
+            ..self
         }
     }
 
     /// Set the privilege level of the segment.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.privilege_level(level as u32),
+            ..self
         }
     }
 
     /// Set or clear the presence bit of the segment.
     pub fn present(self, present: bool) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.present(present.into()),
+            ..self
         }
     }
 
     /// Set the default operation size of the segment.
     pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.default_operation_size(size as u32),
+            ..self
         }
     }
 
     /// Set the granularity of the segment.
     pub fn granularity(self, granularity: Granularity) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.granularity(granularity as u32),
+            ..self
         }
     }
 }
