@@ -24,15 +24,15 @@ impl TrapGate {
 
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.privilege_level(level as u32),
+            ..self
         }
     }
 
     pub fn size(self, size: GateSize) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.size(size as u32),
+            ..self
         }
     }
 }

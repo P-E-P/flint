@@ -20,8 +20,8 @@ impl TaskGate {
 
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         Self {
-            lower: self.lower,
             upper: self.upper.privilege_level(level as u32),
+            ..self
         }
     }
 }
