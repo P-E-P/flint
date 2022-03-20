@@ -1,10 +1,13 @@
 #![no_std]
 
+#[macro_use]
+extern crate ia32;
+
 use core::arch::asm;
 
-pub mod mm;
-pub mod interrupts;
 pub mod descriptor;
+pub mod interrupts;
+pub mod mm;
 
 pub unsafe fn in_byte(address: u16) -> u8 {
     let result: u8;
