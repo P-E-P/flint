@@ -28,7 +28,7 @@ impl GlobalDescriptorTable {
 impl fmt::Display for GlobalDescriptorTable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for entry in self.0 {
-            if let Err(why) = write!(f, "{}\n", entry) {
+            if let Err(why) = writeln!(f, "{}", entry) {
                 return Err(why);
             }
         }
