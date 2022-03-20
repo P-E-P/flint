@@ -56,6 +56,7 @@ impl From<SegmentType> for u32 {
 
 /// A segment descriptor structure that can be used directly by the
 /// processor.
+#[must_use]
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {

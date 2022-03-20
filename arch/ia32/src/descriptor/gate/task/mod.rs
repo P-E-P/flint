@@ -5,6 +5,7 @@ use upper::Upper;
 mod lower;
 mod upper;
 
+#[must_use]
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct TaskGate {

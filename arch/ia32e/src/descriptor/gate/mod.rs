@@ -12,6 +12,7 @@ pub enum Kind {
     Trap = 0xf,
 }
 
+#[must_use]
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate {

@@ -4,6 +4,7 @@ use upper::Upper;
 
 mod upper;
 
+#[must_use]
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct InterruptGate {
