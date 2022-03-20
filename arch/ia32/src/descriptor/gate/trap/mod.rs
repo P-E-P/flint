@@ -1,13 +1,14 @@
-use super::lower;
+use super::lower::Lower;
 use super::{GateSize, PrivilegeLevel};
+use upper::Upper;
 
 mod upper;
 
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct TrapGate {
-    pub upper: upper::Upper,
-    pub lower: lower::Lower,
+    pub upper: Upper,
+    pub lower: Lower,
 }
 
 impl TrapGate {
@@ -15,10 +16,10 @@ impl TrapGate {
         let offset_low = offset & 0xFFFF;
         let offset_high = offset >> 16;
         TrapGate {
-            lower: lower::Lower::default()
+            lower: Lower::default()
                 .offset_low(offset_low)
                 .segment_selector(segment_selector.into()),
-            upper: upper::Upper::default().offset_high(offset_high).present(1),
+            upper: Upper::default().offset_high(offset_high).present(1),
         }
     }
 

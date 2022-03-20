@@ -1,4 +1,6 @@
 use super::PrivilegeLevel;
+use lower::Lower;
+use upper::Upper;
 
 mod lower;
 mod upper;
@@ -6,15 +8,15 @@ mod upper;
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct TaskGate {
-    pub upper: upper::Upper,
-    pub lower: lower::Lower,
+    pub upper: Upper,
+    pub lower: Lower,
 }
 
 impl TaskGate {
     pub fn new(tss_segment_selector: u32) -> Self {
         TaskGate {
-            lower: lower::Lower::default().tss_segment_selector(tss_segment_selector),
-            upper: upper::Upper::default().present(1),
+            lower: Lower::default().tss_segment_selector(tss_segment_selector),
+            upper: Upper::default().present(1),
         }
     }
 
