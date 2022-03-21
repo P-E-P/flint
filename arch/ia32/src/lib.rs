@@ -1,5 +1,7 @@
 #![no_std]
 
+use core::arch::asm;
+
 /// Offset the bits of the given identifier by it's offset.
 #[macro_export]
 macro_rules! offset {
@@ -23,3 +25,15 @@ macro_rules! setbits {
 pub mod descriptor;
 pub mod interrupts;
 pub mod mm;
+
+pub fn pause() {
+    unsafe {
+        asm!("pause");
+    }
+}
+
+pub fn halt() {
+    unsafe {
+        asm!("hlt");
+    }
+}

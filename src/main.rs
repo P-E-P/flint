@@ -16,7 +16,7 @@ fn trivial_assertion() {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     log::error!("Kernel Panic!:\n{}", info);
-    loop {}
+    arch::endless();
 }
 
 #[cfg(test)]
@@ -34,5 +34,5 @@ pub extern "C" fn _start() -> ! {
 
     flint::setup();
 
-    loop {}
+    arch::endless();
 }

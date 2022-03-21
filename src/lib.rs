@@ -18,7 +18,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     println!("[failed]\n");
     println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    arch::endless();
 }
 
 #[cfg(test)]
@@ -56,7 +56,7 @@ pub fn test_runner(tests: &[&dyn Testable]) {
 pub extern "C" fn _start() -> ! {
     klog::init().ok();
     test_main();
-    loop {}
+    arch::endless();
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

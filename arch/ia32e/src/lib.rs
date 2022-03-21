@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate ia32;
 
-use core::arch::asm;
+pub use ia32::{pause, halt};
 
 pub mod descriptor;
 pub mod interrupts;
@@ -60,10 +60,4 @@ pub unsafe fn out_double_word(address: u16, value: u32) {
         in("eax") value,
         options(nomem, nostack)
     );
-}
-
-pub fn pause() {
-    unsafe {
-        asm!("pause");
-    }
 }

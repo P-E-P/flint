@@ -53,3 +53,9 @@ where
         pause();
     }
 }
+
+pub fn endless() -> ! {
+    loop {
+        halt();
+    }
+}
