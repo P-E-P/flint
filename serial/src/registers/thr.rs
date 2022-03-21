@@ -23,7 +23,11 @@ impl Register for TransmitterHoldingBuffer {
 }
 
 impl WriteRegister for TransmitterHoldingBuffer {
-    /// Note: For performance reason we rely on the fact that DLAB is always
+    /// Write the content to the UART's register.
+    ///
+    /// # Safety
+    ///
+    /// For performance reason we rely on the fact that DLAB is always
     /// unset, as this function will be called many times compared to the
     /// configuration options with the DLAB bit set. Otherwise we would have to
     /// unset it in every call.

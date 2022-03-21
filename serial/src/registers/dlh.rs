@@ -45,6 +45,12 @@ impl Register for DivisorLatchHighByte {
 }
 
 impl WriteRegister for DivisorLatchHighByte {
+    /// Set the divisor latch high byte in the UART's register.
+    ///
+    /// # Safety
+    ///
+    /// This function sets the divisor latch access bit for it's own
+    /// operations before clearing it.
     unsafe fn write(&self, value: Self::Value) {
         self.lcr.set_dlab(true);
         self.port.write(value);
@@ -53,6 +59,12 @@ impl WriteRegister for DivisorLatchHighByte {
 }
 
 impl ReadRegister for DivisorLatchHighByte {
+    /// Get the divisor latch high byte from the UART's register.
+    ///
+    /// # Safety
+    ///
+    /// This function sets the divisor latch access bit for it's own
+    /// operations before clearing it.
     unsafe fn read(&self) -> Self::Value {
         self.lcr.set_dlab(true);
         let result = self.port.read();

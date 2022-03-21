@@ -41,6 +41,13 @@ impl From<ComPort> for LineControlRegister {
 }
 
 impl LineControlRegister {
+    /// Set or unset the divisor latch access bit.
+    ///
+    /// # Safety
+    ///
+    /// May prevent access to either transmission registers or divisor latch
+    /// registers. Ensure you do not use those registers manually while
+    /// manipulating this value.
     pub unsafe fn set_dlab(&self, value: bool) {
         let current = self.read();
         if value {
