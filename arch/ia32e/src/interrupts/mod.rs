@@ -1,16 +1,7 @@
 use core::arch::asm;
+pub use ia32::interrupts::{disable, enable};
 
 pub mod idt;
-
-/// Disable maskable external interrupts.
-pub unsafe fn disable() {
-    asm!("cli");
-}
-
-/// Enable maskable external interrupts.
-pub unsafe fn enable() {
-    asm!("sti");
-}
 
 pub fn setup() {
     unsafe {
