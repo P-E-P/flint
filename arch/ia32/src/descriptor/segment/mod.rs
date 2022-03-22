@@ -126,10 +126,7 @@ impl SegmentDescriptor {
         if mode {
             upper = upper.default_operation_size(DefaultOperationSize::Segment16Bits as u32);
         }
-        Self {
-            upper,
-            ..self
-        }
+        Self { upper, ..self }
     }
 
     /// Set the privilege level of the segment.

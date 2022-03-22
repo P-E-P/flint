@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate ia32;
 
-pub use ia32::{pause, halt};
+pub use ia32::{halt, pause};
 
 pub mod descriptor;
 pub mod interrupts;
