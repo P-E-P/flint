@@ -5,6 +5,6 @@ pub mod idt;
 pub fn setup() {
     unsafe {
         idt::setup_idt();
-        //enable();
+        enable();
     }
 }

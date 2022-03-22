@@ -4,9 +4,6 @@
 #![test_runner(crate::test::runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use arch::endless;
-use core::panic::PanicInfo;
-
 mod interrupts;
 mod mm;
 pub mod vga;
@@ -17,7 +14,7 @@ pub mod test;
 
 #[cfg(test)]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
+fn panic(info: &core::panic::PanicInfo) -> ! {
     test::panic_handler(info)
 }
 
@@ -27,7 +24,7 @@ fn panic(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     klog::init().ok();
     test_main();
-    endless();
+    arch::endless();
 }
 
 pub fn setup() {

@@ -26,6 +26,6 @@ pub unsafe fn enable() {
 pub fn setup() {
     unsafe {
         idt::setup_idt();
-        //enable();
+        enable();
     }
 }
