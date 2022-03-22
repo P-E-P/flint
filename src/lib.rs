@@ -4,6 +4,7 @@
 #![test_runner(crate::test::runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use arch::endless;
 use core::panic::PanicInfo;
 
 mod interrupts;
@@ -20,12 +21,13 @@ fn panic(info: &PanicInfo) -> ! {
     test::panic_handler(info)
 }
 
+/// Test specific start function.
 #[cfg(test)]
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     klog::init().ok();
     test_main();
-    arch::endless();
+    endless();
 }
 
 pub fn setup() {

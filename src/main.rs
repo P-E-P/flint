@@ -4,6 +4,7 @@
 #![test_runner(flint::test::runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use arch::endless;
 use core::panic::PanicInfo;
 use flint::klog;
 
@@ -16,7 +17,7 @@ fn trivial_assertion() {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     log::error!("Kernel Panic!:\n{}", info);
-    arch::endless();
+    endless();
 }
 
 #[cfg(test)]
@@ -34,5 +35,5 @@ pub extern "C" fn _start() -> ! {
 
     flint::setup();
 
-    arch::endless();
+    endless();
 }
