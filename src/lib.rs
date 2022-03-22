@@ -11,6 +11,7 @@ mod mm;
 pub mod vga;
 #[macro_use]
 pub mod klog;
+mod qemu;
 pub mod test;
 
 #[cfg(test)]
