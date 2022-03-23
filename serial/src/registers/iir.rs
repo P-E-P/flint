@@ -64,7 +64,7 @@ pub mod flags {
 
     /// [`FifoStatus`] field's offset.
     pub const FIFO_STATUS_OFFSET: u8 = 6;
-    /// [`InterrupEventType`] field's offset.
+    /// [`InterruptEventType`] field's offset.
     pub const INTERUPT_EVENT_TYPE_OFFSET: u8 = 1;
 
     /// An enumeration of all possible fifo status values.
@@ -100,7 +100,7 @@ pub mod flags {
     /// The `u8` representation of this enum has already been shifted to the
     /// field's position.
     #[repr(u8)]
-    pub enum InterrupEventType {
+    pub enum InterruptEventType {
         ModemStatus = 0 << INTERUPT_EVENT_TYPE_OFFSET,
         TransmitterHoldingRegisterEmpty = 1 << INTERUPT_EVENT_TYPE_OFFSET,
         ReceivedDataAvailable = 2 << INTERUPT_EVENT_TYPE_OFFSET,
@@ -111,17 +111,17 @@ pub mod flags {
         Reserved3 = 7 << INTERUPT_EVENT_TYPE_OFFSET,
     }
 
-    impl From<u8> for InterrupEventType {
+    impl From<u8> for InterruptEventType {
         fn from(value: u8) -> Self {
             match value {
-                0 => InterrupEventType::ModemStatus,
-                1 => InterrupEventType::TransmitterHoldingRegisterEmpty,
-                2 => InterrupEventType::ReceivedDataAvailable,
-                3 => InterrupEventType::ReceiverLineStatus,
-                4 => InterrupEventType::Reserved1,
-                5 => InterrupEventType::Reserved2,
-                6 => InterrupEventType::TimeoutInterruptPending,
-                7 => InterrupEventType::Reserved3,
+                0 => InterruptEventType::ModemStatus,
+                1 => InterruptEventType::TransmitterHoldingRegisterEmpty,
+                2 => InterruptEventType::ReceivedDataAvailable,
+                3 => InterruptEventType::ReceiverLineStatus,
+                4 => InterruptEventType::Reserved1,
+                5 => InterruptEventType::Reserved2,
+                6 => InterruptEventType::TimeoutInterruptPending,
+                7 => InterruptEventType::Reserved3,
                 _ => panic!("Invalid value for interrupt event type"),
             }
         }
@@ -129,7 +129,7 @@ pub mod flags {
 }
 
 impl InterruptIdentification {
-    /// Get the [`FifoStatus`]'s field from the register value.
+    /// Get the [`flags::FifoStatus`]'s field from the register value.
     pub fn fifo_status(&self) -> flags::FifoStatus {
         ((self.0 & flags::FIFO_STATUS) >> flags::FIFO_STATUS_OFFSET).into()
     }
@@ -139,8 +139,8 @@ impl InterruptIdentification {
         self.0 & flags::FIFO_ENABLED != 0
     }
 
-    /// Get the [`InterrupEventType`]'s field from the register value.
-    pub fn interrupt_event_type(&self) -> flags::InterrupEventType {
+    /// Get the [`flags::InterruptEventType`]'s field from the register value.
+    pub fn interrupt_event_type(&self) -> flags::InterruptEventType {
         ((self.0 & flags::INTERRUPT_EVENT_TYPE) >> flags::INTERUPT_EVENT_TYPE_OFFSET).into()
     }
 
