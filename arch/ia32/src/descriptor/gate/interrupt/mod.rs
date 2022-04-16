@@ -1,3 +1,4 @@
+use crate::selector::SegmentSelector;
 use super::lower::Lower;
 use super::{GateSize, PrivilegeLevel};
 use upper::Upper;
@@ -13,7 +14,7 @@ pub struct InterruptGate {
 }
 
 impl InterruptGate {
-    pub fn new(offset: u32, segment_selector: u16) -> Self {
+    pub fn new(offset: u32, segment_selector: SegmentSelector) -> Self {
         let offset_low = offset & 0xFFFF;
         let offset_high = offset >> 16;
         InterruptGate {
