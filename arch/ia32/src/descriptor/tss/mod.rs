@@ -1,5 +1,6 @@
 use super::segment::lower::Lower;
-use super::{split_address, split_limit, Granularity, PrivilegeLevel};
+use super::{split_address, split_limit, Granularity};
+use crate::PrivilegeLevel;
 use upper::Upper;
 
 mod upper;

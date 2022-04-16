@@ -1,4 +1,6 @@
-pub use super::{split_address, split_limit, Granularity, PrivilegeLevel};
+pub use super::Granularity;
+use super::{split_address, split_limit};
+pub use crate::PrivilegeLevel;
 use core::fmt;
 
 pub mod lower;

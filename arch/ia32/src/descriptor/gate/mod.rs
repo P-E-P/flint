@@ -1,4 +1,4 @@
-pub use super::PrivilegeLevel;
+pub use crate::PrivilegeLevel;
 use core::fmt;
 use interrupt::InterruptGate;
 use task::TaskGate;

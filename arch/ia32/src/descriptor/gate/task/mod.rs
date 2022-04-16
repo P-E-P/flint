@@ -1,4 +1,5 @@
-use super::PrivilegeLevel;
+use crate::PrivilegeLevel;
+use crate::selector::SegmentSelector;
 use lower::Lower;
 use upper::Upper;
 
@@ -14,9 +15,9 @@ pub struct TaskGate {
 }
 
 impl TaskGate {
-    pub fn new(tss_segment_selector: u32) -> Self {
+    pub fn new(tss_segment_selector: SegmentSelector) -> Self {
         TaskGate {
-            lower: Lower::default().tss_segment_selector(tss_segment_selector),
+            lower: Lower::default().tss_segment_selector(tss_segment_selector.into()),
             upper: Upper::default().present(1),
         }
     }
