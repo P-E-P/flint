@@ -13,7 +13,7 @@ pub enum Kind {
 }
 
 #[must_use]
-#[derive(Copy, Clone)]
+#[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate {
     /// Upper 32bits of the gate are reserved.

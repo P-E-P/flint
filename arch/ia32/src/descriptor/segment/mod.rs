@@ -1,19 +1,13 @@
-pub use super::PrivilegeLevel;
+pub use super::{split_address, split_limit, Granularity, PrivilegeLevel};
 use core::fmt;
 
-mod lower;
+pub mod lower;
 mod upper;
 
 #[repr(u8)]
 pub enum DefaultOperationSize {
     Segment16Bits = 0,
     Segment32Bits = 1,
-}
-
-#[repr(u8)]
-pub enum Granularity {
-    Byte = 0,
-    FourKByte = 1,
 }
 
 #[repr(u8)]
@@ -57,29 +51,19 @@ impl From<SegmentType> for u32 {
 /// A segment descriptor structure that can be used directly by the
 /// processor.
 #[must_use]
-#[derive(Copy, Clone)]
+#[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
     upper: upper::Upper,
     lower: lower::Lower,
 }
 
-impl Default for SegmentDescriptor {
-    fn default() -> Self {
-        SegmentDescriptor::new(0, 0).present(false)
-    }
-}
-
 impl SegmentDescriptor {
     /// Create a new [`SegmentDescriptor`] from an address and a limit
     /// with all other flags set to their default value.
     pub fn new(base: u32, limit: u32) -> Self {
-        let base_low = base & 0xff;
-        let base_mid = (base & 0xff) >> 8;
-        let base_high = (base & 0xff) >> 16;
-
-        let limit_low = limit & 0xffff;
-        let limit_high = limit >> 16;
+        let (base_high, base_mid, base_low) = split_address(base);
+        let (limit_high, limit_low) = split_limit(limit);
 
         SegmentDescriptor {
             lower: lower::Lower::default()
