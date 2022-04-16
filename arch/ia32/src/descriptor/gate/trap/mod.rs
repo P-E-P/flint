@@ -1,6 +1,6 @@
-use crate::selector::SegmentSelector;
 use super::lower::Lower;
 use super::{GateSize, PrivilegeLevel};
+use crate::selector::SegmentSelector;
 use upper::Upper;
 
 mod upper;

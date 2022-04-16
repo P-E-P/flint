@@ -1,5 +1,6 @@
+use crate::selector::SegmentSelector;
+use crate::PrivilegeLevel;
 use core::fmt;
-use ia32::descriptor::gate::PrivilegeLevel;
 use lower::Lower;
 use upper::Upper;
 
@@ -21,15 +22,15 @@ pub struct Gate {
     /// Procedure's entry point offset high bits.
     offset_high: u32,
     ///  Segment selector bits (32:64).
-    upper: upper::Upper,
+    upper: Upper,
     /// Segment selector bits (0:31).
-    lower: lower::Lower,
+    lower: Lower,
 }
 
 impl Gate {
     /// Creates a new interrupt/trap [`Gate`] from a given offset and segment
     /// selector.
-    pub fn new(offset: u64, segment_selector: u16) -> Self {
+    pub fn new(offset: u64, segment_selector: SegmentSelector) -> Self {
         let offset_high = u32::try_from(offset >> 32).unwrap();
         let offset_mid = u32::try_from((offset >> 16) & 0xffff).unwrap();
         let offset_low = u32::try_from(offset & 0xffff).unwrap();

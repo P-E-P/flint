@@ -1,5 +1,5 @@
-use crate::PrivilegeLevel;
 use crate::selector::SegmentSelector;
+use crate::PrivilegeLevel;
 use lower::Lower;
 use upper::Upper;
 

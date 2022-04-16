@@ -1,5 +1,6 @@
 use crate::PrivilegeLevel;
 
+#[derive(Clone, Copy)]
 pub struct SegmentSelector(u16);
 
 #[repr(u8)]
