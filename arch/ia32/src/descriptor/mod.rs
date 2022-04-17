@@ -13,9 +13,9 @@ pub enum Granularity {
 /// bits 15 to 0.
 pub fn split_address(address: u32) -> (u32, u32, u32) {
     (
-        (address & 0xff) >> 16,
-        (address & 0xff) >> 8,
-        address & 0xff,
+        (address >> 24) & 0xff,
+        (address >> 16) & 0xff,
+        address & 0xffff,
     )
 }
 
