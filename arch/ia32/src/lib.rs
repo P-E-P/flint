@@ -26,6 +26,7 @@ pub mod descriptor;
 pub mod interrupts;
 pub mod mm;
 pub mod selector;
+pub mod task;
 
 #[repr(u8)]
 pub enum PrivilegeLevel {
