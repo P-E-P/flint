@@ -1,10 +1,9 @@
 use crate::selector::SegmentSelector;
 use crate::PrivilegeLevel;
 use core::fmt;
-use lower::Lower;
+use ia32::descriptor::gate::lower::Lower;
 use upper::Upper;
 
-mod lower;
 mod upper;
 
 #[repr(u8)]
