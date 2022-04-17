@@ -20,7 +20,7 @@ pub struct Gate {
     /// Upper 32bits of the gate are reserved.
     reserved: u32,
     /// Procedure's entry point offset high bits.
-    offset_high: u32,
+    offset_63_32: u32,
     ///  Segment selector bits (32:64).
     upper: Upper,
     /// Segment selector bits (0:31).
@@ -31,16 +31,16 @@ impl Gate {
     /// Creates a new interrupt/trap [`Gate`] from a given offset and segment
     /// selector.
     pub fn new(offset: u64, segment_selector: SegmentSelector) -> Self {
-        let offset_high = u32::try_from(offset >> 32).unwrap();
-        let offset_mid = u32::try_from((offset >> 16) & 0xffff).unwrap();
-        let offset_low = u32::try_from(offset & 0xffff).unwrap();
+        let offset_63_32 = u32::try_from(offset >> 32).unwrap();
+        let offset_31_16 = u32::try_from((offset >> 16) & 0xffff).unwrap();
+        let offset_15_0 = u32::try_from(offset & 0xffff).unwrap();
 
         Self {
             reserved: Default::default(),
-            offset_high,
-            upper: Upper::default().offset_mid(offset_mid),
+            offset_63_32,
+            upper: Upper::default().offset_mid(offset_31_16),
             lower: Lower::default()
-                .offset_low(offset_low)
+                .offset_low(offset_15_0)
                 .segment_selector(segment_selector.into()),
         }
     }
@@ -81,13 +81,13 @@ impl Gate {
 impl fmt::Display for Gate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let reserved = self.reserved;
-        let offset_high = self.offset_high;
+        let offset_63_32 = self.offset_63_32;
         let upper = self.upper;
         let lower = self.lower;
         write!(
             f,
             "{:08X?};{:08X?};{:08X?};{:08X?}",
-            reserved, offset_high, upper, lower
+            reserved, offset_63_32, upper, lower
         )
     }
 }
