@@ -15,13 +15,13 @@ pub struct TrapGate {
 
 impl TrapGate {
     pub fn new(offset: u32, segment_selector: SegmentSelector) -> Self {
-        let offset_low = offset & 0xFFFF;
-        let offset_high = offset >> 16;
+        let offset_15_0 = offset & 0xFFFF;
+        let offset_31_16 = offset >> 16;
         TrapGate {
             lower: Lower::default()
-                .offset_low(offset_low)
+                .offset_low(offset_15_0)
                 .segment_selector(segment_selector.into()),
-            upper: Upper::default().offset_high(offset_high).present(1),
+            upper: Upper::default().offset_high(offset_31_16).present(1),
         }
     }
 

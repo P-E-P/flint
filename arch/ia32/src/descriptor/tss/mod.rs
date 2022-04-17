@@ -14,15 +14,15 @@ pub struct TssDescriptor {
 
 impl TssDescriptor {
     pub fn new(base: u32, limit: u32) -> Self {
-        let (base_high, base_mid, base_low) = split_address(base);
-        let (limit_high, limit_low) = split_limit(limit);
+        let (base_31_24, base_23_16, base_15_0) = split_address(base);
+        let (limit_19_16, limit_15_0) = split_limit(limit);
 
         TssDescriptor {
-            lower: Lower::default().base_low(base_low).limit_low(limit_low),
+            lower: Lower::default().base_low(base_15_0).limit_low(limit_15_0),
             upper: Upper::default()
-                .base_high(base_high)
-                .base_mid(base_mid)
-                .limit_high(limit_high)
+                .base_high(base_31_24)
+                .base_mid(base_23_16)
+                .limit_high(limit_19_16)
                 .present(1),
         }
     }
