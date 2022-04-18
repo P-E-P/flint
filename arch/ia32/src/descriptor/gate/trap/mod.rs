@@ -9,8 +9,8 @@ mod upper;
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct TrapGate {
-    pub upper: Upper,
     pub lower: Lower,
+    pub upper: Upper,
 }
 
 impl TrapGate {

@@ -1,3 +1,5 @@
+use crate::selector::SegmentSelector;
+
 #[repr(C, packed)]
 pub struct TaskStateSegment {
     previous_task: u16,
@@ -25,7 +27,6 @@ pub struct TaskStateSegment {
     ecx: u32,
     edx: u32,
     ebx: u32,
-    esp: u32,
     esp: u32,
 
     ebp: u32,

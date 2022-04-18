@@ -6,9 +6,9 @@ use ia32::descriptor::tss::TssDescriptor as IA32TssDescriptor;
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {
-    reserved: u32,
-    base_63_32: u32,
     tss: IA32TssDescriptor,
+    base_63_32: u32,
+    reserved: u32,
 }
 
 impl TssDescriptor {

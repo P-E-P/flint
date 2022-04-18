@@ -16,14 +16,14 @@ pub enum Kind {
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate {
-    /// Upper 32bits of the gate are reserved.
-    reserved: u32,
-    /// Procedure's entry point offset high bits.
-    offset_63_32: u32,
-    ///  Segment selector bits (32:64).
-    upper: Upper,
     /// Segment selector bits (0:31).
     lower: Lower,
+    ///  Segment selector bits (32:64).
+    upper: Upper,
+    /// Procedure's entry point offset high bits.
+    offset_63_32: u32,
+    /// Upper 32bits of the gate are reserved.
+    reserved: u32,
 }
 
 impl Gate {

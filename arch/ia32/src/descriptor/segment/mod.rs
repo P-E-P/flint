@@ -56,8 +56,8 @@ impl From<SegmentType> for u32 {
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
-    upper: upper::Upper,
     lower: lower::Lower,
+    upper: upper::Upper,
 }
 
 impl SegmentDescriptor {

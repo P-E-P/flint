@@ -8,8 +8,8 @@ mod upper;
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {
-    upper: Upper,
     lower: Lower,
+    upper: Upper,
 }
 
 impl TssDescriptor {

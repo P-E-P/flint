@@ -9,8 +9,8 @@ mod upper;
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct InterruptGate {
-    pub upper: Upper,
     pub lower: Lower,
+    pub upper: Upper,
 }
 
 impl InterruptGate {
