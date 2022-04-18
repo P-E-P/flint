@@ -49,6 +49,7 @@ impl fmt::Display for InterruptDescriptorTable {
     }
 }
 
+#[repr(C, packed)]
 struct InterruptDescriptorTableRegister {
     size: u16,
     offset: *const InterruptDescriptorTable,
