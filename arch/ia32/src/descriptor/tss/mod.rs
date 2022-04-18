@@ -30,7 +30,7 @@ impl TssDescriptor {
 
     pub fn busy(self, state: bool) -> Self {
         Self {
-            upper: self.upper.busy(state.into()),
+            upper: self.upper.busy(state),
             ..self
         }
     }
