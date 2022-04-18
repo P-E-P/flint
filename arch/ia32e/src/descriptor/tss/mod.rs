@@ -3,6 +3,7 @@ use crate::descriptor::Granularity;
 use crate::PrivilegeLevel;
 use ia32::descriptor::tss::TssDescriptor as IA32TssDescriptor;
 
+#[must_use]
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {

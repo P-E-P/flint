@@ -18,6 +18,7 @@ pub mod flags {
     pub const SEGMENT_SELECTOR: u32 = offset!(SEGMENT_SELECTOR);
 }
 
+#[must_use]
 #[repr(C, packed)]
 #[derive(Default, Copy, Clone, Debug)]
 pub struct Lower(pub u32);

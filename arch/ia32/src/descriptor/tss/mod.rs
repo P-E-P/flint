@@ -5,6 +5,7 @@ use upper::Upper;
 
 mod upper;
 
+#[must_use]
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {

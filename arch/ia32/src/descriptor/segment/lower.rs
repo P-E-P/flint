@@ -18,6 +18,7 @@ pub mod flags {
     pub const BASE_LOW: u32 = offset!(BASE_LOW);
 }
 
+#[must_use]
 #[repr(C, packed)]
 #[derive(Default, Copy, Clone, Debug)]
 pub struct Lower(pub u32);
