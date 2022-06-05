@@ -2,7 +2,7 @@ use crate::descriptor::gate::Gate;
 use core::arch::asm;
 use core::ptr::addr_of;
 use core::{fmt, mem};
-use log::{debug, trace};
+use log::trace;
 
 const IDT_LEN: usize = 256;
 

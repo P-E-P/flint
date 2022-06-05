@@ -1,13 +1,15 @@
 #![no_std]
+#![feature(abi_x86_interrupt)]
 
 #[macro_use]
 extern crate ia32;
 
-pub use ia32::{halt, pause, selector, PrivilegeLevel};
+pub use ia32::{halt, pause, PrivilegeLevel};
 
 pub mod descriptor;
 pub mod interrupts;
 pub mod mm;
+pub mod selector;
 
 /// Read a 8bits value from the chose IO port address.
 ///

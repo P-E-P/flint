@@ -3,6 +3,7 @@ use ia32::descriptor::segment::{
     SegmentType,
 };
 
+use crate::selector::{SegmentSelector, TableIndicator};
 use ia32::mm::gdt::GlobalDescriptorTable;
 use log::{debug, trace};
 
@@ -58,4 +59,5 @@ pub fn setup_gdt() {
     ]);
     debug!("GDT:\n{}", gdt);
     gdt.load();
+
 }
