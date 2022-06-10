@@ -1,7 +1,7 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`FifoControlRegister`].
 
-use crate::ComPort;
+use crate::serial::ComPort;
 use arch::io::{
     port::Port,
     register::{Register, WriteRegister},

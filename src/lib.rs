@@ -11,6 +11,7 @@ pub mod vga;
 pub mod klog;
 pub mod qemu;
 pub mod test;
+pub mod serial;
 
 #[cfg(test)]
 #[panic_handler]

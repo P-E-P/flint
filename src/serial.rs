@@ -1,5 +1,3 @@
-#![no_std]
-
 use core::fmt;
 
 use arch::io::register::{ReadRegister, WriteRegister};
