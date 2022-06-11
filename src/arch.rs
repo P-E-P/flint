@@ -1,6 +1,7 @@
 pub mod interrupts;
 pub mod io;
 pub mod mm;
+#[cfg(any(target_arch = "x86_64",target_arch = "x86"))]
 pub mod ia32;
 #[cfg(target_arch = "x86_64")]
 pub mod ia32e;
