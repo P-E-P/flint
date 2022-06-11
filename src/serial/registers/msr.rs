@@ -1,5 +1,5 @@
 use crate::serial::ComPort;
-use arch::io::{
+use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register},
 };

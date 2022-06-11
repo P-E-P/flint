@@ -5,17 +5,10 @@ edition = "2021"
 
 [workspace]
 
-members = [
-    "arch",
-    "arch/ia32e",
-    "arch/ia32",
-]
-
 [dependencies]
 bootloader = "0.9.8"
 volatile = "0.2.6"
 log = "0.4.14"
-arch = { path = "./arch" }
 byteorder = { version = "1.3.4", default-features = false }
 
 

@@ -1,6 +1,6 @@
 use core::fmt;
 
-use arch::io::register::{ReadRegister, WriteRegister};
+use crate::arch::io::register::{ReadRegister, WriteRegister};
 use registers::{
     dlh::DivisorLatchHighByte,
     dll::DivisorLatchLowByte,
@@ -103,7 +103,7 @@ impl Serial {
     ///
     /// * `byte` - The value to write on the serial bus.
     pub fn write_byte(&self, byte: u8) {
-        arch::spin_loop(|| !self.can_write());
+        crate::arch::spin_loop(|| !self.can_write());
         unsafe {
             self.transmitter_holding_buffer().write(byte);
         }

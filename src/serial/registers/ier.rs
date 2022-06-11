@@ -1,7 +1,7 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`InterruptEnableRegister`].
 use crate::serial::ComPort;
-use arch::io::{
+use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register, WriteRegister},
 };

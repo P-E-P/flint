@@ -1,4 +1,4 @@
-use arch::interrupts;
+use crate::arch::interrupts;
 use log::trace;
 
 pub fn setup() {

@@ -1,5 +1,5 @@
-use arch::io::port::Port;
-use arch::io::register::WriteRegister;
+use crate::arch::io::port::Port;
+use crate::arch::io::register::WriteRegister;
 
 /// Set of every Qemu exit codes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

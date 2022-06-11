@@ -8,7 +8,7 @@
 //! value to `false` after modifying the register's value.
 
 use super::lcr::LineControlRegister;
-use arch::io::{
+use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register, WriteRegister},
 };

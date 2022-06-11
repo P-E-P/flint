@@ -1,7 +1,7 @@
 //! A module containing the operations, internal fields and flags aaccessible
 //! for an [`InterruptIdentificationRegister`].
 use crate::serial::ComPort;
-use arch::io::{
+use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register},
 };
