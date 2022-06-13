@@ -1,8 +1,29 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
+#![feature(abi_x86_interrupt)]
 #![test_runner(crate::test::runner)]
 #![reexport_test_harness_main = "test_main"]
+
+/// Offset the bits of the given identifier by it's offset.
+#[macro_export]
+macro_rules! offset {
+    ($n: ident) => {
+        bits::$n << offsets::$n
+    };
+}
+
+/// Clear the flag bits `n` from a number `s` and set those bits to the new
+/// `v` value.
+#[macro_export]
+macro_rules! setbits {
+    ($s: expr, $v: expr, $n: ident) => {
+        // - Ensure the value does not overflow
+        // - Clear previous flag
+        // - Set new flag
+        ($s & !flags::$n) | (($v & bits::$n) << offsets::$n)
+    };
+}
 
 mod interrupts;
 mod mm;
@@ -11,6 +32,9 @@ pub mod vga;
 pub mod klog;
 pub mod qemu;
 pub mod test;
+pub mod serial;
+#[macro_use]
+pub mod arch;
 
 #[cfg(test)]
 #[panic_handler]

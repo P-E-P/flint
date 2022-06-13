@@ -16,10 +16,10 @@ fn dummy_integration_test() {
 pub extern "C" fn _start() -> ! {
     test_main();
 
-    arch::endless();
+    flint::arch::endless();
 }
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    arch::endless();
+    flint::arch::endless();
 }

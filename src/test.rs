@@ -9,7 +9,7 @@ pub fn panic_handler(info: &PanicInfo) -> ! {
     println!("[failed]\n");
     println!("Error: {}\n", info);
     qemu::exit(ExitCode::Failed);
-    arch::endless();
+    crate::arch::endless();
 }
 
 /// Trait representing a test object that could be run.

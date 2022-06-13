@@ -5,26 +5,17 @@ edition = "2021"
 
 [workspace]
 
-members = [
-    "serial",
-    "arch",
-    "arch/ia32e",
-    "arch/ia32",
-]
-
 [dependencies]
 bootloader = "0.9.8"
 volatile = "0.2.6"
 log = "0.4.14"
-serial = { path = "./serial", optional = true }
-arch = { path = "./arch" }
 byteorder = { version = "1.3.4", default-features = false }
 
 
 [features]
 default = [ "serial_log", "vga_log" ]
-serial_log = [ "serial" ]
 vga_log = []
+serial_log = []
 
 [package.metadata.bootimage]
 test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"]

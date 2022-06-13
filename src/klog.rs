@@ -4,7 +4,7 @@ use log::{Level, LevelFilter, Log, Metadata, Record, SetLoggerError};
 
 #[cfg(feature = "serial_log")]
 mod serial_logger {
-    use serial::Serial;
+    use crate::serial::Serial;
     /// An option containing the default serial to use for communication.
     static mut DEFAULT: Option<Serial> = None;
 

@@ -1,4 +1,4 @@
-use arch::mm;
+use crate::arch::mm;
 use log::trace;
 
 pub fn setup() {
