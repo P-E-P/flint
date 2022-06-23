@@ -1,65 +1,59 @@
-//use super::segment::lower::Lower;
-use super::{split_address, split_limit, Granularity};
+use super::Granularity;
 use crate::arch::ia32::PrivilegeLevel;
-use upper::Upper;
+use bit_field::BitField;
+use configuration::Configuration;
+use permissions::Permissions;
 
-mod upper;
+mod configuration;
+mod permissions;
 
 #[must_use]
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {
-    //lower: Lower,
-    upper: Upper,
+    limit_15_0: u16,
+    base_15_0: u16,
+    base_23_16: u8,
+    permissions: Permissions,
+    configuration: Configuration,
+    base_31_24: u8,
 }
 
 impl TssDescriptor {
     pub fn new(base: u32, limit: u32) -> Self {
-        let (base_31_24, base_23_16, base_15_0) = split_address(base);
-        let (limit_19_16, limit_15_0) = split_limit(limit);
-
         TssDescriptor {
-            //lower: Lower::default().base_low(base_15_0).limit_low(limit_15_0),
-            upper: Upper::default()
-                .base_high(base_31_24)
-                .base_mid(base_23_16)
-                .limit_high(limit_19_16)
-                .present(1),
+            limit_15_0: limit.get_bits(..16).try_into().unwrap(),
+            base_15_0: base.get_bits(..16).try_into().unwrap(),
+            base_23_16: base.get_bits(16..24).try_into().unwrap(),
+            permissions: Permissions::default(),
+            configuration: *Configuration::default()
+                .limit(limit.get_bits(16..20).try_into().unwrap()),
+            base_31_24: base.get_bits(24..32).try_into().unwrap(),
         }
     }
 
-    pub fn busy(self, state: bool) -> Self {
-        Self {
-            upper: self.upper.busy(state),
-            ..self
-        }
+    pub fn busy(&mut self, state: bool) -> &mut Self {
+        self.permissions.busy(state);
+        self
     }
 
-    pub fn available(self, avl: bool) -> Self {
-        Self {
-            upper: self.upper.available(avl.into()),
-            ..self
-        }
+    pub fn available(&mut self, avl: bool) -> &mut Self {
+        self.configuration.available(avl);
+        self
     }
 
-    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
-        Self {
-            upper: self.upper.privilege_level(level as u32),
-            ..self
-        }
+    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
+        self.permissions.privilege_level(level);
+        self
     }
 
-    pub fn present(self, present: bool) -> Self {
-        Self {
-            upper: self.upper.present(present.into()),
-            ..self
-        }
+    pub fn present(&mut self, present: bool) -> &mut Self {
+        self.permissions.present(present);
+        self
     }
 
-    pub fn granularity(self, granularity: Granularity) -> Self {
-        Self {
-            upper: self.upper.granularity(granularity as u32),
-            ..self
-        }
+    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
+        self.configuration.granularity(granularity);
+        self
     }
 }
