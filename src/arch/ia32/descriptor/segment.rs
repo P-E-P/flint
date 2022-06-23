@@ -1,7 +1,12 @@
 pub use super::Granularity;
 pub use crate::arch::ia32::PrivilegeLevel;
 use bit_field::BitField;
+use configuration::Configuration;
 use core::fmt;
+use permissions::Permissions;
+
+mod configuration;
+mod permissions;
 
 #[repr(u8)]
 pub enum DefaultOperationSize {
@@ -62,66 +67,6 @@ impl From<SegmentType> for u8 {
                 conforming,
             } => 0x8 | u8::from(accessed) << 2 | u8::from(read) << 1 | u8::from(conforming),
         }
-    }
-}
-
-#[derive(Default, Copy, Clone)]
-struct Configuration(u8);
-
-impl Configuration {
-    pub fn limit(&mut self, limit: u8) -> &mut Self {
-        self.0.set_bits(..4, limit);
-        self
-    }
-
-    pub fn available(&mut self, value: bool) -> &mut Self {
-        self.0.set_bit(4, value);
-        self
-    }
-
-    pub fn ia32e_mode(&mut self, mode: bool) -> &mut Self {
-        //If L-bit is set, then D-bit must be cleared
-        // cf. Intel 3.4.5 "L (64 bit code segment) flag"
-        if mode {
-            self.0.set_bit(6, false);
-        }
-        self.0.set_bit(5, mode);
-        self
-    }
-
-    pub fn default_operation_size(&mut self, size: DefaultOperationSize) -> &mut Self {
-        self.0.set_bit(6, size.into());
-        self
-    }
-
-    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
-        self.0.set_bit(7, granularity.into());
-        self
-    }
-}
-
-#[derive(Default, Copy, Clone)]
-struct Permissions(u8);
-
-impl Permissions {
-    pub fn segment_type(&mut self, seg_type: SegmentType) -> &mut Self {
-        self.0.set_bits(..4, seg_type.into());
-        self
-    }
-
-    pub fn descriptor_type(&mut self, desc_type: DescriptorType) -> &mut Self {
-        self.0.set_bit(4, desc_type.into());
-        self
-    }
-
-    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
-        self.0.set_bits(5..7, level.into());
-        self
-    }
-
-    pub fn present(&mut self, present: bool) -> &mut Self {
-        self.0.set_bit(7, present);
-        self
     }
 }
 
