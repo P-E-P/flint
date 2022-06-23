@@ -147,10 +147,27 @@ impl SegmentDescriptor {
         self.configuration.granularity(granularity);
         self
     }
+
+    fn get_address(&self) -> u32 {
+        u32::from(self.base_31_24) << 24
+            | u32::from(self.base_23_16) << 16
+            | u32::from(self.base_15_0)
+    }
+
+    fn get_limit(&self) -> u32 {
+        u32::from(self.configuration.get_limit()) << 16 | u32::from(self.limit_15_0)
+    }
 }
 
 impl fmt::Display for SegmentDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Not implemented")
+        write!(
+            f,
+            "Base address: {}\nLimit: {}\n{}\n{}",
+            self.get_address(),
+            self.get_limit(),
+            self.configuration,
+            self.permissions
+        )
     }
 }
