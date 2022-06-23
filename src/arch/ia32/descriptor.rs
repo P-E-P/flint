@@ -8,6 +8,15 @@ pub enum Granularity {
     FourKByte = 1,
 }
 
+impl From<Granularity> for bool {
+    fn from(value: Granularity) -> Self {
+        match value {
+            Granularity::Byte => false,
+            Granularity::FourKByte => true,
+        }
+    }
+}
+
 /// Split a 32 bits address in three parts, first part containing
 /// bits from 31 to 24, second part the bits 23 to 16 and last part
 /// bits 15 to 0.

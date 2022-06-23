@@ -1,10 +1,7 @@
 pub use super::Granularity;
-use super::{split_address, split_limit};
 pub use crate::arch::ia32::PrivilegeLevel;
+use bit_field::BitField;
 use core::fmt;
-
-pub mod lower;
-mod upper;
 
 #[repr(u8)]
 pub enum DefaultOperationSize {
@@ -12,10 +9,28 @@ pub enum DefaultOperationSize {
     Segment32Bits = 1,
 }
 
+impl From<DefaultOperationSize> for bool {
+    fn from(value: DefaultOperationSize) -> Self {
+        match value {
+            DefaultOperationSize::Segment16Bits => false,
+            DefaultOperationSize::Segment32Bits => true,
+        }
+    }
+}
+
 #[repr(u8)]
 pub enum DescriptorType {
     System = 0,
     CodeOrData = 1,
+}
+
+impl From<DescriptorType> for bool {
+    fn from(value: DescriptorType) -> Self {
+        match value {
+            DescriptorType::System => false,
+            DescriptorType::CodeOrData => true,
+        }
+    }
 }
 
 pub enum SegmentType {
@@ -33,20 +48,80 @@ pub enum SegmentType {
     },
 }
 
-impl From<SegmentType> for u32 {
+impl From<SegmentType> for u8 {
     fn from(value: SegmentType) -> Self {
         match value {
             SegmentType::Data {
                 accessed,
                 write,
                 expand_down,
-            } => u32::from(accessed) << 2 | u32::from(write) << 1 | u32::from(expand_down),
+            } => u8::from(accessed) << 2 | u8::from(write) << 1 | u8::from(expand_down),
             SegmentType::Code {
                 accessed,
                 read,
                 conforming,
-            } => 0x8 | u32::from(accessed) << 2 | u32::from(read) << 1 | u32::from(conforming),
+            } => 0x8 | u8::from(accessed) << 2 | u8::from(read) << 1 | u8::from(conforming),
         }
+    }
+}
+
+#[derive(Default, Copy, Clone)]
+struct Configuration(u8);
+
+impl Configuration {
+    pub fn limit(&mut self, limit: u8) -> &mut Self {
+        self.0.set_bits(..4, limit);
+        self
+    }
+
+    pub fn available(&mut self, value: bool) -> &mut Self {
+        self.0.set_bit(4, value);
+        self
+    }
+
+    pub fn ia32e_mode(&mut self, mode: bool) -> &mut Self {
+        //If L-bit is set, then D-bit must be cleared
+        // cf. Intel 3.4.5 "L (64 bit code segment) flag"
+        if mode {
+            self.0.set_bit(6, false);
+        }
+        self.0.set_bit(5, mode);
+        self
+    }
+
+    pub fn default_operation_size(&mut self, size: DefaultOperationSize) -> &mut Self {
+        self.0.set_bit(6, size.into());
+        self
+    }
+
+    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
+        self.0.set_bit(7, granularity.into());
+        self
+    }
+}
+
+#[derive(Default, Copy, Clone)]
+struct Permissions(u8);
+
+impl Permissions {
+    pub fn segment_type(&mut self, seg_type: SegmentType) -> &mut Self {
+        self.0.set_bits(..4, seg_type.into());
+        self
+    }
+
+    pub fn descriptor_type(&mut self, desc_type: DescriptorType) -> &mut Self {
+        self.0.set_bit(4, desc_type.into());
+        self
+    }
+
+    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
+        self.0.set_bits(5..7, level.into());
+        self
+    }
+
+    pub fn present(&mut self, present: bool) -> &mut Self {
+        self.0.set_bit(7, present);
+        self
     }
 }
 
@@ -56,100 +131,81 @@ impl From<SegmentType> for u32 {
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
-    lower: lower::Lower,
-    upper: upper::Upper,
+    limit_15_0: u16,
+    base_15_0: u16,
+    base_23_16: u8,
+    permissions: Permissions,
+    configuration: Configuration,
+    base_31_24: u8,
 }
 
 impl SegmentDescriptor {
     /// Create a new [`SegmentDescriptor`] from an address and a limit
     /// with all other flags set to their default value.
     pub fn new(base: u32, limit: u32) -> Self {
-        let (base_31_24, base_23_16, base_15_0) = split_address(base);
-        let (limit_19_16, limit_15_0) = split_limit(limit);
-
         SegmentDescriptor {
-            lower: lower::Lower::default()
-                .base_low(base_15_0)
-                .limit_low(limit_15_0),
-            upper: upper::Upper::default()
-                .base_high(base_31_24)
-                .base_mid(base_23_16)
-                .limit_high(limit_19_16)
-                .present(1),
+            limit_15_0: limit.get_bits(..16).try_into().unwrap(),
+            base_15_0: base.get_bits(..16).try_into().unwrap(),
+            base_23_16: base.get_bits(16..24).try_into().unwrap(),
+            permissions: Permissions::default(),
+            configuration: *Configuration::default()
+                .limit(limit.get_bits(16..20).try_into().unwrap()),
+            base_31_24: base.get_bits(24..32).try_into().unwrap(),
         }
     }
 
     /// Change the type of the segment by another [`SegmentType`].
-    pub fn segment_type(self, seg_type: SegmentType) -> Self {
-        Self {
-            upper: self.upper.segment_type(seg_type.into()),
-            ..self
-        }
+    pub fn segment_type(&mut self, seg_type: SegmentType) -> &mut Self {
+        self.permissions.segment_type(seg_type);
+        self
     }
 
     /// Change the descriptor type by another [`DescriptorType`].
-    pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
-        Self {
-            upper: self.upper.descriptor_type(desc_type as u32),
-            ..self
-        }
+    pub fn descriptor_type(&mut self, desc_type: DescriptorType) -> &mut Self {
+        self.permissions.descriptor_type(desc_type);
+        self
+    }
+
+    /// Set the privilege level of the segment.
+    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
+        self.permissions.privilege_level(level);
+        self
+    }
+
+    /// Set or clear the presence bit of the segment.
+    pub fn present(&mut self, present: bool) -> &mut Self {
+        self.permissions.present(present);
+        self
     }
 
     /// Set or clear the available bit of the [`SegmentDescriptor`].
-    pub fn available(self, avl: bool) -> Self {
-        Self {
-            upper: self.upper.available(avl.into()),
-            ..self
-        }
+    pub fn available(&mut self, avl: bool) -> &mut Self {
+        self.configuration.available(avl);
+        self
     }
 
     /// Set or clear the 64-bit code segment flag. If the bit is set, also
     /// clear the D flag.
-    pub fn ia32e_mode(self, mode: bool) -> Self {
-        let mut upper = self.upper.ia32e_mode(mode.into());
-        //If L-bit is set, then D-bit must be cleared
-        // cf. Intel 3.4.5 "L (64 bit code segment) flag"
-        if mode {
-            upper = upper.default_operation_size(DefaultOperationSize::Segment16Bits as u32);
-        }
-        Self { upper, ..self }
-    }
-
-    /// Set the privilege level of the segment.
-    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
-        Self {
-            upper: self.upper.privilege_level(level as u32),
-            ..self
-        }
-    }
-
-    /// Set or clear the presence bit of the segment.
-    pub fn present(self, present: bool) -> Self {
-        Self {
-            upper: self.upper.present(present.into()),
-            ..self
-        }
+    pub fn ia32e_mode(&mut self, mode: bool) -> &mut Self {
+        self.configuration.ia32e_mode(mode);
+        self
     }
 
     /// Set the default operation size of the segment.
-    pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
-        Self {
-            upper: self.upper.default_operation_size(size as u32),
-            ..self
-        }
+    pub fn default_operation_size(&mut self, size: DefaultOperationSize) -> &mut Self {
+        self.configuration.default_operation_size(size);
+        self
     }
 
     /// Set the granularity of the segment.
-    pub fn granularity(self, granularity: Granularity) -> Self {
-        Self {
-            upper: self.upper.granularity(granularity as u32),
-            ..self
-        }
+    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
+        self.configuration.granularity(granularity);
+        self
     }
 }
 
 impl fmt::Display for SegmentDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:08X?};{:08X?}", self.upper, self.lower)
+        write!(f, "Not implemented")
     }
 }

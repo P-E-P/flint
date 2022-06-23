@@ -1,4 +1,4 @@
-use super::segment::lower::Lower;
+//use super::segment::lower::Lower;
 use super::{split_address, split_limit, Granularity};
 use crate::arch::ia32::PrivilegeLevel;
 use upper::Upper;
@@ -9,7 +9,7 @@ mod upper;
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct TssDescriptor {
-    lower: Lower,
+    //lower: Lower,
     upper: Upper,
 }
 
@@ -19,7 +19,7 @@ impl TssDescriptor {
         let (limit_19_16, limit_15_0) = split_limit(limit);
 
         TssDescriptor {
-            lower: Lower::default().base_low(base_15_0).limit_low(limit_15_0),
+            //lower: Lower::default().base_low(base_15_0).limit_low(limit_15_0),
             upper: Upper::default()
                 .base_high(base_31_24)
                 .base_mid(base_23_16)
