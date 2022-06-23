@@ -1,6 +1,6 @@
 use super::split_address;
-use crate::arch::ia32e::{descriptor::Granularity, PrivilegeLevel};
 use crate::arch::ia32::descriptor::tss::TssDescriptor as IA32TssDescriptor;
+use crate::arch::ia32e::{descriptor::Granularity, PrivilegeLevel};
 
 #[must_use]
 #[derive(Copy, Clone)]

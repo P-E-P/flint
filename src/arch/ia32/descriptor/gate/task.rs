@@ -1,7 +1,4 @@
-use crate::arch::ia32::{
-    selector::SegmentSelector,
-    PrivilegeLevel,
-};
+use crate::arch::ia32::{selector::SegmentSelector, PrivilegeLevel};
 use lower::Lower;
 use upper::Upper;
 

@@ -31,8 +31,8 @@ pub mod vga;
 #[macro_use]
 pub mod klog;
 pub mod qemu;
-pub mod test;
 pub mod serial;
+pub mod test;
 #[macro_use]
 pub mod arch;
 

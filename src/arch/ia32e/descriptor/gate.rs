@@ -1,7 +1,6 @@
-use crate::arch::ia32e::{
-    selector::SegmentSelector, PrivilegeLevel};
-use core::fmt;
 use crate::arch::ia32::descriptor::gate::lower::Lower;
+use crate::arch::ia32e::{selector::SegmentSelector, PrivilegeLevel};
+use core::fmt;
 use upper::Upper;
 
 mod upper;

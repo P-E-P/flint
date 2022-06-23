@@ -1,8 +1,8 @@
-use crate::serial::ComPort;
 use crate::arch::io::{
     port::Port,
     register::{Register, WriteRegister},
 };
+use crate::serial::ComPort;
 
 const THR_OFFSET: u16 = 0;
 
