@@ -1,5 +1,6 @@
 pub use crate::arch::ia32::PrivilegeLevel;
 use core::fmt;
+use core::mem::transmute;
 use interrupt::InterruptGate;
 use task::TaskGate;
 use trap::TrapGate;
@@ -13,6 +14,15 @@ pub mod trap;
 pub enum GateSize {
     Gate16Bits = 0,
     Gate32Bits = 1,
+}
+
+impl From<GateSize> for bool {
+    fn from(value: GateSize) -> Self {
+        match value {
+            GateSize::Gate16Bits => false,
+            GateSize::Gate32Bits => true,
+        }
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -39,7 +49,7 @@ impl From<TaskGate> for Gate {
 
 impl From<InterruptGate> for Gate {
     fn from(gate: InterruptGate) -> Self {
-        gate!(gate)
+        unsafe { Self(transmute::<InterruptGate, u64>(gate)) }
     }
 }
 
