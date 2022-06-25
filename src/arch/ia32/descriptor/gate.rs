@@ -43,7 +43,7 @@ macro_rules! gate {
 
 impl From<TaskGate> for Gate {
     fn from(gate: TaskGate) -> Self {
-        gate!(gate)
+        unsafe { Self(transmute::<TaskGate, u64>(gate)) }
     }
 }
 

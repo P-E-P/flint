@@ -1,29 +1,31 @@
-use crate::arch::ia32::{selector::SegmentSelector, PrivilegeLevel};
-use lower::Lower;
-use upper::Upper;
+use super::PrivilegeLevel;
+use crate::arch::ia32::selector::SegmentSelector;
+use configuration::Configuration;
 
-mod lower;
-mod upper;
+mod configuration;
 
 #[must_use]
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct TaskGate {
-    pub lower: Lower,
-    pub upper: Upper,
+    _reserved_1: u16,
+    tss_segment_selector: SegmentSelector,
+    configuration: Configuration,
+    _reserved_2: u16,
 }
 
 impl TaskGate {
     pub fn new(tss_segment_selector: SegmentSelector) -> Self {
         TaskGate {
-            lower: Lower::default().tss_segment_selector(tss_segment_selector.into()),
-            upper: Upper::default().present(1),
+            configuration: Configuration::default().present(true),
+            tss_segment_selector,
+            ..Default::default()
         }
     }
 
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         Self {
-            upper: self.upper.privilege_level(level as u32),
+            configuration: self.configuration.privilege_level(level),
             ..self
         }
     }
