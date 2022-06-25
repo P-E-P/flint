@@ -35,12 +35,6 @@ impl fmt::Display for Gate {
     }
 }
 
-macro_rules! gate {
-    ($g: expr) => {
-        Self(u64::from($g.upper.0) << 32 | u64::from($g.lower.0))
-    };
-}
-
 impl From<TaskGate> for Gate {
     fn from(gate: TaskGate) -> Self {
         unsafe { Self(transmute::<TaskGate, u64>(gate)) }
