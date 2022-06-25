@@ -13,25 +13,21 @@ const PRIV_LEVEL_UPPER: usize = 6;
 const PRESENT_OFFSET: usize = 7;
 
 impl Permissions {
-    pub fn segment_type(&mut self, seg_type: SegmentType) -> &mut Self {
-        self.0.set_bits(..=SEGMENT_UPPER, seg_type.into());
-        self
+    pub fn segment_type(self, seg_type: SegmentType) -> Self {
+        Self(*self.0.clone().set_bits(..=SEGMENT_UPPER, seg_type.into()))
     }
 
-    pub fn descriptor_type(&mut self, desc_type: DescriptorType) -> &mut Self {
-        self.0.set_bit(DESC_TYPE_OFFSET, desc_type.into());
-        self
+    pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
+        Self(*self.0.clone().set_bit(DESC_TYPE_OFFSET, desc_type.into()))
     }
 
-    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
-        self.0
-            .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into());
-        self
+    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
+        Self(*self.0.clone()
+            .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into()))
     }
 
-    pub fn present(&mut self, present: bool) -> &mut Self {
-        self.0.set_bit(PRESENT_OFFSET, present);
-        self
+    pub fn present(self, present: bool) -> Self {
+        Self(*self.0.clone().set_bit(PRESENT_OFFSET, present))
     }
 }
 

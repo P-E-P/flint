@@ -11,7 +11,7 @@ pub fn setup_gdt() {
         // Null segment
         SegmentDescriptor::default(),
         // Kernel code
-        *SegmentDescriptor::new(0, 0xFFFF)
+        SegmentDescriptor::new(0, 0xFFFF)
             .segment_type(SegmentType::Code {
                 accessed: false,
                 read: true,
@@ -22,7 +22,7 @@ pub fn setup_gdt() {
             .privilege_level(PrivilegeLevel::Kernel)
             .granularity(Granularity::FourKByte),
         // Kernel data
-        *SegmentDescriptor::new(0, 0xFFFF)
+        SegmentDescriptor::new(0, 0xFFFF)
             .segment_type(SegmentType::Data {
                 accessed: false,
                 write: true,
@@ -33,7 +33,7 @@ pub fn setup_gdt() {
             .default_operation_size(DefaultOperationSize::Segment32Bits)
             .granularity(Granularity::FourKByte),
         // User code
-        *SegmentDescriptor::new(0, 0xFFFF)
+        SegmentDescriptor::new(0, 0xFFFF)
             .segment_type(SegmentType::Code {
                 accessed: false,
                 read: true,
@@ -44,7 +44,7 @@ pub fn setup_gdt() {
             .privilege_level(PrivilegeLevel::Userland)
             .granularity(Granularity::FourKByte),
         // User data
-        *SegmentDescriptor::new(0, 0xFFFF)
+        SegmentDescriptor::new(0, 0xFFFF)
             .segment_type(SegmentType::Data {
                 accessed: false,
                 write: true,

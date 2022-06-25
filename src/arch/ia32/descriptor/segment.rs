@@ -93,59 +93,75 @@ impl SegmentDescriptor {
             base_15_0: base.get_bits(..16).try_into().unwrap(),
             base_23_16: base.get_bits(16..24).try_into().unwrap(),
             permissions: Permissions::default(),
-            configuration: *Configuration::default()
+            configuration: Configuration::default()
                 .limit(limit.get_bits(16..20).try_into().unwrap()),
             base_31_24: base.get_bits(24..32).try_into().unwrap(),
         }
     }
 
     /// Change the type of the segment by another [`SegmentType`].
-    pub fn segment_type(&mut self, seg_type: SegmentType) -> &mut Self {
-        self.permissions.segment_type(seg_type);
-        self
+    pub fn segment_type(self, seg_type: SegmentType) -> Self {
+        Self {
+            permissions: self.permissions.segment_type(seg_type),
+            ..self
+        }
     }
 
     /// Change the descriptor type by another [`DescriptorType`].
-    pub fn descriptor_type(&mut self, desc_type: DescriptorType) -> &mut Self {
-        self.permissions.descriptor_type(desc_type);
-        self
+    pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
+        Self {
+            permissions: self.permissions.descriptor_type(desc_type),
+            ..self
+        }
     }
 
     /// Set the privilege level of the segment.
-    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
-        self.permissions.privilege_level(level);
-        self
+    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
+        Self {
+            permissions: self.permissions.privilege_level(level),
+            ..self
+        }
     }
 
     /// Set or clear the presence bit of the segment.
-    pub fn present(&mut self, present: bool) -> &mut Self {
-        self.permissions.present(present);
-        self
+    pub fn present(self, present: bool) -> Self {
+        Self {
+            permissions: self.permissions.present(present),
+            ..self
+        }
     }
 
     /// Set or clear the available bit of the [`SegmentDescriptor`].
-    pub fn available(&mut self, avl: bool) -> &mut Self {
-        self.configuration.available(avl);
-        self
+    pub fn available(self, avl: bool) -> Self {
+        Self {
+            configuration: self.configuration.available(avl),
+            ..self
+        }
     }
 
     /// Set or clear the 64-bit code segment flag. If the bit is set, also
     /// clear the D flag.
-    pub fn ia32e_mode(&mut self, mode: bool) -> &mut Self {
-        self.configuration.ia32e_mode(mode);
-        self
+    pub fn ia32e_mode(self, mode: bool) -> Self {
+        Self {
+            configuration: self.configuration.ia32e_mode(mode),
+            ..self
+        }
     }
 
     /// Set the default operation size of the segment.
-    pub fn default_operation_size(&mut self, size: DefaultOperationSize) -> &mut Self {
-        self.configuration.default_operation_size(size);
-        self
+    pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
+        Self {
+            configuration: self.configuration.default_operation_size(size),
+            ..self
+        }
     }
 
     /// Set the granularity of the segment.
-    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
-        self.configuration.granularity(granularity);
-        self
+    pub fn granularity(self, granularity: Granularity) -> Self {
+        Self {
+            configuration: self.configuration.granularity(granularity),
+            ..self
+        }
     }
 
     fn get_address(&self) -> u32 {

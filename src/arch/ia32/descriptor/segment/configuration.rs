@@ -17,34 +17,31 @@ impl Configuration {
         self.0.get_bits(..4)
     }
 
-    pub fn limit(&mut self, limit: u8) -> &mut Self {
-        self.0.set_bits(..4, limit);
-        self
+    pub fn limit(self, limit: u8) -> Self {
+        Self(*self.0.clone().set_bits(..4, limit))
     }
 
-    pub fn available(&mut self, value: bool) -> &mut Self {
-        self.0.set_bit(offset::AVL, value);
-        self
+    pub fn available(self, value: bool) -> Self {
+        Self(*self.0.clone().set_bit(offset::AVL, value))
     }
 
-    pub fn ia32e_mode(&mut self, mode: bool) -> &mut Self {
+    pub fn ia32e_mode(self, mode: bool) -> Self {
+        let mut result = self.0;
         //If L-bit is set, then D-bit must be cleared
         // cf. Intel 3.4.5 "L (64 bit code segment) flag"
         if mode {
-            self.0.set_bit(offset::D_B, false);
+            result.set_bit(offset::D_B, false);
         }
-        self.0.set_bit(offset::L, mode);
-        self
+        result.set_bit(offset::L, mode);
+        Self(result)
     }
 
-    pub fn default_operation_size(&mut self, size: DefaultOperationSize) -> &mut Self {
-        self.0.set_bit(offset::D_B, size.into());
-        self
+    pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
+        Self(*self.0.clone().set_bit(offset::D_B, size.into()))
     }
 
-    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
-        self.0.set_bit(offset::G, granularity.into());
-        self
+    pub fn granularity(self, granularity: Granularity) -> Self {
+        Self(*self.0.clone().set_bit(offset::G, granularity.into()))
     }
 }
 
