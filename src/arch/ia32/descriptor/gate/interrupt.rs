@@ -19,9 +19,9 @@ impl InterruptGate {
     pub fn new(offset: u32, segment_selector: SegmentSelector) -> Self {
         InterruptGate {
             offset_15_0: offset.get_bits(0..16).try_into().unwrap(),
-            segment_selector,
-            configuration: Configuration::default(),
             offset_31_16: offset.get_bits(16..32).try_into().unwrap(),
+            configuration: Configuration::default().present(true),
+            segment_selector,
         }
     }
 
