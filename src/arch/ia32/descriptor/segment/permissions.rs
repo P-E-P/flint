@@ -22,8 +22,12 @@ impl Permissions {
     }
 
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
-        Self(*self.0.clone()
-            .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into()))
+        Self(
+            *self
+                .0
+                .clone()
+                .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into()),
+        )
     }
 
     pub fn present(self, present: bool) -> Self {
