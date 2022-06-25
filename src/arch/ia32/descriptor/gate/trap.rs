@@ -1,7 +1,7 @@
 use super::{GateSize, PrivilegeLevel};
 use crate::arch::ia32::selector::SegmentSelector;
-use configuration::Configuration;
 use bit_field::BitField;
+use configuration::Configuration;
 
 mod configuration;
 
