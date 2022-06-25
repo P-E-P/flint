@@ -55,6 +55,6 @@ impl From<InterruptGate> for Gate {
 
 impl From<TrapGate> for Gate {
     fn from(gate: TrapGate) -> Self {
-        gate!(gate)
+        unsafe { Self(transmute::<TrapGate, u64>(gate)) }
     }
 }
