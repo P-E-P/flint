@@ -20,28 +20,38 @@ impl TssDescriptor {
         }
     }
 
-    pub fn busy(&mut self, state: bool) -> &mut Self {
-        self.tss.busy(state);
-        self
+    pub fn busy(self, state: bool) -> Self {
+        Self {
+            tss: self.tss.busy(state),
+            ..self
+        }
     }
 
-    pub fn available(&mut self, avl: bool) -> &mut Self {
-        self.tss.available(avl);
-        self
+    pub fn available(self, avl: bool) -> Self {
+        Self {
+            tss: self.tss.available(avl),
+            ..self
+        }
     }
 
-    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
-        self.tss.privilege_level(level);
-        self
+    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
+        Self {
+            tss: self.tss.privilege_level(level),
+            ..self
+        }
     }
 
-    pub fn present(&mut self, present: bool) -> &mut Self {
-        self.tss.present(present);
-        self
+    pub fn present(self, present: bool) -> Self {
+        Self {
+            tss: self.tss.present(present),
+            ..self
+        }
     }
 
-    pub fn granularity(&mut self, granularity: Granularity) -> &mut Self {
-        self.tss.granularity(granularity);
-        self
+    pub fn granularity(self, granularity: Granularity) -> Self {
+        Self {
+            tss: self.tss.granularity(granularity),
+            ..self
+        }
     }
 }

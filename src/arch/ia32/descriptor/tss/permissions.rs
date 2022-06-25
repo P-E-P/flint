@@ -16,20 +16,17 @@ impl Default for Permissions {
 }
 
 impl Permissions {
-    pub fn busy(&mut self, busy: bool) -> &mut Self {
-        self.0.set_bit(1, busy);
-        self
+    pub fn busy(self, busy: bool) -> Self {
+        Self(*self.0.clone().set_bit(1, busy))
     }
 
-    pub fn privilege_level(&mut self, level: PrivilegeLevel) -> &mut Self {
-        self.0
-            .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into());
-        self
+    pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
+        Self(*self.0.clone()
+            .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into()))
     }
 
-    pub fn present(&mut self, present: bool) -> &mut Self {
-        self.0.set_bit(PRESENT_OFFSET, present);
-        self
+    pub fn present(self, present: bool) -> Self {
+        Self(*self.0.clone().set_bit(PRESENT_OFFSET, present))
     }
 }
 
