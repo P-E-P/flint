@@ -118,6 +118,40 @@ mod tests {
     }
 
     #[test_case]
+    fn present() {
+        let perm = Permissions::default().present(true);
+        assert_eq!(perm.0.get_bit(7), true);
+    }
+
+    #[test_case]
+    fn privilege_kernel() {
+        use PrivilegeLevel::Kernel;
+        let perm = Permissions::default().privilege_level(Kernel);
+        assert_eq!(perm.0.get_bits(5..=6), 0);
+    }
+
+    #[test_case]
+    fn privilege_kernel() {
+        use PrivilegeLevel::Userland;
+        let perm = Permissions::default().privilege_level(Userland);
+        assert_eq!(perm.0.get_bits(5..=6), 3);
+    }
+
+    #[test_case]
+    fn descriptor_system() {
+        use DescriptorType::System;
+        let perm = Permissions::default().descriptor_type(System);
+        assert_eq!(perm.0.get_bit(4), false);
+    }
+
+    #[test_case]
+    fn descriptor_code_data() {
+        use DescriptorType::CodeOrData;
+        let perm = Permissions::default().descriptor_type(CodeOrData);
+        assert_eq!(perm.0.get_bit(4), true);
+    }
+
+    #[test_case]
     fn segment_data() {
         let perm = Permissions::default().segment_type(SegmentType::Data {
             accessed: false,
