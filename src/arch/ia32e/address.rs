@@ -1,3 +1,4 @@
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct VirtualAddress(u64);
 
 impl VirtualAddress {
@@ -6,12 +7,12 @@ impl VirtualAddress {
     /// # Safety
     ///
     /// This function ensures the virtual address is correct.
-    pub fn try_new(addr: u64) -> Option<Self>
+    pub fn try_new(addr: u64) -> Result<Self, &'static str>
     {
         if addr < (1 << 48) {
-            Some(VirtualAddress(addr))
+            Ok(VirtualAddress(addr))
         } else {
-            None
+            Err("Virtual address cannot be longer than 48 bits.")
         }
     }
 
@@ -26,6 +27,7 @@ impl VirtualAddress {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PhysicalAddress(u64);
 
 impl PhysicalAddress {
@@ -34,12 +36,12 @@ impl PhysicalAddress {
     /// # Safety
     ///
     /// This function ensures the physical address is correct.
-    pub fn try_new(addr: u64) -> Option<Self>
+    pub fn try_new(addr: u64) -> Result<Self, &'static str>
     {
         if addr < (1 << 52) {
-            Some(PhysicalAddress(addr))
+            Ok(PhysicalAddress(addr))
         } else {
-            None
+            Err("Physical address cannot be longer than 52 bits.")
         }
     }
 
@@ -61,24 +63,26 @@ mod tests {
     #[test_case]
     fn virt_more_than_48() {
         let virt_addr = VirtualAddress::try_new(0x1_0000_0000_0000);
-        assert!(virt_addr.is_none());
+        assert!(virt_addr.is_err());
     }
 
     #[test_case]
     fn virt_less_than_48() {
         let virt_addr = VirtualAddress::try_new(0xFFFF_FFFF_FFFF);
-        assert!(virt_addr.is_some());
+        assert!(virt_addr.is_ok());
+        assert_eq!(virt_addr.unwrap(), VirtualAddress::new(0xFFFF_FFFF_FFFF));
     }
 
     #[test_case]
     fn phys_more_than_52() {
         let phys_addr = PhysicalAddress::try_new(0x10_0000_0000_0000);
-        assert!(phys_addr.is_none());
+        assert!(phys_addr.is_err());
     }
 
     #[test_case]
     fn phys_less_than_52() {
         let phys_addr = PhysicalAddress::try_new(0xF_FFFF_FFFF_FFFF);
-        assert!(phys_addr.is_some());
+        assert!(phys_addr.is_ok());
+        assert_eq!(phys_addr.unwrap(), PhysicalAddress::new(0xF_FFFF_FFFF_FFFF));
     }
 }
