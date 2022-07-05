@@ -94,8 +94,146 @@ impl fmt::Display for Permissions {
             "Type: {}\nS: {}\nDPL: {}\nPresent {}",
             self.0.get_bits(..=offset::segment_type::UPPER),
             self.0.get_bit(offset::DESC_TYPE),
-            self.0.get_bits(offset::privilege_level::LOWER..=offset::privilege_level::UPPER),
+            self.0
+                .get_bits(offset::privilege_level::LOWER..=offset::privilege_level::UPPER),
             self.0.get_bit(offset::PRESENT)
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test_case]
+    fn structure_size() {
+        use core::mem::size_of;
+        assert_eq!(size_of::<Permissions>(), 1);
+    }
+
+    #[test_case]
+    fn default_values() {
+        let perm = Permissions::default();
+        assert_eq!(perm.0, 0);
+    }
+
+    #[test_case]
+    fn segment_data() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: false,
+            write: false,
+            expand_down: false,
+        });
+        assert_eq!(perm.0.get_bit(3), false);
+    }
+
+    #[test_case]
+    fn segment_code() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: false,
+            read: false,
+            conforming: false,
+        });
+        assert_eq!(perm.0.get_bit(3), true);
+    }
+
+    #[test_case]
+    fn segment_data_accessed() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: true,
+            write: false,
+            expand_down: false,
+        });
+        assert_eq!(perm.0.get_bit(0), true);
+    }
+
+    #[test_case]
+    fn segment_code_accessed() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: true,
+            read: false,
+            conforming: false,
+        });
+        assert_eq!(perm.0.get_bit(0), true);
+    }
+
+    #[test_case]
+    fn segment_read() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: false,
+            read: true,
+            conforming: false,
+        });
+        assert_eq!(perm.0.get_bit(1), true);
+    }
+
+    #[test_case]
+    fn segment_no_read() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: false,
+            read: false,
+            conforming: false,
+        });
+        assert_eq!(perm.0.get_bit(1), false);
+    }
+
+    #[test_case]
+    fn segment_conforming() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: false,
+            read: false,
+            conforming: true,
+        });
+        assert_eq!(perm.0.get_bit(2), true);
+    }
+
+    #[test_case]
+    fn segment_non_conforming() {
+        let perm = Permissions::default().segment_type(SegmentType::Code {
+            accessed: false,
+            read: false,
+            conforming: false,
+        });
+        assert_eq!(perm.0.get_bit(2), false);
+    }
+
+    #[test_case]
+    fn segment_write() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: false,
+            write: true,
+            expand_down: false,
+        });
+        assert_eq!(perm.0.get_bit(1), true);
+    }
+
+    #[test_case]
+    fn segment_no_write() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: false,
+            write: false,
+            expand_down: false,
+        });
+        assert_eq!(perm.0.get_bit(1), false);
+    }
+
+    #[test_case]
+    fn segment_expand_down() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: false,
+            write: false,
+            expand_down: true,
+        });
+        assert_eq!(perm.0.get_bit(2), true);
+    }
+
+    #[test_case]
+    fn segment_expand_up() {
+        let perm = Permissions::default().segment_type(SegmentType::Data {
+            accessed: false,
+            write: false,
+            expand_down: false,
+        });
+        assert_eq!(perm.0.get_bit(2), false);
     }
 }
