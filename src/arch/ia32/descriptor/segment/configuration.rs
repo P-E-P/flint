@@ -18,9 +18,19 @@ pub struct Configuration(u8);
 
 /// The set of all field offsets for the [`Configuration`] structure.
 mod offset {
+    /// Offset of the AVL bit within the [Configuration](super::Configuration) structure.
     pub const AVL: usize = 4;
+
+    /// Offset of the 64bit code segment (L) bit within the
+    /// [Configuration](super::Configuration) structure.
     pub const L: usize = 5;
+
+    /// Offset of the default operation size (D/B) bit within the
+    /// [Configuration](super::Configuration) structure.
     pub const D_B: usize = 6;
+
+    /// Offset of the granularity (G) bit within the
+    /// [Configuration](super::Configuration) structure.
     pub const G: usize = 7;
 }
 
