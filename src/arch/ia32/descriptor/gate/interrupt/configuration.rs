@@ -1,7 +1,16 @@
+//! A module containing the implementation and tests for the [`Configuration`]
+//! structure.
 use super::{GateSize, PrivilegeLevel};
 use bit_field::BitField;
 use core::fmt;
 
+/// A structure representing the bits 8 to 15 from a
+/// [InterruptGate](super::InterruptGate) structure.
+///
+/// It gathers the following fields:
+/// - Size (D)
+/// - Descriptor privilege level (DPL)
+/// - Present bit (P)
 #[derive(Copy, Clone)]
 pub struct Configuration(u16);
 
@@ -32,11 +41,21 @@ impl Default for Configuration {
 }
 
 impl Configuration {
+    /// Change a [`Configuration`]'s gate size bits with another size.
+    ///
+    /// # Arguments
+    ///
+    /// * `size` - The desired [`GateSize`].
     pub fn size(self, size: GateSize) -> Self {
         use offset::SIZE;
         Self(*self.0.clone().set_bit(SIZE, size.into()))
     }
 
+    /// Change a [`Configuration`]'s privilege level by another one.
+    ///
+    /// # Arguments
+    ///
+    /// * `level` - The desired [`PrivilegeLevel`] value.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         use offset::privilege_level::{LOWER, UPPER};
         Self(
@@ -47,6 +66,12 @@ impl Configuration {
         )
     }
 
+    /// Change a [`Configuration`]'s present bit.
+    ///
+    /// # Arguments
+    ///
+    /// * `present` - The desired bit value, `true` for bit value 1 and `false`
+    /// for bit value 0.
     pub fn present(self, present: bool) -> Self {
         use offset::PRESENT;
         Self(*self.0.clone().set_bit(PRESENT, present))
