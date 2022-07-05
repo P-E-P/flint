@@ -27,6 +27,16 @@ impl VirtualAddress {
     {
         Self::try_new(addr).expect("Virtual address cannot be longer than 48 bits.")
     }
+
+    /// Convert u64 into an ia32e virtual address.
+    ///
+    /// # Safety
+    ///
+    /// This function avoids any check and is therefore unsafe.
+    unsafe fn unchecked_new(addr: u64) -> Self
+    {
+        VirtualAddress(addr)
+    }
 }
 
 impl fmt::Debug for VirtualAddress {
@@ -62,6 +72,16 @@ impl PhysicalAddress {
     {
         Self::try_new(addr).expect("Physical address cannot be longer than 52 bits.")
     }
+
+    /// Convert u64 into an ia32e physical address.
+    ///
+    /// # Safety
+    ///
+    /// This function avoids any check and is therefore unsafe.
+    unsafe fn unchecked_new(addr: u64) -> Self
+    {
+        PhysicalAddress(addr)
+    }
 }
 
 impl fmt::Debug for PhysicalAddress {
@@ -88,6 +108,14 @@ mod tests {
     }
 
     #[test_case]
+    fn virt_unsafe_wrong() {
+        unsafe {
+            let virt_addr = VirtualAddress::unchecked_new(0x1_0000_0000_0000);
+            assert_eq!(virt_addr.0, 0x1_0000_0000_0000);
+        }
+    }
+
+    #[test_case]
     fn phys_more_than_52() {
         let phys_addr = PhysicalAddress::try_new(0x10_0000_0000_0000);
         assert!(phys_addr.is_err());
@@ -98,5 +126,13 @@ mod tests {
         let phys_addr = PhysicalAddress::try_new(0xF_FFFF_FFFF_FFFF);
         assert!(phys_addr.is_ok());
         assert_eq!(phys_addr.unwrap(), PhysicalAddress::new(0xF_FFFF_FFFF_FFFF));
+    }
+
+    #[test_case]
+    fn phys_unsafe_wrong() {
+        unsafe {
+            let phys_addr = PhysicalAddress::unchecked_new(0x10_0000_0000_0000);
+            assert_eq!(phys_addr.0, 0x10_0000_0000_0000);
+        }
     }
 }
