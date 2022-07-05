@@ -5,6 +5,11 @@ use core::ops::{Add, Sub};
 pub struct VirtualAddress(u64);
 
 impl VirtualAddress {
+    fn is_canonical(addr: u64) -> bool
+    {
+        addr < (1 << 48) || (addr >> 48) == 0xFFFF
+    }
+
     /// Try to convert u64 into an ia32e virtual address.
     ///
     /// # Safety
@@ -12,7 +17,7 @@ impl VirtualAddress {
     /// This function ensures the virtual address is correct.
     pub fn try_new(addr: u64) -> Result<Self, &'static str>
     {
-        if addr < (1 << 48) {
+        if Self::is_canonical(addr) {
             Ok(VirtualAddress(addr))
         } else {
             Err("Virtual address cannot be longer than 48 bits.")
@@ -128,9 +133,15 @@ mod tests {
     use super::*;
 
     #[test_case]
-    fn virt_more_than_48() {
+    fn virt_invalid_more_than_48() {
         let virt_addr = VirtualAddress::try_new(0x1_0000_0000_0000);
         assert!(virt_addr.is_err());
+    }
+
+    #[test_case]
+    fn virt_valid_more_than_48() {
+        let virt_addr = VirtualAddress::try_new(0xFFFF_F000_0000_0000);
+        assert!(virt_addr.is_ok());
     }
 
     #[test_case]
