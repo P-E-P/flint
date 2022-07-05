@@ -7,7 +7,7 @@ pub struct VirtualAddress(u64);
 impl VirtualAddress {
     fn is_canonical(addr: u64) -> bool
     {
-        addr < (1 << 48) || (addr >> 48) == 0xFFFF
+        addr < (1 << 47) || (addr >> 47) == 0x1FFFF
     }
 
     /// Try to convert u64 into an ia32e virtual address.
@@ -133,22 +133,27 @@ mod tests {
     use super::*;
 
     #[test_case]
-    fn virt_invalid_more_than_48() {
+    fn virt_upper_canonical() {
+        let virt_addr = VirtualAddress::try_new(0xFFFF_8000_0000_0000);
+        assert!(virt_addr.is_ok());
+    }
+
+    #[test_case]
+    fn virt_lower_canonical() {
+        let virt_addr = VirtualAddress::try_new(0x7FFF_FFFF_FFFF);
+        assert!(virt_addr.is_ok());
+    }
+
+    #[test_case]
+    fn virt_not_canonical() {
         let virt_addr = VirtualAddress::try_new(0x1_0000_0000_0000);
         assert!(virt_addr.is_err());
     }
 
     #[test_case]
-    fn virt_valid_more_than_48() {
-        let virt_addr = VirtualAddress::try_new(0xFFFF_F000_0000_0000);
-        assert!(virt_addr.is_ok());
-    }
-
-    #[test_case]
-    fn virt_less_than_48() {
-        let virt_addr = VirtualAddress::try_new(0xFFFF_FFFF_FFFF);
-        assert!(virt_addr.is_ok());
-        assert_eq!(virt_addr.unwrap(), VirtualAddress::new(0xFFFF_FFFF_FFFF));
+    fn virt_not_canonical_2() {
+        let virt_addr = VirtualAddress::try_new(0xFFFF_0000_0000_0000);
+        assert!(virt_addr.is_err());
     }
 
     #[test_case]
