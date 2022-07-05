@@ -6,32 +6,53 @@ use core::fmt;
 #[derive(Default, Copy, Clone)]
 pub struct Permissions(u8);
 
-const SEGMENT_UPPER: usize = 3;
-const DESC_TYPE_OFFSET: usize = 4;
-const PRIV_LEVEL_LOWER: usize = 5;
-const PRIV_LEVEL_UPPER: usize = 6;
-const PRESENT_OFFSET: usize = 7;
+/// The set of all field offsets for the [`Permissions`] structure.
+mod offset {
+    /// Bounds of the segment type (TYPE) bits within the
+    /// [Permissions](super::Permissions) structure.
+    pub mod segment_type {
+        /// Upper bit.
+        pub const UPPER: usize = 3;
+    }
+
+    /// Offset of the descriptor type (S) bit within the
+    /// [Permissions](super::Permissions) structure.
+    pub const DESC_TYPE: usize = 4;
+
+    /// Bounds of the descriptor privilege level (DPL) bits within the
+    /// [Permissions](super::Permissions) structure.
+    pub mod privilege_level {
+        /// Lower bit offset.
+        pub const LOWER: usize = 5;
+
+        /// Upper bit offset.
+        pub const UPPER: usize = 6;
+    }
+
+    /// Offset of the present bit (P) within the
+    /// [Permissions](super::Permissions) structure.
+    pub const PRESENT: usize = 7;
+}
 
 impl Permissions {
     pub fn segment_type(self, seg_type: SegmentType) -> Self {
-        Self(*self.0.clone().set_bits(..=SEGMENT_UPPER, seg_type.into()))
+        use offset::segment_type::UPPER;
+        Self(*self.0.clone().set_bits(..=UPPER, seg_type.into()))
     }
 
     pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
-        Self(*self.0.clone().set_bit(DESC_TYPE_OFFSET, desc_type.into()))
+        use offset::DESC_TYPE;
+        Self(*self.0.clone().set_bit(DESC_TYPE, desc_type.into()))
     }
 
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
-        Self(
-            *self
-                .0
-                .clone()
-                .set_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER, level.into()),
-        )
+        use offset::privilege_level::{LOWER, UPPER};
+        Self(*self.0.clone().set_bits(LOWER..=UPPER, level.into()))
     }
 
     pub fn present(self, present: bool) -> Self {
-        Self(*self.0.clone().set_bit(PRESENT_OFFSET, present))
+        use offset::PRESENT;
+        Self(*self.0.clone().set_bit(PRESENT, present))
     }
 }
 
@@ -40,10 +61,10 @@ impl fmt::Display for Permissions {
         write!(
             f,
             "Type: {}\nS: {}\nDPL: {}\nPresent {}",
-            self.0.get_bits(..=SEGMENT_UPPER),
-            self.0.get_bit(DESC_TYPE_OFFSET),
-            self.0.get_bits(PRIV_LEVEL_LOWER..=PRIV_LEVEL_UPPER),
-            self.0.get_bit(PRESENT_OFFSET)
+            self.0.get_bits(..=offset::segment_type::UPPER),
+            self.0.get_bit(offset::DESC_TYPE),
+            self.0.get_bits(offset::privilege_level::LOWER..=offset::privilege_level::UPPER),
+            self.0.get_bit(offset::PRESENT)
         )
     }
 }
