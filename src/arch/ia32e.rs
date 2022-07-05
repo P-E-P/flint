@@ -1,7 +1,6 @@
 use core::arch::asm;
-pub use crate::arch::ia32::{halt, pause, PrivilegeLevel};
+pub use crate::arch::ia32::{halt, pause, PrivilegeLevel, address};
 
-pub mod address;
 pub mod descriptor;
 pub mod interrupts;
 pub mod mm;
