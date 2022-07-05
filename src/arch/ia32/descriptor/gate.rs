@@ -6,7 +6,6 @@ use task::TaskGate;
 use trap::TrapGate;
 
 pub mod interrupt;
-pub mod lower;
 pub mod task;
 pub mod trap;
 
