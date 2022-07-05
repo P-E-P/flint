@@ -34,9 +34,21 @@ impl From<DefaultOperationSize> for bool {
     }
 }
 
+/// Type to determine whether a [`SegmentDescriptor`] is a system segment, or a
+/// code/data segment.
 #[repr(u8)]
 pub enum DescriptorType {
+    /// System descriptor type, this includes:
+    /// - System segment descriptors
+    ///     - Local descriptor table segment descriptor (LDT)
+    ///     - Task state segment descriptor (TSS)
+    /// - Gate descriptors
+    ///     - Call gate descriptor
+    ///     - Interrupt gate descriptor
+    ///     - Trap gate descriptor
+    ///     - Task gate descriptor
     System = 0,
+    /// Either code or data descriptor type
     CodeOrData = 1,
 }
 
@@ -49,19 +61,27 @@ impl From<DescriptorType> for bool {
     }
 }
 
+/// A representation of the segment capacities and permissions (read/write/execute/...).
 pub enum SegmentType {
     /// Data segment representation.
     Data {
         /// Whether the segment has been accessed by the processor.
         accessed: bool,
+        /// Whether the segment's data can be written.
         write: bool,
+        /// If the segment is a stack segment, whether this segment is an
+        /// expand up segment or an expand down segment.
         expand_down: bool,
     },
     /// Code segment representation.
     Code {
         /// Whether the segment has been accessed by the processor.
         accessed: bool,
+        /// Whether the segment's data can be read.
         read: bool,
+        /// Whether the segment is conforming or non conforming.
+        ///
+        /// This impact transfer of execution into more privileged segments.
         conforming: bool,
     },
 }
@@ -89,11 +109,17 @@ impl From<SegmentType> for u8 {
 #[derive(Default, Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
+    /// Bits 0 to 15 of the segment's limit.
     limit_15_0: u16,
+    /// Bits 0 to 15 of the segment's base address.
     base_15_0: u16,
+    /// Bits 16 to 23 of the segment's base address.
     base_23_16: u8,
+    /// The segment's permissions (Type, S, DPL, P).
     permissions: Permissions,
+    /// The segment's configuration (limit bits 16 to 19, AVL, L, D/B, G).
     configuration: Configuration,
+    /// Bits 24 to 31 of the segment's base address.
     base_31_24: u8,
 }
 
