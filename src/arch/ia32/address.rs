@@ -1,5 +1,5 @@
 use core::fmt;
-use core::ops::{Add, Sub};
+use core::ops::{Add, AddAssign, Sub, SubAssign};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct VirtualAddress(u64);
@@ -53,11 +53,23 @@ impl Add for VirtualAddress {
     }
 }
 
+impl AddAssign for VirtualAddress {
+    fn add_assign(&mut self, other: Self) {
+        (*self).0 = (*self).0 + other.0;
+    }
+}
+
 impl Sub for VirtualAddress {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
         Self (self.0 - other.0)
+    }
+}
+
+impl SubAssign for VirtualAddress {
+    fn sub_assign(&mut self, other: Self) {
+        (*self).0 = (*self).0 - other.0;
     }
 }
 
@@ -114,11 +126,23 @@ impl Add for PhysicalAddress {
     }
 }
 
+impl AddAssign for PhysicalAddress {
+    fn add_assign(&mut self, other: Self) {
+        (*self).0 = (*self).0 + other.0;
+    }
+}
+
 impl Sub for PhysicalAddress {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
         Self (self.0 - other.0)
+    }
+}
+
+impl SubAssign for PhysicalAddress {
+    fn sub_assign(&mut self, other: Self) {
+        (*self).0 = (*self).0 - other.0;
     }
 }
 
@@ -173,11 +197,27 @@ mod tests {
     }
 
     #[test_case]
+    fn virt_add_assign()
+    {
+        let mut virt1 = VirtualAddress::new(1);
+        virt1 += VirtualAddress::new(3);
+        assert_eq!(VirtualAddress::new(4), virt1);
+    }
+
+    #[test_case]
     fn virt_sub()
     {
         let virt1 = VirtualAddress::new(1);
         let virt2 = VirtualAddress::new(3);
         assert_eq!(VirtualAddress::new(2), virt2 - virt1);
+    }
+
+    #[test_case]
+    fn virt_sub_assign()
+    {
+        let mut virt1 = VirtualAddress::new(4);
+        virt1 -= VirtualAddress::new(3);
+        assert_eq!(VirtualAddress::new(1), virt1);
     }
 
     #[test_case]
@@ -210,10 +250,26 @@ mod tests {
     }
 
     #[test_case]
+    fn phys_add_assign()
+    {
+        let mut phys1 = PhysicalAddress::new(1);
+        phys1 += PhysicalAddress::new(3);
+        assert_eq!(PhysicalAddress::new(4), phys1);
+    }
+
+    #[test_case]
     fn phys_sub()
     {
         let phys1 = PhysicalAddress::new(1);
         let phys2 = PhysicalAddress::new(3);
         assert_eq!(PhysicalAddress::new(2), phys2 - phys1);
+    }
+
+    #[test_case]
+    fn phys_sub_assign()
+    {
+        let mut phys1 = PhysicalAddress::new(4);
+        phys1 -= PhysicalAddress::new(3);
+        assert_eq!(PhysicalAddress::new(1), phys1);
     }
 }
