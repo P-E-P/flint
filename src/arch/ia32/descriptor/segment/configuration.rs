@@ -126,6 +126,12 @@ mod tests {
     use super::*;
 
     #[test_case]
+    fn structure_size() {
+        use core::mem::size_of;
+        assert_eq!(size_of::<Configuration>(), 1);
+    }
+
+    #[test_case]
     fn default_values() {
         let conf = Configuration::default();
         assert_eq!(conf.0, 0);
