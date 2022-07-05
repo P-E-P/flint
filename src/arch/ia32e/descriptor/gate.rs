@@ -1,6 +1,6 @@
 use crate::arch::ia32e::{selector::SegmentSelector, PrivilegeLevel};
-use configuration::Configuration;
 use bit_field::BitField;
+use configuration::Configuration;
 use core::fmt;
 
 mod configuration;

@@ -1,4 +1,4 @@
-use super::{PrivilegeLevel, Kind};
+use super::{Kind, PrivilegeLevel};
 use bit_field::BitField;
 use core::fmt;
 
@@ -32,7 +32,12 @@ impl Configuration {
     }
 
     pub fn kind(self, kind: Kind) -> Self {
-        Self(*self.0.clone().set_bits(TYPE_LOWER..=TYPE_UPPER, kind.into()))
+        Self(
+            *self
+                .0
+                .clone()
+                .set_bits(TYPE_LOWER..=TYPE_UPPER, kind.into()),
+        )
     }
 }
 
