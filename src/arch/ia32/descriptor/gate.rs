@@ -1,17 +1,32 @@
+//! A module containing the different descriptors to use for an
+//! interrupt descriptor table (IDT).
+//!
+//! This module brings 3 specialized gate structure:
+//! - [`InterruptGate`]
+//! - [`TrapGate`]
+//! - [`TaskGate`]
+//!
+//! as well as a generic gate structure for the IDT itself.
+//! All of those specialized gate structure can be morphed into the
+//! generic one once completed.
 pub use crate::arch::ia32::PrivilegeLevel;
 use core::fmt;
 use core::mem::transmute;
 use interrupt::InterruptGate;
 use task::TaskGate;
 use trap::TrapGate;
+use bit_field::BitField;
 
 pub mod interrupt;
 pub mod task;
 pub mod trap;
 
+/// The size of a gate, either 32 bits or 16bits.
 #[repr(u8)]
 pub enum GateSize {
+    /// 16bits gate.
     Gate16Bits = 0,
+    /// 32 bits gate.
     Gate32Bits = 1,
 }
 
@@ -24,6 +39,8 @@ impl From<GateSize> for bool {
     }
 }
 
+/// Generic gate structure that can be used to build an interrupt descriptor
+/// table.
 #[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate(u64);
