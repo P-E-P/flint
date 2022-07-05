@@ -5,14 +5,23 @@ use core::fmt;
 #[derive(Copy, Clone)]
 pub struct Configuration(u16);
 
+/// The set of all field offsets for the [`Configuration`] structure.
 mod offset {
+    /// Offset of the size (D) bit within the
+    /// [Configuration](super::Configuration) structure.
     pub const SIZE: usize = 11;
 
+    /// Bounds of the descriptor privilege level (DPL) bits within the
+    /// [Configuration](super::Configuration) structure.
     pub mod privilege_level {
+        /// Lower bit offset.
         pub const LOWER: usize = 13;
+        /// Upper bit offset.
         pub const UPPER: usize = 14;
     }
 
+    /// Offset of the present bit (P) within the
+    /// [Configuration](super::Configuration) structure.
     pub const PRESENT: usize = 15;
 }
 
