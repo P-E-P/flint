@@ -10,12 +10,12 @@
 //! All of those specialized gate structure can be morphed into the
 //! generic one once completed.
 pub use crate::arch::ia32::PrivilegeLevel;
+use bit_field::BitField;
 use core::fmt;
 use core::mem::transmute;
 use interrupt::InterruptGate;
 use task::TaskGate;
 use trap::TrapGate;
-use bit_field::BitField;
 
 pub mod interrupt;
 pub mod task;
@@ -48,7 +48,9 @@ pub struct Gate(u64);
 impl fmt::Display for Gate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let internal = self.0;
-        write!(f, "Present:{}\nDPL:{}\nType:{}\nSegment selector:{:X}",
+        write!(
+            f,
+            "Present:{}\nDPL:{}\nType:{}\nSegment selector:{:X}",
             internal.get_bit(47),
             internal.get_bits(45..=46),
             internal.get_bits(40..=44),
