@@ -93,12 +93,12 @@ impl From<SegmentType> for u8 {
                 accessed,
                 write,
                 expand_down,
-            } => u8::from(accessed) << 2 | u8::from(write) << 1 | u8::from(expand_down),
+            } => u8::from(accessed) << 0 | u8::from(write) << 1 | u8::from(expand_down) << 2,
             SegmentType::Code {
                 accessed,
                 read,
                 conforming,
-            } => 0x8 | u8::from(accessed) << 2 | u8::from(read) << 1 | u8::from(conforming),
+            } => 0x8 | u8::from(accessed) << 0 | u8::from(read) << 1 | u8::from(conforming) << 2,
         }
     }
 }
