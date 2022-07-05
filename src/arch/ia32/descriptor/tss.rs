@@ -25,7 +25,7 @@ impl TssDescriptor {
             limit_15_0: limit.get_bits(..16).try_into().unwrap(),
             base_15_0: base.get_bits(..16).try_into().unwrap(),
             base_23_16: base.get_bits(16..24).try_into().unwrap(),
-            permissions: Permissions::default(),
+            permissions: Permissions::default().present(true),
             configuration: Configuration::default()
                 .limit(limit.get_bits(16..20).try_into().unwrap()),
             base_31_24: base.get_bits(24..32).try_into().unwrap(),
