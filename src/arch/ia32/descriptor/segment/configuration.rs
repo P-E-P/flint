@@ -1,10 +1,22 @@
+//! A module containing the implementation and tests for the [`Configuration`]
+//! structure.
 use super::{DefaultOperationSize, Granularity};
 use bit_field::BitField;
 use core::fmt;
 
+/// A structure representing the bits 16 to 24 from a
+/// [SegmentDescriptor](super::SegmentDescriptor) structure.
+///
+/// It gathers the following fields:
+/// - Segment limit bits 16 to 19
+/// - Available bit (AVL)
+/// - 64 bit mode bit (L)
+/// - Default operation size bit (D/B)
+/// - Granularity bit (G)
 #[derive(Default, Copy, Clone)]
 pub struct Configuration(u8);
 
+/// The set of all field offsets for the [`Configuration`] structure.
 mod offset {
     pub const AVL: usize = 4;
     pub const L: usize = 5;
@@ -13,18 +25,49 @@ mod offset {
 }
 
 impl Configuration {
+    /// Get the bits (19:16) of the limit value stored in the configuration
+    /// field.
     pub fn get_limit(&self) -> u8 {
         self.0.get_bits(..4)
     }
 
+    /// Change a [`Configuration`]'s limit bits (19:16) to a new value.
+    ///
+    /// # Arguments
+    ///
+    /// * `limit` - The limit value bits to set in the structure.
+    ///
+    /// # Panics
+    ///
+    /// This method will panic if the given limit value is greater than 15
+    /// because [`Configuration`] structure hold only bits 16 to 19 of the
+    /// segment descriptor structure.
     pub fn limit(self, limit: u8) -> Self {
         Self(*self.0.clone().set_bits(..4, limit))
     }
 
+    /// Change a [`Configuration`]'s available bit value.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The desired bit value, a value of `true` will store a `1`,
+    /// `false` will store the bit `0`.
     pub fn available(self, value: bool) -> Self {
         Self(*self.0.clone().set_bit(offset::AVL, value))
     }
 
+    /// Change a [`Configuration`]'s current mode to 32 bits or 64 bits.
+    ///
+    /// # Arguments
+    ///
+    /// * `mode` - The desired mode, `true` for 64 bits and `false` for 32 bits.
+    ///
+    /// # Note
+    ///
+    /// This method will overwrite any previous call to
+    /// [default_operation_size](Configuration#method.default_operation_size)
+    /// if the mode is set to 64bits as it required the bit `D/B` set to `0`
+    /// (cf. Intel Volume III 3.4.5).
     pub fn ia32e_mode(self, mode: bool) -> Self {
         let mut result = self.0;
         //If L-bit is set, then D-bit must be cleared
@@ -36,10 +79,20 @@ impl Configuration {
         Self(result)
     }
 
+    /// Change a [`Configuration`]'s default operation size.
+    ///
+    /// # Arguments
+    ///
+    /// * `size` - The desired mode operation size.
     pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
         Self(*self.0.clone().set_bit(offset::D_B, size.into()))
     }
 
+    /// Change a [`Configuration`]'s granularity.
+    ///
+    /// # Arguments
+    ///
+    /// * `granularity` - The desired granularity.
     pub fn granularity(self, granularity: Granularity) -> Self {
         Self(*self.0.clone().set_bit(offset::G, granularity.into()))
     }
