@@ -89,14 +89,15 @@ impl Permissions {
 
 impl fmt::Display for Permissions {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use offset::{privilege_level, segment_type, DESC_TYPE, PRESENT};
         write!(
             f,
             "Type: {}\nS: {}\nDPL: {}\nPresent {}",
-            self.0.get_bits(..=offset::segment_type::UPPER),
-            self.0.get_bit(offset::DESC_TYPE),
+            self.0.get_bits(..=segment_type::UPPER),
+            self.0.get_bit(DESC_TYPE),
             self.0
-                .get_bits(offset::privilege_level::LOWER..=offset::privilege_level::UPPER),
-            self.0.get_bit(offset::PRESENT)
+                .get_bits(privilege_level::LOWER..=privilege_level::UPPER),
+            self.0.get_bit(PRESENT)
         )
     }
 }
