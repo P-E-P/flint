@@ -30,7 +30,13 @@ pub struct Gate(u64);
 
 impl fmt::Display for Gate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:08X?};{:08X?}", self.0 >> 32, self.0 & 0xffffffff)
+        let internal = self.0;
+        write!(f, "Present:{}\nDPL:{}\nType:{}\nSegment selector:{:X}",
+            internal.get_bit(47),
+            internal.get_bits(45..=46),
+            internal.get_bits(40..=44),
+            internal.get_bits(16..=31)
+        )
     }
 }
 
