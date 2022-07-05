@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use core::fmt;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct VirtualAddress(u64);
 
 impl VirtualAddress {
@@ -27,7 +29,13 @@ impl VirtualAddress {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+impl fmt::Debug for VirtualAddress {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:#X}", self.0)
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct PhysicalAddress(u64);
 
 impl PhysicalAddress {
@@ -53,6 +61,12 @@ impl PhysicalAddress {
     pub fn new(addr: u64) -> Self
     {
         Self::try_new(addr).expect("Physical address cannot be longer than 52 bits.")
+    }
+}
+
+impl fmt::Debug for PhysicalAddress {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:#X}", self.0)
     }
 }
 
