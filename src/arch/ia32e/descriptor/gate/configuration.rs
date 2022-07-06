@@ -150,7 +150,6 @@ mod tests {
 
     #[test_case]
     fn ist_value() {
-        use PrivilegeLevel::Userland;
         let perm = Configuration::default().interrupt_stack_table(7);
         assert_eq!(perm.0.get_bits(0..=2), 7);
     }
