@@ -4,8 +4,8 @@ use super::{GateSize, PrivilegeLevel};
 use bit_field::BitField;
 use core::fmt;
 
-/// A structure representing the bits 0 to 15 from an
-/// [InterruptGate](super::InterruptGate) structure.
+/// A structure representing the bits 0 to 15 from a
+/// [TrapGate](super::TrapGate) structure.
 ///
 /// It gathers the following fields:
 /// - Size (D)
