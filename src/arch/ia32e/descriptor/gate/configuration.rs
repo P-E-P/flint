@@ -75,6 +75,12 @@ impl Configuration {
     /// # Arguments
     ///
     /// * `ist` - The desired interrupt stack table value.
+    ///
+    /// # Panics
+    ///
+    /// This method will panic if the given limit value is greater than 15
+    /// because [`Configuration`] structure hold only bits 16 to 19 of the
+    /// segment descriptor structure.
     pub fn interrupt_stack_table(self, ist: u8) -> Self {
         use offset::ist::{LOWER, UPPER};
         Self(*self.0.clone().set_bits(LOWER..=UPPER, ist.into()))
