@@ -4,7 +4,7 @@ use super::{GateSize, PrivilegeLevel};
 use bit_field::BitField;
 use core::fmt;
 
-/// A structure representing the bits 8 to 15 from a
+/// A structure representing the bits 0 to 15 from an
 /// [InterruptGate](super::InterruptGate) structure.
 ///
 /// It gathers the following fields:
