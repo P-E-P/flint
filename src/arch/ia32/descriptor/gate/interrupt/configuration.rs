@@ -103,9 +103,15 @@ mod tests {
     }
 
     #[test_case]
-    fn default_value() {
+    fn default_value_type() {
         let conf = Configuration::default();
         assert_eq!(conf.0.get_bits(8..=10), 0b110);
+    }
+
+    #[test_case]
+    fn default_value_zeroes() {
+        let conf = Configuration::default();
+        assert_eq!(conf.0.get_bits(5..=7), 0b000);
     }
 
     #[test_case]
