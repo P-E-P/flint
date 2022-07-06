@@ -132,7 +132,7 @@ mod tests {
     }
 
     #[test_case]
-    fn privilege_kernel() {
+    fn privilege_userland() {
         use PrivilegeLevel::Userland;
         let perm = Permissions::default().privilege_level(Userland);
         assert_eq!(perm.0.get_bits(5..=6), 3);
