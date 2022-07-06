@@ -91,3 +91,54 @@ impl fmt::Display for Configuration {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test_case]
+    fn structure_size() {
+        use core::mem::size_of;
+        assert_eq!(size_of::<Configuration>(), 2);
+    }
+
+    #[test_case]
+    fn default_value() {
+        let conf = Configuration::default();
+        assert_eq!(conf.0.get_bits(8..=10), 0b110);
+    }
+
+    #[test_case]
+    fn present() {
+        let conf = Configuration::default().present(true);
+        assert_eq!(conf.0.get_bit(15), true);
+    }
+
+    #[test_case]
+    fn size_16bits() {
+        use GateSize::Gate16Bits;
+        let conf = Configuration::default().size(Gate16Bits);
+        assert_eq!(conf.0.get_bit(11), false);
+    }
+
+    #[test_case]
+    fn size_32bits() {
+        use GateSize::Gate32Bits;
+        let conf = Configuration::default().size(Gate32Bits);
+        assert_eq!(conf.0.get_bit(11), true);
+    }
+
+    #[test_case]
+    fn privilege_kernel() {
+        use PrivilegeLevel::Kernel;
+        let perm = Configuration::default().privilege_level(Kernel);
+        assert_eq!(perm.0.get_bits(13..=14), 0);
+    }
+
+    #[test_case]
+    fn privilege_userland() {
+        use PrivilegeLevel::Userland;
+        let perm = Configuration::default().privilege_level(Userland);
+        assert_eq!(perm.0.get_bits(13..=14), 3);
+    }
+}
