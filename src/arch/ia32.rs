@@ -1,5 +1,6 @@
 use core::arch::asm;
 
+pub mod address;
 pub mod descriptor;
 pub mod interrupts;
 pub mod mm;
