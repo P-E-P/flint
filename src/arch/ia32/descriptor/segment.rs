@@ -278,3 +278,24 @@ impl fmt::Display for SegmentDescriptor {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test_case]
+    fn structure_size() {
+        use core::mem::size_of;
+        assert_eq!(size_of::<SegmentDescriptor>(), 8);
+    }
+
+    #[test_case]
+    fn present() {
+        let seg = SegmentDescriptor::new(0, 0);
+
+        assert_eq!(
+            unsafe { core::mem::transmute::<SegmentDescriptor, u64>(seg) }.get_bit(47),
+            true
+        )
+    }
+}
