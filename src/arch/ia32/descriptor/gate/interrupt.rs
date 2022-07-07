@@ -44,7 +44,7 @@ impl InterruptGate {
         }
     }
 
-    /// Change a [`SegmentDescriptor`]'s privilege level by another one.
+    /// Change a [`InterruptGate`]'s privilege level by another one.
     ///
     /// # Arguments
     ///
