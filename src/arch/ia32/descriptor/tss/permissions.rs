@@ -60,12 +60,7 @@ impl Permissions {
     /// * `level` - The desired [`PrivilegeLevel`] value.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         use offset::privilege_level::{LOWER, UPPER};
-        Self(
-            *self
-                .0
-                .clone()
-                .set_bits(LOWER..=UPPER, level.into()),
-        )
+        Self(*self.0.clone().set_bits(LOWER..=UPPER, level.into()))
     }
 
     /// Change a [`Permissions`]'s present bit.
@@ -87,7 +82,8 @@ impl fmt::Display for Permissions {
             f,
             "Busy: {}\nDPL: {}\nPresent {}",
             self.0.get_bit(BUSY),
-            self.0.get_bits(privilege_level::LOWER..=privilege_level::UPPER),
+            self.0
+                .get_bits(privilege_level::LOWER..=privilege_level::UPPER),
             self.0.get_bit(PRESENT)
         )
     }
@@ -140,5 +136,4 @@ mod tests {
         let perm = Permissions::default().busy(false);
         assert_eq!(perm.0.get_bit(1), false);
     }
-
 }
