@@ -44,7 +44,7 @@ impl TrapGate {
         }
     }
 
-    /// Change a [``]'s privilege level by another one.
+    /// Change a [`TrapGate`]'s privilege level by another one.
     ///
     /// # Arguments
     ///
