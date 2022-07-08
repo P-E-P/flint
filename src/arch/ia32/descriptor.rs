@@ -1,26 +1,22 @@
+//! A module containing the different descriptors structures.
 pub mod gate;
 pub mod segment;
 pub mod tss;
 
+/// The scaling of a descriptor's limit field.
 #[repr(u8)]
 pub enum Granularity {
+    /// Byte unit granularity.
     Byte = 0,
+    /// 4-KByte unit granularity.
     FourKByte = 1,
 }
 
-/// Split a 32 bits address in three parts, first part containing
-/// bits from 31 to 24, second part the bits 23 to 16 and last part
-/// bits 15 to 0.
-pub fn split_address(address: u32) -> (u32, u32, u32) {
-    (
-        (address >> 24) & 0xff,
-        (address >> 16) & 0xff,
-        address & 0xffff,
-    )
-}
-
-/// Split a 32 bit limit in two parts, first part contains bits
-/// from 19 to 16, second part contains bits from 15 to 0.
-pub fn split_limit(limit: u32) -> (u32, u32) {
-    (limit >> 16, limit & 0xffff)
+impl From<Granularity> for bool {
+    fn from(value: Granularity) -> Self {
+        match value {
+            Granularity::Byte => false,
+            Granularity::FourKByte => true,
+        }
+    }
 }

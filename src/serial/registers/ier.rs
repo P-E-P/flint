@@ -1,10 +1,10 @@
 //! A module containing the operations, internal fields and flags accessible for
 //! a [`InterruptEnableRegister`].
-use crate::serial::ComPort;
 use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register, WriteRegister},
 };
+use crate::serial::ComPort;
 
 /// The offset of the [`InterruptEnableRegister`] relatively to the UART's base
 /// port address.

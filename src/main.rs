@@ -4,8 +4,8 @@
 #![test_runner(flint::test::runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use flint::arch::endless;
 use core::panic::PanicInfo;
+use flint::arch::endless;
 use flint::klog;
 
 #[test_case]

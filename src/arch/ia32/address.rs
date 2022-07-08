@@ -5,8 +5,7 @@ use core::ops::{Add, AddAssign, Sub, SubAssign};
 pub struct VirtualAddress(u64);
 
 impl VirtualAddress {
-    fn is_canonical(addr: u64) -> bool
-    {
+    fn is_canonical(addr: u64) -> bool {
         addr < (1 << 47) || (addr >> 47) == 0x1FFFF
     }
 
@@ -15,8 +14,7 @@ impl VirtualAddress {
     /// # Safety
     ///
     /// This function ensures the virtual address is correct.
-    pub fn try_new(addr: u64) -> Result<Self, &'static str>
-    {
+    pub fn try_new(addr: u64) -> Result<Self, &'static str> {
         if Self::is_canonical(addr) {
             Ok(VirtualAddress(addr))
         } else {
@@ -29,8 +27,7 @@ impl VirtualAddress {
     /// # Safety
     ///
     /// This function panics if the virtual address is incorrect.
-    pub fn new(addr: u64) -> Self
-    {
+    pub fn new(addr: u64) -> Self {
         Self::try_new(addr).expect("Virtual address cannot be longer than 48 bits.")
     }
 
@@ -39,8 +36,7 @@ impl VirtualAddress {
     /// # Safety
     ///
     /// This function avoids any check and is therefore unsafe.
-    unsafe fn unchecked_new(addr: u64) -> Self
-    {
+    unsafe fn unchecked_new(addr: u64) -> Self {
         VirtualAddress(addr)
     }
 }
@@ -49,7 +45,7 @@ impl Add for VirtualAddress {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
-        Self (self.0 + other.0)
+        Self(self.0 + other.0)
     }
 }
 
@@ -63,7 +59,7 @@ impl Sub for VirtualAddress {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
-        Self (self.0 - other.0)
+        Self(self.0 - other.0)
     }
 }
 
@@ -88,8 +84,7 @@ impl PhysicalAddress {
     /// # Safety
     ///
     /// This function ensures the physical address is correct.
-    pub fn try_new(addr: u64) -> Result<Self, &'static str>
-    {
+    pub fn try_new(addr: u64) -> Result<Self, &'static str> {
         if addr < (1 << 52) {
             Ok(PhysicalAddress(addr))
         } else {
@@ -102,8 +97,7 @@ impl PhysicalAddress {
     /// # Safety
     ///
     /// This function panics if the physical address is incorrect.
-    pub fn new(addr: u64) -> Self
-    {
+    pub fn new(addr: u64) -> Self {
         Self::try_new(addr).expect("Physical address cannot be longer than 52 bits.")
     }
 
@@ -112,8 +106,7 @@ impl PhysicalAddress {
     /// # Safety
     ///
     /// This function avoids any check and is therefore unsafe.
-    unsafe fn unchecked_new(addr: u64) -> Self
-    {
+    unsafe fn unchecked_new(addr: u64) -> Self {
         PhysicalAddress(addr)
     }
 }
@@ -122,7 +115,7 @@ impl Add for PhysicalAddress {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
-        Self (self.0 + other.0)
+        Self(self.0 + other.0)
     }
 }
 
@@ -136,7 +129,7 @@ impl Sub for PhysicalAddress {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
-        Self (self.0 - other.0)
+        Self(self.0 - other.0)
     }
 }
 
@@ -189,32 +182,28 @@ mod tests {
     }
 
     #[test_case]
-    fn virt_add()
-    {
+    fn virt_add() {
         let virt1 = VirtualAddress::new(1);
         let virt2 = VirtualAddress::new(3);
         assert_eq!(VirtualAddress::new(4), virt1 + virt2);
     }
 
     #[test_case]
-    fn virt_add_assign()
-    {
+    fn virt_add_assign() {
         let mut virt1 = VirtualAddress::new(1);
         virt1 += VirtualAddress::new(3);
         assert_eq!(VirtualAddress::new(4), virt1);
     }
 
     #[test_case]
-    fn virt_sub()
-    {
+    fn virt_sub() {
         let virt1 = VirtualAddress::new(1);
         let virt2 = VirtualAddress::new(3);
         assert_eq!(VirtualAddress::new(2), virt2 - virt1);
     }
 
     #[test_case]
-    fn virt_sub_assign()
-    {
+    fn virt_sub_assign() {
         let mut virt1 = VirtualAddress::new(4);
         virt1 -= VirtualAddress::new(3);
         assert_eq!(VirtualAddress::new(1), virt1);
@@ -242,32 +231,28 @@ mod tests {
     }
 
     #[test_case]
-    fn phys_add()
-    {
+    fn phys_add() {
         let phys1 = PhysicalAddress::new(1);
         let phys2 = PhysicalAddress::new(3);
         assert_eq!(PhysicalAddress::new(4), phys1 + phys2);
     }
 
     #[test_case]
-    fn phys_add_assign()
-    {
+    fn phys_add_assign() {
         let mut phys1 = PhysicalAddress::new(1);
         phys1 += PhysicalAddress::new(3);
         assert_eq!(PhysicalAddress::new(4), phys1);
     }
 
     #[test_case]
-    fn phys_sub()
-    {
+    fn phys_sub() {
         let phys1 = PhysicalAddress::new(1);
         let phys2 = PhysicalAddress::new(3);
         assert_eq!(PhysicalAddress::new(2), phys2 - phys1);
     }
 
     #[test_case]
-    fn phys_sub_assign()
-    {
+    fn phys_sub_assign() {
         let mut phys1 = PhysicalAddress::new(4);
         phys1 -= PhysicalAddress::new(3);
         assert_eq!(PhysicalAddress::new(1), phys1);

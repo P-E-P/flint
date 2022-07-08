@@ -1,9 +1,6 @@
-use crate::arch::ia32::{
-    descriptor::segment::{
-        DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
-        SegmentType,
-    },
-    selector::{SegmentSelector, TableIndicator}
+use crate::arch::ia32::descriptor::segment::{
+    DefaultOperationSize, DescriptorType, Granularity, PrivilegeLevel, SegmentDescriptor,
+    SegmentType,
 };
 use crate::arch::ia32::mm::gdt::GlobalDescriptorTable;
 use log::{debug, trace};
@@ -60,5 +57,4 @@ pub fn setup_gdt() {
     ]);
     debug!("GDT:\n{}", gdt);
     gdt.load();
-
 }

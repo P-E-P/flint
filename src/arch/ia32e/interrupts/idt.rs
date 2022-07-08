@@ -1,5 +1,6 @@
 use crate::arch::ia32e::{
-    descriptor::gate::Gate, selector::{SegmentSelector, TableIndicator},
+    descriptor::gate::Gate,
+    selector::{SegmentSelector, TableIndicator},
     PrivilegeLevel,
 };
 use core::arch::asm;
@@ -120,9 +121,7 @@ pub fn setup_idt() {
 
     todo!("Add idt loading");
     //idt.load();
-
 }
-
 
 extern "x86-interrupt" fn div_by_zero() {
     panic!("Division by zero");

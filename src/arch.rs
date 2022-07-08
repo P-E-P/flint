@@ -1,10 +1,10 @@
-pub mod interrupts;
-pub mod io;
-pub mod mm;
-#[cfg(any(target_arch = "x86_64",target_arch = "x86"))]
+#[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
 pub mod ia32;
 #[cfg(target_arch = "x86_64")]
 pub mod ia32e;
+pub mod interrupts;
+pub mod io;
+pub mod mm;
 #[cfg(target_arch = "x86")]
 use ia32::*;
 #[cfg(target_arch = "x86_64")]

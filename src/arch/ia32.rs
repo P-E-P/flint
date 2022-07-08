@@ -15,6 +15,12 @@ pub enum PrivilegeLevel {
     Userland = 3,
 }
 
+impl From<PrivilegeLevel> for u8 {
+    fn from(value: PrivilegeLevel) -> Self {
+        value as u8
+    }
+}
+
 pub fn pause() {
     unsafe {
         asm!("pause");

@@ -1,6 +1,6 @@
 use crate::arch::ia32::PrivilegeLevel;
 
-#[derive(Clone, Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct SegmentSelector(u16);
 
 #[repr(u8)]

@@ -1,8 +1,8 @@
-use crate::serial::ComPort;
 use crate::arch::io::{
     port::Port,
     register::{ReadRegister, Register, WriteRegister},
 };
+use crate::serial::ComPort;
 
 const LCR_OFFSET: u16 = 3;
 
