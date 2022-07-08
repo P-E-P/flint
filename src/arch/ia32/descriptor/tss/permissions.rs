@@ -37,6 +37,9 @@ mod offset {
 
 impl Default for Permissions {
     fn default() -> Self {
+        // We set up tss specific bits as specified by the Intel manual.
+        // Those bits will allow the processor to identify the kind of
+        // descriptor.
         Permissions(0b00001001)
     }
 }
