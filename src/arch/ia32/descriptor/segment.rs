@@ -13,8 +13,8 @@ mod permissions;
 
 /// The default operation size modes of a memory segment.
 ///
-/// It could be either 16 bits (`0`) or 32 bits (`0`). It performs different
-/// functions depending on wheter the segment descriptor is an executable code
+/// It could be either 16 bits (`0`) or 32 bits (`1`). It performs different
+/// functions depending on whether the segment descriptor is an executable code
 /// segment, an expand down data segment or a stack segment (cf. Intel volume
 /// III, 3.4.5 D/B (default operation flag))
 #[repr(u8)]
