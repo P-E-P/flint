@@ -36,6 +36,10 @@ mod offset {
 
 impl Default for Configuration {
     fn default() -> Self {
+        // We set up interrupt gate specific bits as specified by the Intel
+        // manual
+        // Those bits will allow the processor to identify the kind of gate
+        // used.
         Configuration(0x0600)
     }
 }
