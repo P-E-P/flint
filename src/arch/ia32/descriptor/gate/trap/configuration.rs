@@ -86,7 +86,7 @@ impl fmt::Display for Configuration {
         use offset::{privilege_level, PRESENT, SIZE};
         write!(
             f,
-            "Size: {}\nDPL: {}\nPresent {}",
+            "Size: {}\nDPL: {}\nPresent: {}",
             self.0.get_bit(SIZE),
             self.0
                 .get_bits(privilege_level::LOWER..=privilege_level::UPPER),

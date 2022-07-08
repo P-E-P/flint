@@ -80,7 +80,7 @@ impl fmt::Display for Permissions {
         use offset::{privilege_level, BUSY, PRESENT};
         write!(
             f,
-            "Busy: {}\nDPL: {}\nPresent {}",
+            "Busy: {}\nDPL: {}\nPresent: {}",
             self.0.get_bit(BUSY),
             self.0
                 .get_bits(privilege_level::LOWER..=privilege_level::UPPER),
