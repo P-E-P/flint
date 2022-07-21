@@ -1,7 +1,7 @@
 //! A module containing the implementation and tests for the [`Configuration`]
 //! structure.
 use super::{GateSize, PrivilegeLevel};
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 
 /// A structure representing the bits 0 to 15 from an
@@ -52,7 +52,7 @@ impl Configuration {
     /// * `size` - The desired [`GateSize`].
     pub fn size(self, size: GateSize) -> Self {
         use offset::SIZE;
-        Self(*self.0.clone().set_bit(SIZE, size.into()))
+        Self(self.0.set_bit(SIZE, size.into()))
     }
 
     /// Change a [`Configuration`]'s privilege level by another one.
@@ -62,12 +62,7 @@ impl Configuration {
     /// * `level` - The desired [`PrivilegeLevel`] value.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         use offset::privilege_level::{LOWER, UPPER};
-        Self(
-            *self
-                .0
-                .clone()
-                .set_bits(LOWER..=UPPER, u8::from(level).into()),
-        )
+        Self(self.0.set_bits(LOWER..=UPPER, u8::from(level).into()))
     }
 
     /// Change a [`Configuration`]'s present bit.
@@ -78,7 +73,7 @@ impl Configuration {
     /// for bit value 0.
     pub fn present(self, present: bool) -> Self {
         use offset::PRESENT;
-        Self(*self.0.clone().set_bit(PRESENT, present))
+        Self(self.0.set_bit(PRESENT, present))
     }
 }
 

@@ -3,7 +3,7 @@
 //! of a task state segment.
 use crate::arch::ia32::descriptor::tss::TssDescriptor as IA32TssDescriptor;
 use crate::arch::ia32e::{descriptor::Granularity, PrivilegeLevel};
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 
 /// A task state segment descriptor structure that can be used directly by the
 /// processor to describe a task state segment.

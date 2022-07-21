@@ -10,7 +10,7 @@
 //! All of those specialized gate structure can be morphed into the
 //! generic one once completed.
 pub use crate::arch::ia32::PrivilegeLevel;
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 use core::mem::transmute;
 use interrupt::InterruptGate;
