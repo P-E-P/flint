@@ -1,7 +1,7 @@
 //! A module containing the implementation and tests for the [`Configuration`]
 //! structure.
 use super::{Kind, PrivilegeLevel};
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 
 /// A structure representing the bits 0 to 15 from a
@@ -51,12 +51,7 @@ impl Configuration {
     /// * `level` - The desired [`PrivilegeLevel`] value.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         use offset::privilege_level::{LOWER, UPPER};
-        Self(
-            *self
-                .0
-                .clone()
-                .set_bits(LOWER..=UPPER, u8::from(level).into()),
-        )
+        Self(self.0.set_bits(LOWER..=UPPER, u8::from(level).into()))
     }
 
     /// Change a [`Configuration`]'s present bit.
@@ -67,7 +62,7 @@ impl Configuration {
     /// for bit value 0.
     pub fn present(self, present: bool) -> Self {
         use offset::PRESENT;
-        Self(*self.0.clone().set_bit(PRESENT, present))
+        Self(self.0.set_bit(PRESENT, present))
     }
 
     /// Change a [`Configuration`]'s interrupt stack table value.
@@ -83,7 +78,7 @@ impl Configuration {
     /// segment descriptor structure.
     pub fn interrupt_stack_table(self, ist: u8) -> Self {
         use offset::ist::{LOWER, UPPER};
-        Self(*self.0.clone().set_bits(LOWER..=UPPER, ist.into()))
+        Self(self.0.set_bits(LOWER..=UPPER, ist.into()))
     }
 
     /// Change the [`Configuration`]'s type.
@@ -93,7 +88,7 @@ impl Configuration {
     /// * `kind` - The desired gate type.
     pub fn kind(self, kind: Kind) -> Self {
         use offset::kind::{LOWER, UPPER};
-        Self(*self.0.clone().set_bits(LOWER..=UPPER, kind.into()))
+        Self(self.0.set_bits(LOWER..=UPPER, kind.into()))
     }
 }
 

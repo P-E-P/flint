@@ -1,7 +1,7 @@
 //! A module containing the implementation and tests for the [`Configuration`]
 //! structure.
 use super::{DefaultOperationSize, Granularity};
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 
 /// A structure representing the bits 16 to 24 from a
@@ -53,7 +53,7 @@ impl Configuration {
     /// because [`Configuration`] structure hold only bits 16 to 19 of the
     /// segment descriptor structure.
     pub fn limit(self, limit: u8) -> Self {
-        Self(*self.0.clone().set_bits(..4, limit))
+        Self(self.0.set_bits(..4, limit))
     }
 
     /// Change a [`Configuration`]'s available bit value.
@@ -63,7 +63,7 @@ impl Configuration {
     /// * `value` - The desired bit value, a value of `true` will store a `1`,
     /// `false` will store the bit `0`.
     pub fn available(self, value: bool) -> Self {
-        Self(*self.0.clone().set_bit(offset::AVL, value))
+        Self(self.0.set_bit(offset::AVL, value))
     }
 
     /// Change a [`Configuration`]'s current mode to 32 bits or 64 bits.
@@ -83,9 +83,9 @@ impl Configuration {
         //If L-bit is set, then D-bit must be cleared
         // cf. Intel 3.4.5 "L (64 bit code segment) flag"
         if mode {
-            result.set_bit(offset::D_B, false);
+            result = result.set_bit(offset::D_B, false);
         }
-        result.set_bit(offset::L, mode);
+        result = result.set_bit(offset::L, mode);
         Self(result)
     }
 
@@ -95,7 +95,7 @@ impl Configuration {
     ///
     /// * `size` - The desired mode operation size.
     pub fn default_operation_size(self, size: DefaultOperationSize) -> Self {
-        Self(*self.0.clone().set_bit(offset::D_B, size.into()))
+        Self(self.0.set_bit(offset::D_B, size.into()))
     }
 
     /// Change a [`Configuration`]'s granularity.
@@ -104,7 +104,7 @@ impl Configuration {
     ///
     /// * `granularity` - The desired granularity.
     pub fn granularity(self, granularity: Granularity) -> Self {
-        Self(*self.0.clone().set_bit(offset::G, granularity.into()))
+        Self(self.0.set_bit(offset::G, granularity.into()))
     }
 }
 

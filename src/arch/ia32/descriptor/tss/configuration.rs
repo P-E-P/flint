@@ -1,7 +1,7 @@
 //! A module containing the implementation and tests for the [`Configuration`]
 //! structure.
 use super::Granularity;
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 
 /// A structure representing the bits 16 to 23 from a
@@ -43,7 +43,7 @@ impl Configuration {
     /// because [`Configuration`] structure hold only bits 16 to 19 of the
     /// segment descriptor structure.
     pub fn limit(self, limit: u8) -> Self {
-        Self(*self.0.clone().set_bits(..4, limit))
+        Self(self.0.set_bits(..4, limit))
     }
 
     /// Change a [`Configuration`]'s available bit value.
@@ -53,7 +53,7 @@ impl Configuration {
     /// * `value` - The desired bit value, a value of `true` will store a `1`,
     /// `false` will store the bit `0`.
     pub fn available(self, value: bool) -> Self {
-        Self(*self.0.clone().set_bit(offset::AVL, value))
+        Self(self.0.set_bit(offset::AVL, value))
     }
 
     /// Change a [`Configuration`]'s granularity.
@@ -62,7 +62,7 @@ impl Configuration {
     ///
     /// * `granularity` - The desired granularity.
     pub fn granularity(self, granularity: Granularity) -> Self {
-        Self(*self.0.clone().set_bit(offset::G, granularity.into()))
+        Self(self.0.set_bit(offset::G, granularity.into()))
     }
 }
 

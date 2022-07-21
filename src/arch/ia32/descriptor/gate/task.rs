@@ -59,7 +59,7 @@ impl TaskGate {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bit_field::BitField;
+    use crate::utils::bitfield::BitField;
 
     #[test_case]
     fn structure_size() {

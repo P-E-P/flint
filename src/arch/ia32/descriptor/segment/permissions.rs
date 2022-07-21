@@ -2,7 +2,7 @@
 //! structure.
 use super::{DescriptorType, SegmentType};
 use crate::arch::ia32::PrivilegeLevel;
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use core::fmt;
 
 /// A structure representing the bits 8 to 15 from a
@@ -52,7 +52,7 @@ impl Permissions {
     /// * `seg_type` - The desired [`SegmentType`] value.
     pub fn segment_type(self, seg_type: SegmentType) -> Self {
         use offset::segment_type::UPPER;
-        Self(*self.0.clone().set_bits(..=UPPER, seg_type.into()))
+        Self(self.0.set_bits(..=UPPER, seg_type.into()))
     }
 
     /// Change a [`Permissions`]'s descriptor type value.
@@ -62,7 +62,7 @@ impl Permissions {
     /// * `desc_type` - The desired [`DescriptorType`] value.
     pub fn descriptor_type(self, desc_type: DescriptorType) -> Self {
         use offset::DESC_TYPE;
-        Self(*self.0.clone().set_bit(DESC_TYPE, desc_type.into()))
+        Self(self.0.set_bit(DESC_TYPE, desc_type.into()))
     }
 
     /// Change a [`Permissions`]'s privilege level by another one.
@@ -72,7 +72,7 @@ impl Permissions {
     /// * `level` - The desired [`PrivilegeLevel`] value.
     pub fn privilege_level(self, level: PrivilegeLevel) -> Self {
         use offset::privilege_level::{LOWER, UPPER};
-        Self(*self.0.clone().set_bits(LOWER..=UPPER, level.into()))
+        Self(self.0.set_bits(LOWER..=UPPER, level.into()))
     }
 
     /// Change a [`Permissions`]'s present bit.
@@ -83,7 +83,7 @@ impl Permissions {
     /// for bit value 0.
     pub fn present(self, present: bool) -> Self {
         use offset::PRESENT;
-        Self(*self.0.clone().set_bit(PRESENT, present))
+        Self(self.0.set_bit(PRESENT, present))
     }
 }
 

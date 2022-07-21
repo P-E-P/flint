@@ -3,12 +3,6 @@
 version = 3
 
 [[package]]
-name = "bit_field"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcb6dd1c2376d2e096796e234a70e17e94cc2d5d54ff8ce42b28cef1d0d359a4"
-
-[[package]]
 name = "bootloader"
 version = "0.9.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -30,7 +24,6 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "flint"
 version = "0.1.0"
 dependencies = [
- "bit_field",
  "bootloader",
  "byteorder",
  "log",

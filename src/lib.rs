@@ -13,6 +13,7 @@ pub mod klog;
 pub mod qemu;
 pub mod serial;
 pub mod test;
+pub mod utils;
 #[macro_use]
 pub mod arch;
 

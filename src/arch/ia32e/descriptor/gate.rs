@@ -1,6 +1,6 @@
 //! A module containing the implementation and tests for the Gate structure.
 use crate::arch::ia32e::{selector::SegmentSelector, PrivilegeLevel};
-use bit_field::BitField;
+use crate::utils::bitfield::BitField;
 use configuration::Configuration;
 use core::fmt;
 
