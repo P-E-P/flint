@@ -1,8 +1,8 @@
 use core::ops::{Bound, Range, RangeBounds};
 
 /// Trait for manipulating subsets of integers.
-pub trait BitField {
-    const TYPE_SIZE: usize;
+pub trait BitField: Sized {
+    const TYPE_SIZE: usize = core::mem::size_of::<Self>() * 8;
 
     /// Return a boolean representing the state of the idx'th bit.
     ///
@@ -55,8 +55,6 @@ pub trait BitField {
 macro_rules! impl_bitfields {
     (for $($t:ty),+) => {
         $(impl BitField for $t {
-            const TYPE_SIZE: usize = core::mem::size_of::<Self>() * 8;
-
             fn get_bit(self, idx: usize) -> bool {
                 if idx >= Self::TYPE_SIZE {
                     panic!("Index out of range for bit fields");
@@ -110,7 +108,7 @@ macro_rules! impl_bitfields {
     }
 }
 
-impl_bitfields!(for u8, u16, u32, u64);
+impl_bitfields!(for u8, u16, u32, u64, u128);
 
 fn to_regular_range<T: RangeBounds<usize>>(range: &T, maximun: usize) -> Range<usize> {
     let start = match range.start_bound() {
