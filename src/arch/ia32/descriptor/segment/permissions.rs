@@ -2,7 +2,7 @@
 //! structure.
 use super::{DescriptorType, SegmentType};
 use crate::arch::ia32::PrivilegeLevel;
-use crate::utils::bitfield::BitField;
+use crate::utils::bitfield::*;
 use core::fmt;
 
 /// A structure representing the bits 8 to 15 from a

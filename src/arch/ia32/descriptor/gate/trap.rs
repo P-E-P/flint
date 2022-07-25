@@ -2,7 +2,7 @@
 //! structure along some utility types revolving around those.
 use super::{GateSize, PrivilegeLevel};
 use crate::arch::ia32::selector::SegmentSelector;
-use crate::utils::bitfield::BitField;
+use crate::utils::bitfield::*;
 use configuration::Configuration;
 
 mod configuration;

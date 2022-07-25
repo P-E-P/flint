@@ -1,7 +1,7 @@
 use core::ops::{Bound, Range, RangeBounds};
 
-/// Trait for manipulating subsets of integers.
-pub trait BitField: Sized {
+/// Trait for getting subsets of integers.
+pub trait BitGetter: Sized {
     const TYPE_SIZE: usize = core::mem::size_of::<Self>() * 8;
 
     /// Return a boolean representing the state of the idx'th bit.
@@ -25,6 +25,10 @@ pub trait BitField: Sized {
     ///
     /// This method will panics if the given range is invalid.
     fn get_bits<T: RangeBounds<usize>>(self, range: T) -> Self;
+}
+
+/// Trait for setting subsets of integers.
+pub trait BitField: BitGetter {
 
     /// Set the idx'th bit.
     ///
@@ -52,9 +56,9 @@ pub trait BitField: Sized {
     fn set_bits<T: RangeBounds<usize>>(self, range: T, value: Self) -> Self;
 }
 
-macro_rules! impl_bitfields {
+macro_rules! impl_bitgetter {
     (for $($t:ty),+) => {
-        $(impl BitField for $t {
+        $(impl BitGetter for $t {
             fn get_bit(self, idx: usize) -> bool {
                 if idx >= Self::TYPE_SIZE {
                     panic!("Index out of range for bit fields");
@@ -77,7 +81,13 @@ macro_rules! impl_bitfields {
                 let val = self << (Self::TYPE_SIZE - range.end);
                 val >> ((Self::TYPE_SIZE - range.end) + range.start)
             }
+        })*
+    }
+}
 
+macro_rules! impl_bitfield {
+    (for $($t:ty),+) => {
+        $(impl BitField for $t {
             fn set_bit(self, idx: usize, value: bool) -> Self {
                 if idx >= Self::TYPE_SIZE {
                     panic!("Index out of range for bit fields");
@@ -108,7 +118,8 @@ macro_rules! impl_bitfields {
     }
 }
 
-impl_bitfields!(for u8, u16, u32, u64, u128);
+impl_bitgetter!(for u8, u16, u32, u64, u128);
+impl_bitfield!(for u8, u16, u32, u64, u128);
 
 fn to_regular_range<T: RangeBounds<usize>>(range: &T, maximun: usize) -> Range<usize> {
     let start = match range.start_bound() {
@@ -126,10 +137,8 @@ fn to_regular_range<T: RangeBounds<usize>>(range: &T, maximun: usize) -> Range<u
 }
 
 #[cfg(test)]
-mod tests {
+mod get_tests {
     use super::*;
-
-    // ############################################## get_bit
 
     #[test_case]
     fn get_bit_0_set_u16() {
@@ -148,8 +157,6 @@ mod tests {
         let val: u16 = 0x8000;
         assert_eq!(val.get_bit(15), true);
     }
-
-    // ############################################## get_bits
 
     #[test_case]
     fn get_bits_full_u16() {
@@ -180,8 +187,11 @@ mod tests {
         let val: u64 = 0xdeadbeefcafeface;
         assert_eq!(val.get_bits(0..), val);
     }
+}
 
-    // ############################################## set_bit
+#[cfg(test)]
+mod set_tests {
+    use super::*;
 
     #[test_case]
     fn set_bit_0_u16() {
@@ -194,8 +204,6 @@ mod tests {
         let val: u16 = 0x8000;
         assert_eq!(val.set_bit(15, false), 0);
     }
-
-    // ############################################## set_bits
 
     #[test_case]
     fn set_bits_full_included_u16() {

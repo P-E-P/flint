@@ -1,7 +1,7 @@
 //! A module containing the implementation and tests for the [`Configuration`]
 //! structure.
 use super::Granularity;
-use crate::utils::bitfield::BitField;
+use crate::utils::bitfield::*;
 use core::fmt;
 
 /// A structure representing the bits 16 to 23 from a
