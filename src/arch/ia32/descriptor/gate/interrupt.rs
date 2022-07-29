@@ -2,7 +2,7 @@
 //! types around the [`InterruptGate`] structure.
 use super::{GateSize, PrivilegeLevel};
 use crate::arch::ia32::selector::SegmentSelector;
-use bit_field::BitField;
+use crate::utils::bitfield::*;
 use configuration::Configuration;
 
 mod configuration;

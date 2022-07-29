@@ -3,7 +3,7 @@
 //! of a task state segment.
 use super::Granularity;
 use crate::arch::ia32::PrivilegeLevel;
-use bit_field::BitField;
+use crate::utils::bitfield::*;
 use configuration::Configuration;
 use permissions::Permissions;
 

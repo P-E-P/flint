@@ -3,7 +3,7 @@
 //! capacities of a memory segment.
 pub use super::Granularity;
 pub use crate::arch::ia32::PrivilegeLevel;
-use bit_field::BitField;
+use crate::utils::bitfield::*;
 use configuration::Configuration;
 use core::fmt;
 use permissions::Permissions;
