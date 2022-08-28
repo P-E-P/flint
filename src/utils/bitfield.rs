@@ -1,5 +1,57 @@
 use core::ops::{Bound, Range, RangeBounds};
 
+pub trait ConstBitGetter: Sized {
+
+    fn get_ranged(self, start: usize, end: usize) -> Self;
+}
+
+pub trait ConstBitSetter: Sized {
+
+    fn set_ranged(self, start: usize, end: usize, value: Self) -> Self;
+}
+
+macro_rules! impl_constbitgetter {
+    (for $($t:ty),+) => {
+        $(impl const ConstBitGetter for $t {
+            fn get_ranged(self, start: usize, end: usize) -> Self {
+                if start >= Self::TYPE_SIZE || end > Self::TYPE_SIZE {
+                    panic!("Range out of range for bit fields");
+                }
+                if start >= end {
+                    panic!("End bound should be greater than lower one for bit fields.");
+                }
+
+                // Shift away high bits then lower ones
+                let val = self << (Self::TYPE_SIZE - end);
+                val >> ((Self::TYPE_SIZE - end) + start)
+            }
+        })*
+    }
+}
+
+macro_rules! impl_constbitsetter {
+    (for $($t:ty),+) => {
+        $(impl const ConstBitSetter for $t {
+            fn set_ranged(self, start: usize, end: usize, value: Self) -> Self {
+                if start >= Self::TYPE_SIZE || end > Self::TYPE_SIZE {
+                    panic!("Range out of range for bit fields");
+                }
+                if start >= end {
+                    panic!("End bound should be greater than lower one for bit fields.");
+                }
+                if (end - start) < Self::TYPE_SIZE && (value >> (end - start)) > 0 {
+                    panic!("Value bigger than range.");
+                }
+
+                let mask: Self = !(!0 << (Self::TYPE_SIZE - end) >>
+                                    (Self::TYPE_SIZE - end) >>
+                                    start << start);
+                (self & mask) | (value << start)
+            }
+        })*
+    }
+}
+
 /// Trait for getting subsets of integers.
 pub trait BitGetter: Sized {
     const TYPE_SIZE: usize = core::mem::size_of::<Self>() * 8;
@@ -25,6 +77,7 @@ pub trait BitGetter: Sized {
     ///
     /// This method will panics if the given range is invalid.
     fn get_bits<T: RangeBounds<usize>>(self, range: T) -> Self;
+
 }
 
 /// Trait for setting subsets of integers.
@@ -54,6 +107,7 @@ pub trait BitField: BitGetter {
     /// This method will panics if the given range is invalid.
     /// Value must also not be greater in terms of bits than the given range.
     fn set_bits<T: RangeBounds<usize>>(self, range: T, value: Self) -> Self;
+
 }
 
 macro_rules! impl_bitgetter {
@@ -118,6 +172,8 @@ macro_rules! impl_bitfield {
     }
 }
 
+impl_constbitgetter!(for u8, u16, u32, u64, u128);
+impl_constbitsetter!(for u8, u16, u32, u64, u128);
 impl_bitgetter!(for u8, u16, u32, u64, u128);
 impl_bitfield!(for u8, u16, u32, u64, u128);
 
