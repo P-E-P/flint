@@ -14,7 +14,7 @@ pub trait ConstBitGetter: Sized {
     /// This method will panics if the given index is out of range.
     fn get_bit(self, idx: usize) -> bool;
 
-    fn get_ranged(self, start: usize, end: usize) -> Self;
+    fn get_range(self, start: usize, end: usize) -> Self;
 }
 
 pub trait ConstBitSetter: Sized {
@@ -31,7 +31,7 @@ pub trait ConstBitSetter: Sized {
     /// This method will panics if the given index is out of range.
     fn set_bit(self, idx: usize, value: bool) -> Self;
 
-    fn set_ranged(self, start: usize, end: usize, value: Self) -> Self;
+    fn set_range(self, start: usize, end: usize, value: Self) -> Self;
 }
 
 macro_rules! impl_constbitgetter {
@@ -48,7 +48,7 @@ macro_rules! impl_constbitgetter {
             }
 
 
-            fn get_ranged(self, start: usize, end: usize) -> Self {
+            fn get_range(self, start: usize, end: usize) -> Self {
                 if start >= Self::TYPE_SIZE || end > Self::TYPE_SIZE {
                     panic!("Range out of range for bit fields");
                 }
@@ -77,7 +77,7 @@ macro_rules! impl_constbitsetter {
             }
 
 
-            fn set_ranged(self, start: usize, end: usize, value: Self) -> Self {
+            fn set_range(self, start: usize, end: usize, value: Self) -> Self {
                 if start >= Self::TYPE_SIZE || end > Self::TYPE_SIZE {
                     panic!("Range out of range for bit fields");
                 }
@@ -98,7 +98,7 @@ macro_rules! impl_constbitsetter {
 }
 
 /// Trait for getting subsets of integers.
-pub trait BitGetter: Sized {
+pub trait BitGetter: ConstBitGetter {
 
     /// Return a value representing the state of a range of bits.
     ///
@@ -114,7 +114,7 @@ pub trait BitGetter: Sized {
 }
 
 /// Trait for setting subsets of integers.
-pub trait BitField: BitGetter {
+pub trait BitField: ConstBitSetter + BitGetter {
 
     /// Set a range of bits to the given value.
     ///
@@ -138,16 +138,7 @@ macro_rules! impl_bitgetter {
             fn get_bits<T: RangeBounds<usize>>(self, range: T) -> Self {
                 let range = to_regular_range(&range, Self::TYPE_SIZE);
 
-                if range.start >= Self::TYPE_SIZE || range.end > Self::TYPE_SIZE {
-                    panic!("Range out of range for bit fields");
-                }
-                if range.start >= range.end {
-                    panic!("End bound should be greater than lower one for bit fields.");
-                }
-
-                // Shift away high bits then lower ones
-                let val = self << (Self::TYPE_SIZE - range.end);
-                val >> ((Self::TYPE_SIZE - range.end) + range.start)
+                self.get_range(range.start, range.end)
             }
 
         })*
@@ -161,20 +152,7 @@ macro_rules! impl_bitfield {
             fn set_bits<T: RangeBounds<usize>>(self, range: T, value: Self) -> Self {
                 let range = to_regular_range(&range, Self::TYPE_SIZE);
 
-                if range.start >= Self::TYPE_SIZE || range.end > Self::TYPE_SIZE {
-                    panic!("Range out of range for bit fields");
-                }
-                if range.start >= range.end {
-                    panic!("End bound should be greater than lower one for bit fields.");
-                }
-                if (range.end - range.start) < Self::TYPE_SIZE && (value >> (range.end - range.start)) > 0 {
-                    panic!("Value bigger than range.");
-                }
-
-                let mask: Self = !(!0 << (Self::TYPE_SIZE - range.end) >>
-                                    (Self::TYPE_SIZE - range.end) >>
-                                    range.start << range.start);
-                (self & mask) | (value << range.start)
+                self.set_range(range.start, range.end, value)
             }
 
         })*
