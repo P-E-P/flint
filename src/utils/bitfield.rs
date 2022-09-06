@@ -180,6 +180,29 @@ fn to_regular_range<T: RangeBounds<usize>>(range: &T, maximun: usize) -> Range<u
 }
 
 #[cfg(test)]
+mod range_conversion_tests {
+    use super::*;
+
+    #[test_case]
+    fn simple_range_start() {
+        let range = 1..2;
+        assert_eq!(to_regular_range(&range, 5).start, 1)
+    }
+
+    #[test_case]
+    fn simple_range_stop() {
+        let range = 1..2;
+        assert_eq!(to_regular_range(&range, 5).end, 2)
+    }
+
+    #[test_case]
+    fn range_stop() {
+        let range = 1..=2;
+        assert_eq!(to_regular_range(&range, 5).end, 3)
+    }
+}
+
+#[cfg(test)]
 mod get_tests {
     use super::*;
 
