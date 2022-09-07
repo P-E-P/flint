@@ -14,6 +14,16 @@ pub trait ConstBitGetter: Sized {
     /// This method will panics if the given index is out of range.
     fn get_bit(self, idx: usize) -> bool;
 
+    /// Return a value representing the state of a range of bits.
+    ///
+    /// # Arguments
+    ///
+    /// * `start` - The range's starting offset.
+    /// * `end` - The range's ending offset.
+    ///
+    /// # Panics
+    ///
+    /// This method will panics if the given range is invalid.
     fn get_range(self, start: usize, end: usize) -> Self;
 }
 
@@ -31,6 +41,16 @@ pub trait ConstBitSetter: Sized {
     /// This method will panics if the given index is out of range.
     fn set_bit(self, idx: usize, value: bool) -> Self;
 
+    /// Set a range of bits to the given value.
+    ///
+    /// # Arguments
+    ///
+    /// * `start` - The range's starting offset.
+    /// * `end` - The range's ending offset.
+    ///
+    /// # Panics
+    ///
+    /// This method will panics if the given range is invalid.
     fn set_range(self, start: usize, end: usize, value: Self) -> Self;
 }
 
