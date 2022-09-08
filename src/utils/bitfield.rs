@@ -19,7 +19,7 @@ pub trait ConstBitGetter: Sized {
     /// # Arguments
     ///
     /// * `start` - The range's starting offset.
-    /// * `end` - The range's ending offset.
+    /// * `end` - The range's excluded ending offset.
     ///
     /// # Panics
     ///
@@ -46,7 +46,7 @@ pub trait ConstBitSetter: Sized {
     /// # Arguments
     ///
     /// * `start` - The range's starting offset.
-    /// * `end` - The range's ending offset.
+    /// * `end` - The range's excluded ending offset.
     ///
     /// # Panics
     ///
