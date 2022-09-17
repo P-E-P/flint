@@ -1,3 +1,4 @@
+use crate::arch::ia32::address::VirtualAddress;
 use crate::arch::ia32e::{
     descriptor::gate::Gate,
     selector::{SegmentSelector, TableIndicator},
@@ -71,53 +72,53 @@ fn setup_predefined(idt: &mut InterruptDescriptorTable) {
         SegmentSelector::new(GDT_KERNEL_CODE, TableIndicator::GDT, PrivilegeLevel::Kernel);
 
     // Divide error
-    idt.entries[0] = Gate::new(div_by_zero as *const () as u64, kernel_segment).present(true);
+    idt.entries[0] = Gate::new(VirtualAddress::from_fn(div_by_zero), kernel_segment).present(true);
     // Debug exception
-    idt.entries[1] = Gate::new(debug_exception as *const () as u64, kernel_segment).present(true);
+    idt.entries[1] = Gate::new(VirtualAddress::from_fn(debug_exception), kernel_segment).present(true);
     // NMI interrupt
-    idt.entries[2] = Gate::new(nmi as *const () as u64, kernel_segment).present(true);
+    idt.entries[2] = Gate::new(VirtualAddress::from_fn(nmi), kernel_segment).present(true);
     // Breakpoint
-    idt.entries[3] = Gate::new(breakpoint as *const () as u64, kernel_segment).present(true);
+    idt.entries[3] = Gate::new(VirtualAddress::from_fn(breakpoint), kernel_segment).present(true);
     // Overflow
-    idt.entries[4] = Gate::new(overflow as *const () as u64, kernel_segment).present(true);
+    idt.entries[4] = Gate::new(VirtualAddress::from_fn(overflow), kernel_segment).present(true);
     // Bound range exceeded
-    idt.entries[5] = Gate::new(bound_range as *const () as u64, kernel_segment).present(true);
+    idt.entries[5] = Gate::new(VirtualAddress::from_fn(bound_range), kernel_segment).present(true);
     // Invalid OP code
-    idt.entries[6] = Gate::new(invalid_op as *const () as u64, kernel_segment).present(true);
+    idt.entries[6] = Gate::new(VirtualAddress::from_fn(invalid_op), kernel_segment).present(true);
     // Device not available
-    idt.entries[7] = Gate::new(device_na as *const () as u64, kernel_segment).present(true);
+    idt.entries[7] = Gate::new(VirtualAddress::from_fn(device_na), kernel_segment).present(true);
     // Double fault
-    idt.entries[8] = Gate::new(double_fault as *const () as u64, kernel_segment).present(true);
+    idt.entries[8] = Gate::new(VirtualAddress::from_fn(double_fault), kernel_segment).present(true);
     // Coprocessor segment overrun
-    idt.entries[9] = Gate::new(coproc_overrun as *const () as u64, kernel_segment).present(true);
+    idt.entries[9] = Gate::new(VirtualAddress::from_fn(coproc_overrun), kernel_segment).present(true);
     // Invalid TSS
-    idt.entries[10] = Gate::new(invalid_tss as *const () as u64, kernel_segment).present(true);
+    idt.entries[10] = Gate::new(VirtualAddress::from_fn(invalid_tss), kernel_segment).present(true);
     // Segment not present
-    idt.entries[11] = Gate::new(segment_not_present as *const () as u64, kernel_segment).present(true);
+    idt.entries[11] = Gate::new(VirtualAddress::from_fn(segment_not_present), kernel_segment).present(true);
     // Stack segment fault
-    idt.entries[12] = Gate::new(stack_fault as *const () as u64, kernel_segment).present(true);
+    idt.entries[12] = Gate::new(VirtualAddress::from_fn(stack_fault), kernel_segment).present(true);
     // General protection
-    idt.entries[13] = Gate::new(general_fault as *const () as u64, kernel_segment).present(true);
+    idt.entries[13] = Gate::new(VirtualAddress::from_fn(general_fault), kernel_segment).present(true);
     // Page fault
-    idt.entries[14] = Gate::new(page_fault as *const () as u64, kernel_segment).present(true);
+    idt.entries[14] = Gate::new(VirtualAddress::from_fn(page_fault), kernel_segment).present(true);
     // x87 fpu floating point error
-    idt.entries[16] = Gate::new(x87_fpe as *const () as u64, kernel_segment).present(true);
+    idt.entries[16] = Gate::new(VirtualAddress::from_fn(x87_fpe), kernel_segment).present(true);
     // Alignment check
-    idt.entries[17] = Gate::new(alignment_check as *const () as u64, kernel_segment).present(true);
+    idt.entries[17] = Gate::new(VirtualAddress::from_fn(alignment_check), kernel_segment).present(true);
     // Machine check
-    idt.entries[18] = Gate::new(machine_check as *const () as u64, kernel_segment).present(true);
+    idt.entries[18] = Gate::new(VirtualAddress::from_fn(machine_check), kernel_segment).present(true);
     // SIMD floating point Exception
-    idt.entries[19] = Gate::new(simd_fpe as *const () as u64, kernel_segment).present(true);
+    idt.entries[19] = Gate::new(VirtualAddress::from_fn(simd_fpe), kernel_segment).present(true);
     // Virtualization exception
-    idt.entries[20] = Gate::new(virt_exception as *const () as u64, kernel_segment).present(true);
+    idt.entries[20] = Gate::new(VirtualAddress::from_fn(virt_exception), kernel_segment).present(true);
     // Control protection exception
-    idt.entries[21] = Gate::new(control_protection as *const () as u64, kernel_segment).present(true);
+    idt.entries[21] = Gate::new(VirtualAddress::from_fn(control_protection), kernel_segment).present(true);
     // Hypervisor injection exception
-    idt.entries[28] = Gate::new(hypervisor_injection as *const () as u64, kernel_segment).present(true);
+    idt.entries[28] = Gate::new(VirtualAddress::from_fn(hypervisor_injection), kernel_segment).present(true);
     // VMM communication exception
-    idt.entries[29] = Gate::new(vmm_communication as *const () as u64, kernel_segment).present(true);
+    idt.entries[29] = Gate::new(VirtualAddress::from_fn(vmm_communication), kernel_segment).present(true);
     // Security exception
-    idt.entries[30] = Gate::new(security_exception as *const () as u64, kernel_segment).present(true);
+    idt.entries[30] = Gate::new(VirtualAddress::from_fn(security_exception), kernel_segment).present(true);
 }
 
 pub fn setup_idt() {

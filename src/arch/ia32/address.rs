@@ -31,6 +31,11 @@ impl VirtualAddress {
         Self::try_new(addr).expect("Virtual address cannot be longer than 48 bits.")
     }
 
+    /// Convert a Rust function into an ia32e virtual address.
+    pub fn from_fn(src: extern "x86-interrupt" fn()) -> Self {
+        Self(src as *const() as u64)
+    }
+
     /// Convert u64 into an ia32e virtual address.
     ///
     /// # Safety
@@ -136,6 +141,12 @@ impl Sub for PhysicalAddress {
 impl SubAssign for PhysicalAddress {
     fn sub_assign(&mut self, other: Self) {
         (*self).0 = (*self).0 - other.0;
+    }
+}
+
+impl Into<u64> for VirtualAddress {
+    fn into(self) -> u64 {
+        self.0
     }
 }
 

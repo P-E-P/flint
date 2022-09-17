@@ -1,4 +1,5 @@
 //! A module containing the implementation and tests for the Gate structure.
+use crate::arch::ia32::address::VirtualAddress;
 use crate::arch::ia32e::{selector::SegmentSelector, PrivilegeLevel};
 use crate::utils::bitfield::*;
 use configuration::Configuration;
@@ -42,8 +43,8 @@ pub struct Gate {
 }
 
 impl Gate {
-    /// Creates a new interrupt/trap [`Gate`] from a given offset and segment
-    /// selector.
+    /// Creates a new interrupt/trap [`Gate`] from a given virtual address
+    /// and segment selector.
     ///
     /// # Arguments
     ///
@@ -53,7 +54,8 @@ impl Gate {
     /// # Note
     ///
     /// The present bit will be enabled when using this constructor.
-    pub fn new(offset: u64, segment_selector: SegmentSelector) -> Self {
+    pub fn new(address: VirtualAddress, segment_selector: SegmentSelector) -> Self {
+        let offset: u64 = address.into();
         Self {
             offset_15_0: offset.get_bits(0..16).try_into().unwrap(),
             offset_31_16: offset.get_bits(16..32).try_into().unwrap(),
