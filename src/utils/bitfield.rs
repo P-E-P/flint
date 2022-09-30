@@ -1,5 +1,6 @@
 use core::ops::{Bound, Range, RangeBounds};
 
+#[const_trait]
 pub trait ConstBitGetter: Sized {
     const TYPE_SIZE: usize = core::mem::size_of::<Self>() * 8;
 
@@ -27,6 +28,7 @@ pub trait ConstBitGetter: Sized {
     fn get_range(self, start: usize, end: usize) -> Self;
 }
 
+#[const_trait]
 pub trait ConstBitSetter: Sized {
 
     /// Set the idx'th bit.
