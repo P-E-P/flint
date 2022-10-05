@@ -35,6 +35,12 @@ mod offset {
 }
 
 impl Configuration {
+
+    /// Create a new null [`Configuration`].
+    pub const fn const_default() -> Self {
+        Configuration(0)
+    }
+
     /// Get the bits (19:16) of the limit value stored in the configuration
     /// field.
     pub fn get_limit(&self) -> u8 {

@@ -45,6 +45,12 @@ mod offset {
 }
 
 impl Permissions {
+
+    /// Create a new null [`Permissions`].
+    pub const fn const_default() -> Self {
+        Permissions(0)
+    }
+
     /// Change a [`Permissions`]'s segment type value.
     ///
     /// # Arguments
