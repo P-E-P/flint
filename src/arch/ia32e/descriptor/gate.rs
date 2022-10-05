@@ -24,7 +24,7 @@ impl From<Kind> for u16 {
 /// A gate descriptor structure that can be used to describe either a trap gate
 /// or an interrupt gate. This structure can be used directly by the processor.
 #[must_use]
-#[derive(Default, Copy, Clone)]
+#[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct Gate {
     /// Bits 0 to 15 of the interrupt routine address.
@@ -42,6 +42,25 @@ pub struct Gate {
 }
 
 impl Gate {
+
+    /// Create a new null [`Gate`].
+    pub const fn const_default() -> Self {
+        Gate {
+             /// Bits 0 to 15 of the interrupt routine address.
+            offset_15_0: 0,
+            /// The segment selector to use on interrupt/trap.
+            segment_selector: SegmentSelector::const_default(),
+            /// The configuration of the gate descriptor.
+            configuration: Configuration::const_default(),
+            /// Bits 16 to 31 of the interrupt routine address.
+            offset_31_16: 0,
+            /// Bits 32 to 63 of the interrupt routine address.
+            offset_63_32: 0,
+            /// Reserved bits.
+            _reserved: 0,
+        }
+    }
+
     /// Creates a new interrupt/trap [`Gate`] from a given offset and segment
     /// selector.
     ///
@@ -115,6 +134,12 @@ impl Gate {
             configuration: self.configuration.interrupt_stack_table(ist),
             ..self
         }
+    }
+}
+
+impl Default for Gate {
+    fn default() -> Self {
+        Self::const_default()
     }
 }
 

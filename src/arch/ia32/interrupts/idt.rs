@@ -9,14 +9,14 @@ const IDT_LEN: usize = 256;
 pub struct InterruptDescriptorTable(pub [Gate; IDT_LEN]);
 
 impl InterruptDescriptorTable {
-    pub fn load(self) {
+    pub fn load(&'static self) {
         trace!("Loading interrupt descriptor table...");
 
         let idtr = InterruptDescriptorTableRegister::new(
             (IDT_LEN * mem::size_of::<Gate>())
                 .try_into()
                 .expect("Idt length does not fit in a u16, cannot set IDTR"),
-            addr_of!(self),
+            self,
         );
 
         unsafe {

@@ -1,7 +1,21 @@
 use crate::arch::ia32::PrivilegeLevel;
 
-#[derive(Default, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct SegmentSelector(u16);
+
+impl SegmentSelector {
+
+    /// Create a new null [`SegmentSelector`].
+    pub const fn const_default() -> Self {
+        SegmentSelector(0)
+    }
+}
+
+impl Default for SegmentSelector {
+    fn default() -> Self {
+        Self::const_default()
+    }
+}
 
 #[repr(u8)]
 pub enum TableIndicator {
