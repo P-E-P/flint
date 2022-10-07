@@ -72,7 +72,7 @@ impl Gate {
     /// # Note
     ///
     /// The present bit will be enabled when using this constructor.
-    pub fn new(offset: u64, segment_selector: SegmentSelector) -> Self {
+    fn new(offset: u64, segment_selector: SegmentSelector) -> Self {
         Self {
             offset_15_0: offset.get_bits(0..16).try_into().unwrap(),
             offset_31_16: offset.get_bits(16..32).try_into().unwrap(),
@@ -81,6 +81,36 @@ impl Gate {
             segment_selector,
             ..Default::default()
         }
+    }
+
+    /// Creates a new interrupt [`Gate`] from a given offset and segment
+    /// selector.
+    ///
+    /// # Arguments
+    ///
+    /// * `base` - The segments base adress.
+    /// * `limit` - The limit value for the segment descriptor.
+    ///
+    /// # Note
+    ///
+    /// The present bit will be enabled when using this constructor.
+    pub fn interrupt(offset: u64, segment_selector: SegmentSelector) -> Self {
+        Self::new(offset, segment_selector).kind(Kind::Interrupt)
+    }
+
+    /// Creates a new trap [`Gate`] from a given offset and segment
+    /// selector.
+    ///
+    /// # Arguments
+    ///
+    /// * `base` - The segments base adress.
+    /// * `limit` - The limit value for the segment descriptor.
+    ///
+    /// # Note
+    ///
+    /// The present bit will be enabled when using this constructor.
+    pub fn trap(offset: u64, segment_selector: SegmentSelector) -> Self {
+        Self::new(offset, segment_selector).kind(Kind::Trap)
     }
 
     /// Set or clear the presence bit of the [`Gate`].

@@ -80,47 +80,47 @@ unsafe fn setup_predefined() {
         SegmentSelector::new(GDT_KERNEL_CODE, TableIndicator::GDT, PrivilegeLevel::Kernel);
 
     // Divide error
-    IDT.entries[0] = Gate::new(div_by_zero as *const () as u64, kernel_segment).present(true).kind(Kind::Interrupt);
+    IDT.entries[0] = Gate::interrupt(div_by_zero as *const () as u64, kernel_segment);
     // Debug exception
-    IDT.entries[1] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[1] = Gate::interrupt(0, kernel_segment).present(false);
     // NMI interrupt
-    IDT.entries[2] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[2] = Gate::interrupt(0, kernel_segment).present(false);
     // Breakpoint
-    IDT.entries[3] = Gate::new(breakpoint as *const () as u64, kernel_segment).present(true).kind(Kind::Interrupt);
+    IDT.entries[3] = Gate::interrupt(breakpoint as *const () as u64, kernel_segment).present(true);
     // Overflow
-    IDT.entries[4] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[4] = Gate::interrupt(0, kernel_segment).present(false);
     // Bound range exceeded
-    IDT.entries[5] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[5] = Gate::interrupt(0, kernel_segment).present(false);
     // Invalid OP code
-    IDT.entries[6] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[6] = Gate::interrupt(0, kernel_segment).present(false);
     // Device not available
-    IDT.entries[7] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[7] = Gate::interrupt(0, kernel_segment).present(false);
     // Double fault
-    IDT.entries[8] = Gate::new(double_fault as *const () as u64, kernel_segment).present(true).kind(Kind::Interrupt);
+    IDT.entries[8] = Gate::interrupt(double_fault as *const () as u64, kernel_segment).present(true);
     // Coprocessor segment overrun
-    IDT.entries[9] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[9] = Gate::interrupt(0, kernel_segment).present(false);
     // Invalid TSS
-    IDT.entries[10] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[10] = Gate::interrupt(0, kernel_segment).present(false);
     // Segment not present
-    IDT.entries[11] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[11] = Gate::interrupt(0, kernel_segment).present(false);
     // Stack segment fault
-    IDT.entries[12] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[12] = Gate::interrupt(0, kernel_segment).present(false);
     // General protection
-    IDT.entries[13] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[13] = Gate::interrupt(0, kernel_segment).present(false);
     // Page fault
-    IDT.entries[14] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[14] = Gate::interrupt(0, kernel_segment).present(false);
     // x87 fpu floating point error
-    IDT.entries[16] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[16] = Gate::interrupt(0, kernel_segment).present(false);
     // Alignment check
-    IDT.entries[17] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[17] = Gate::interrupt(0, kernel_segment).present(false);
     // Machine check
-    IDT.entries[18] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[18] = Gate::interrupt(0, kernel_segment).present(false);
     // SIMD floating point Exception
-    IDT.entries[19] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[19] = Gate::interrupt(0, kernel_segment).present(false);
     // Virtualization exception
-    IDT.entries[20] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[20] = Gate::interrupt(0, kernel_segment).present(false);
     // Control protection exception
-    IDT.entries[21] = Gate::new(0, kernel_segment).present(false);
+    IDT.entries[21] = Gate::interrupt(0, kernel_segment).present(false);
 }
 
 pub fn setup_idt() {
