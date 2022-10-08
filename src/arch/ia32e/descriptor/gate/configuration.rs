@@ -12,7 +12,7 @@ use core::fmt;
 /// - Gate type (TYPE)
 /// - Descriptor privilege level (DPL)
 /// - Present bit (P)
-#[derive(Default, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct Configuration(u16);
 
 /// The set of all field offsets for the [`Configuration`] structure.
@@ -44,6 +44,12 @@ mod offset {
 }
 
 impl Configuration {
+
+    /// Create a new null [`Configuration`].
+    pub const fn const_default() -> Self {
+        Configuration(0)
+    }
+
     /// Change a [`Configuration`]'s privilege level by another one.
     ///
     /// # Arguments
@@ -104,6 +110,12 @@ impl fmt::Display for Configuration {
             self.0.get_bits(kind::LOWER..=kind::UPPER),
             self.0.get_bits(ist::LOWER..=ist::UPPER)
         )
+    }
+}
+
+impl Default for Configuration {
+    fn default() -> Self {
+        Self::const_default()
     }
 }
 

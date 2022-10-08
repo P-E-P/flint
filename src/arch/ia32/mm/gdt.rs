@@ -9,14 +9,14 @@ const GDT_LEN: usize = 5;
 pub struct GlobalDescriptorTable(pub [SegmentDescriptor; GDT_LEN]);
 
 impl GlobalDescriptorTable {
-    pub fn load(self) {
+    pub fn load(&'static self) {
         trace!("Loading global descriptor table...");
 
         let gdtr = GlobalDescriptorTableRegister::new(
             (GDT_LEN * mem::size_of::<SegmentDescriptor>())
                 .try_into()
                 .expect("Gdt length does not fit in a u16, cannot set GDTR"),
-            addr_of!(self),
+            self,
         );
 
         unsafe {

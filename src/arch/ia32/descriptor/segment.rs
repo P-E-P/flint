@@ -106,7 +106,7 @@ impl From<SegmentType> for u8 {
 /// A segment descriptor structure that can be used directly by the
 /// processor to describe a memory segment.
 #[must_use]
-#[derive(Default, Copy, Clone)]
+#[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct SegmentDescriptor {
     /// Bits 0 to 15 of the segment's limit.
@@ -124,6 +124,25 @@ pub struct SegmentDescriptor {
 }
 
 impl SegmentDescriptor {
+
+    /// Create a new null [`SegmentDescriptor`].
+    pub const fn const_default() -> Self {
+        SegmentDescriptor {
+            /// Bits 0 to 15 of the segment's limit.
+            limit_15_0: 0,
+            /// Bits 0 to 15 of the segment's base address.
+            base_15_0: 0,
+            /// Bits 16 to 23 of the segment's base address.
+            base_23_16: 0,
+            /// The segment's permissions (Type, S, DPL, P).
+            permissions: Permissions::const_default(),
+            /// The segment's configuration (limit bits 16 to 19, AVL, L, D/B, G).
+            configuration: Configuration::const_default(),
+            /// Bits 24 to 31 of the segment's base address.
+            base_31_24: 0,
+        }
+    }
+
     /// Create a new [`SegmentDescriptor`] from an address and a limit
     /// with all other flags set to their default value.
     ///
@@ -279,6 +298,10 @@ impl fmt::Display for SegmentDescriptor {
     }
 }
 
+impl Default for SegmentDescriptor {
+    fn default() -> Self { Self::const_default() }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -287,6 +310,16 @@ mod tests {
     fn structure_size() {
         use core::mem::size_of;
         assert_eq!(size_of::<SegmentDescriptor>(), 8);
+    }
+
+    #[test_case]
+    fn default_is_null() {
+        let seg = SegmentDescriptor::default();
+
+        assert_eq!(
+            unsafe { core::mem::transmute::<SegmentDescriptor, u64>(seg) },
+            0
+        )
     }
 
     #[test_case]
