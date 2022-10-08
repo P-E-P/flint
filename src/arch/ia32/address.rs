@@ -31,13 +31,24 @@ impl VirtualAddress {
         Self::try_new(addr).expect("Virtual address cannot be longer than 48 bits.")
     }
 
+    /// Convert a x86-interrupt into an ia32e virtual address.
+    pub fn from_handler(src: extern "x86-interrupt" fn()) -> Self {
+        Self(src as *const() as u64)
+    }
+
     /// Convert u64 into an ia32e virtual address.
     ///
     /// # Safety
     ///
     /// This function avoids any check and is therefore unsafe.
-    unsafe fn unchecked_new(addr: u64) -> Self {
+    pub unsafe fn unchecked_new(addr: u64) -> Self {
         VirtualAddress(addr)
+    }
+}
+
+impl From<VirtualAddress> for u64 {
+    fn from(address: VirtualAddress) -> u64 {
+        address.0
     }
 }
 
