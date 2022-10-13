@@ -3,6 +3,7 @@ use core::ops::{Add, AddAssign, Sub, SubAssign};
 use crate::arch::ia32e::interrupts::frame::InterruptStackFrame;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
 pub struct VirtualAddress(u64);
 
 impl VirtualAddress {
