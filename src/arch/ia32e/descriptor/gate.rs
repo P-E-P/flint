@@ -43,11 +43,10 @@ pub struct Gate {
 }
 
 impl Gate {
-
     /// Create a new null [`Gate`].
     pub const fn const_default() -> Self {
         Gate {
-             /// Bits 0 to 15 of the interrupt routine address.
+            /// Bits 0 to 15 of the interrupt routine address.
             offset_15_0: 0,
             /// The segment selector to use on interrupt/trap.
             segment_selector: SegmentSelector::const_default(),

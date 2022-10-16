@@ -4,7 +4,6 @@ use crate::arch::ia32::PrivilegeLevel;
 pub struct SegmentSelector(u16);
 
 impl SegmentSelector {
-
     /// Create a new null [`SegmentSelector`].
     pub const fn const_default() -> Self {
         SegmentSelector(0)

@@ -10,7 +10,7 @@ static mut GDT: GlobalDescriptorTable = GlobalDescriptorTable([
     SegmentDescriptor::const_default(),
     SegmentDescriptor::const_default(),
     SegmentDescriptor::const_default(),
-    SegmentDescriptor::const_default()
+    SegmentDescriptor::const_default(),
 ]);
 
 pub fn setup_gdt() {

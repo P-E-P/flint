@@ -1,9 +1,9 @@
 use crate::arch::ia32::address::VirtualAddress;
 use crate::arch::ia32e::{
     descriptor::gate::Gate,
+    interrupts::frame::InterruptStackFrame,
     selector::{SegmentSelector, TableIndicator},
     PrivilegeLevel,
-    interrupts::frame::InterruptStackFrame
 };
 use core::arch::asm;
 use core::ptr::addr_of;
@@ -83,7 +83,10 @@ unsafe fn setup_predefined() {
     // Divide error
     IDT.entries[0] = Gate::interrupt(VirtualAddress::from_handler(div_by_zero), kernel_segment);
     // Debug exception
-    IDT.entries[1] = Gate::interrupt(VirtualAddress::from_handler(debug_exception), kernel_segment);
+    IDT.entries[1] = Gate::interrupt(
+        VirtualAddress::from_handler(debug_exception),
+        kernel_segment,
+    );
     // NMI interrupt
     IDT.entries[2] = Gate::interrupt(VirtualAddress::from_handler(nmi), kernel_segment);
     // Breakpoint
@@ -97,23 +100,44 @@ unsafe fn setup_predefined() {
     // Device not available
     IDT.entries[7] = Gate::interrupt(VirtualAddress::from_handler(device_na), kernel_segment);
     // Double fault
-    IDT.entries[8] = Gate::interrupt(VirtualAddress::from_handler_with_err(double_fault), kernel_segment);
+    IDT.entries[8] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(double_fault),
+        kernel_segment,
+    );
     // Coprocessor segment overrun
     IDT.entries[9] = Gate::interrupt(VirtualAddress::from_handler(coproc_overrun), kernel_segment);
     // Invalid TSS
-    IDT.entries[10] = Gate::interrupt(VirtualAddress::from_handler_with_err(invalid_tss), kernel_segment);
+    IDT.entries[10] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(invalid_tss),
+        kernel_segment,
+    );
     // Segment not present
-    IDT.entries[11] = Gate::interrupt(VirtualAddress::from_handler_with_err(segment_not_present), kernel_segment);
+    IDT.entries[11] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(segment_not_present),
+        kernel_segment,
+    );
     // Stack segment fault
-    IDT.entries[12] = Gate::interrupt(VirtualAddress::from_handler_with_err(stack_fault), kernel_segment);
+    IDT.entries[12] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(stack_fault),
+        kernel_segment,
+    );
     // General protection
-    IDT.entries[13] = Gate::interrupt(VirtualAddress::from_handler_with_err(general_fault), kernel_segment);
+    IDT.entries[13] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(general_fault),
+        kernel_segment,
+    );
     // Page fault
-    IDT.entries[14] = Gate::interrupt(VirtualAddress::from_handler_with_err(page_fault), kernel_segment);
+    IDT.entries[14] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(page_fault),
+        kernel_segment,
+    );
     // x87 fpu floating point error
     IDT.entries[16] = Gate::interrupt(VirtualAddress::from_handler(x87_fpe), kernel_segment);
     // Alignment check
-    IDT.entries[17] = Gate::interrupt(VirtualAddress::from_handler_with_err(alignment_check), kernel_segment);
+    IDT.entries[17] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(alignment_check),
+        kernel_segment,
+    );
     // Machine check
     IDT.entries[18] = Gate::interrupt(VirtualAddress::from_handler(machine_check), kernel_segment);
     // SIMD floating point Exception
@@ -121,7 +145,10 @@ unsafe fn setup_predefined() {
     // Virtualization exception
     IDT.entries[20] = Gate::interrupt(VirtualAddress::from_handler(virt_exception), kernel_segment);
     // Control protection exception
-    IDT.entries[21] = Gate::interrupt(VirtualAddress::from_handler_with_err(control_protection), kernel_segment);
+    IDT.entries[21] = Gate::interrupt(
+        VirtualAddress::from_handler_with_err(control_protection),
+        kernel_segment,
+    );
 }
 
 pub fn setup_idt() {
@@ -132,8 +159,7 @@ pub fn setup_idt() {
         IDT.load();
     }
 
-    loop {
-    }
+    loop {}
 }
 
 extern "x86-interrupt" fn div_by_zero(_frame: InterruptStackFrame) {

@@ -45,7 +45,6 @@ mod offset {
 }
 
 impl Permissions {
-
     /// Create a new null [`Permissions`].
     pub const fn const_default() -> Self {
         Permissions(0)

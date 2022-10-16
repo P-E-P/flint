@@ -124,7 +124,6 @@ pub struct SegmentDescriptor {
 }
 
 impl SegmentDescriptor {
-
     /// Create a new null [`SegmentDescriptor`].
     pub const fn const_default() -> Self {
         SegmentDescriptor {
@@ -299,7 +298,9 @@ impl fmt::Display for SegmentDescriptor {
 }
 
 impl Default for SegmentDescriptor {
-    fn default() -> Self { Self::const_default() }
+    fn default() -> Self {
+        Self::const_default()
+    }
 }
 
 #[cfg(test)]

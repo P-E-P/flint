@@ -44,7 +44,6 @@ mod offset {
 }
 
 impl Configuration {
-
     /// Create a new null [`Configuration`].
     pub const fn const_default() -> Self {
         Configuration(0)
