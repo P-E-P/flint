@@ -102,7 +102,7 @@ impl fmt::Display for Configuration {
         use offset::{ist, kind, privilege_level, PRESENT};
         write!(
             f,
-            "DPL: {}\nPresent {}\nType:{}\nIST:{}",
+            "DPL: {}\nPresent: {}\nType: {}\nIST: {}",
             self.0
                 .get_bits(privilege_level::LOWER..=privilege_level::UPPER),
             self.0.get_bit(PRESENT),
