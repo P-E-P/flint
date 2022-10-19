@@ -172,6 +172,7 @@ pub fn setup_idt() {
                 .set_bit(PIT_IRQ, false),
             0b11111111,
         );
+        setup_pit();
         setup_predefined();
         trace!("Loading idt...");
         IDT.load();
@@ -273,8 +274,8 @@ extern "x86-interrupt" fn keyboard(_frame: InterruptStackFrame) {
 }
 
 extern "x86-interrupt" fn pit(_frame: InterruptStackFrame) {
-    print!(".");
     unsafe {
+        TICK_COUNTER.increment();
         ack_eoi(PIT_IRQ as u8);
     }
 }
