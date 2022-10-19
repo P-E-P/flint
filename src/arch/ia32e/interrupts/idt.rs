@@ -1,10 +1,15 @@
 use crate::arch::ia32::address::VirtualAddress;
+use crate::arch::ia32::interrupts::pic8259a::*;
+use crate::arch::ia32::interrupts::pit8254::*;
 use crate::arch::ia32e::{
     descriptor::gate::Gate,
     interrupts::frame::InterruptStackFrame,
     selector::{SegmentSelector, TableIndicator},
     PrivilegeLevel,
 };
+use crate::arch::in_byte;
+use crate::utils::bitfield::*;
+
 use core::arch::asm;
 use core::ptr::addr_of;
 use core::{fmt, mem};
@@ -149,17 +154,28 @@ unsafe fn setup_predefined() {
         VirtualAddress::from_handler_with_err(control_protection),
         kernel_segment,
     );
+
+    // PIT interrupt
+    IDT.entries[PIC_OFFSET + PIT_IRQ] =
+        Gate::interrupt(VirtualAddress::from_handler(pit), kernel_segment);
+    // Keyboard interrupt
+    IDT.entries[PIC_OFFSET + KEYBOARD_IRQ] =
+        Gate::interrupt(VirtualAddress::from_handler(keyboard), kernel_segment);
 }
 
 pub fn setup_idt() {
     unsafe {
         trace!("Setting up idt...");
+        setup_pic(
+            0b11111111_u8
+                .set_bit(KEYBOARD_IRQ, false)
+                .set_bit(PIT_IRQ, false),
+            0b11111111,
+        );
         setup_predefined();
         trace!("Loading idt...");
         IDT.load();
     }
-
-    loop {}
 }
 
 extern "x86-interrupt" fn div_by_zero(_frame: InterruptStackFrame) {
@@ -244,4 +260,21 @@ extern "x86-interrupt" fn virt_exception(_frame: InterruptStackFrame) {
 
 extern "x86-interrupt" fn control_protection(_frame: InterruptStackFrame, _err: u64) {
     panic!("Control protection exception");
+}
+
+extern "x86-interrupt" fn keyboard(_frame: InterruptStackFrame) {
+    unsafe {
+        let scancode: u8 = in_byte(0x60_u16);
+        if scancode.get_bit(7) {
+            println!("Key pressed!");
+        }
+        ack_eoi(KEYBOARD_IRQ as u8);
+    }
+}
+
+extern "x86-interrupt" fn pit(_frame: InterruptStackFrame) {
+    print!(".");
+    unsafe {
+        ack_eoi(PIT_IRQ as u8);
+    }
 }
