@@ -43,11 +43,10 @@ pub struct Gate {
 }
 
 impl Gate {
-
     /// Create a new null [`Gate`].
     pub const fn const_default() -> Self {
         Gate {
-             /// Bits 0 to 15 of the interrupt routine address.
+            /// Bits 0 to 15 of the interrupt routine address.
             offset_15_0: 0,
             /// The segment selector to use on interrupt/trap.
             segment_selector: SegmentSelector::const_default(),
@@ -176,6 +175,16 @@ impl Default for Gate {
 
 impl fmt::Display for Gate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        todo!("Display trait not implemented for ia32e interrupt gates")
+        let configuration = self.configuration;
+        let segment_selector = self.segment_selector;
+        let offset: u64 = 0
+            .set_bits(0..16, self.offset_15_0 as u64)
+            .set_bits(16..32, self.offset_31_16 as u64)
+            .set_bits(32..64, self.offset_63_32 as u64);
+        write!(
+            f,
+            "Offset: {:X}\n{}\n{}",
+            offset, configuration, segment_selector
+        )
     }
 }

@@ -21,11 +21,7 @@ impl fmt::Display for InterruptStackFrame {
         write!(
             f,
             "Interrupt Stack Frame:\nRIP: {}\nCS: {:X}\nRLAGS: {:X}\nRSP: {}\nSS: {:X}\n",
-            self.rip,
-            self.code_segment,
-            self.rflags,
-            self.stack_pointer,
-            self.stack_segment
+            self.rip, self.code_segment, self.rflags, self.stack_pointer, self.stack_segment
         )
     }
 }

@@ -1,6 +1,6 @@
+use crate::arch::ia32e::interrupts::frame::InterruptStackFrame;
 use core::fmt;
 use core::ops::{Add, AddAssign, Sub, SubAssign};
-use crate::arch::ia32e::interrupts::frame::InterruptStackFrame;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
@@ -35,12 +35,12 @@ impl VirtualAddress {
 
     /// Convert a x86-interrupt into an ia32e virtual address.
     pub fn from_handler(src: extern "x86-interrupt" fn(InterruptStackFrame)) -> Self {
-        Self(src as *const() as u64)
+        Self(src as *const () as u64)
     }
 
     /// Convert a x86-interrupt into an ia32e virtual address.
     pub fn from_handler_with_err(src: extern "x86-interrupt" fn(InterruptStackFrame, u64)) -> Self {
-        Self(src as *const() as u64)
+        Self(src as *const () as u64)
     }
 
     /// Convert u64 into an ia32e virtual address.
@@ -95,7 +95,7 @@ impl fmt::Debug for VirtualAddress {
 
 impl fmt::Display for VirtualAddress {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,  "{:#X}", self.0)
+        write!(f, "{:#X}", self.0)
     }
 }
 

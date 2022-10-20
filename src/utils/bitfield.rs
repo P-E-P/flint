@@ -30,7 +30,6 @@ pub trait ConstBitGetter: Sized {
 
 #[const_trait]
 pub trait ConstBitSetter: Sized {
-
     /// Set the idx'th bit.
     ///
     /// # Arguments
@@ -121,7 +120,6 @@ macro_rules! impl_constbitsetter {
 
 /// Trait for getting subsets of integers.
 pub trait BitGetter: ConstBitGetter {
-
     /// Return a value representing the state of a range of bits.
     ///
     /// # Arguments
@@ -132,12 +130,10 @@ pub trait BitGetter: ConstBitGetter {
     ///
     /// This method will panics if the given range is invalid.
     fn get_bits<T: RangeBounds<usize>>(self, range: T) -> Self;
-
 }
 
 /// Trait for setting subsets of integers.
 pub trait BitField: ConstBitSetter + BitGetter {
-
     /// Set a range of bits to the given value.
     ///
     /// # Arguments
@@ -150,7 +146,6 @@ pub trait BitField: ConstBitSetter + BitGetter {
     /// This method will panics if the given range is invalid.
     /// Value must also not be greater in terms of bits than the given range.
     fn set_bits<T: RangeBounds<usize>>(self, range: T, value: Self) -> Self;
-
 }
 
 macro_rules! impl_bitgetter {
