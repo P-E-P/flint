@@ -1,3 +1,4 @@
+//! A module for the 8254 PIT.
 use crate::arch::out_byte;
 use crate::utils::bitfield::*;
 
@@ -7,11 +8,15 @@ const COUNTER_2: u16 = 0x42;
 const CONTROL_REG: u16 = 0x43;
 
 const INTERNAL_FREQUENCY: u32 = 1193182;
+/// PIT Channel 0 interrupt frequency.
 pub const DESIRED_FREQUENCY: u16 = 100; // 100 Hz
 
+/// An enum representing the counter representation mode of a [`Channel`].
 #[derive(PartialEq)]
 enum CountMode {
+    /// BCD counting.
     Bcd,
+    /// Binary counting.
     Binary,
 }
 
@@ -21,6 +26,7 @@ impl From<CountMode> for bool {
     }
 }
 
+/// An enum representing the operating mode of a [`Channel`].
 enum OperatingMode {
     InterruptOnTerminalCount,
     OneShot,
@@ -43,6 +49,7 @@ impl From<OperatingMode> for u8 {
     }
 }
 
+/// An enum representing the access policy of a [`Channel`].
 enum AccessPolicy {
     LeastSignificant,
     MostSignificant,
@@ -59,6 +66,7 @@ impl From<AccessPolicy> for u8 {
     }
 }
 
+/// An enum representing the three channels present on a 8254 PIT.
 #[derive(PartialEq, Clone, Copy)]
 enum Channel {
     Channel0,
@@ -86,6 +94,14 @@ impl From<Channel> for u8 {
     }
 }
 
+/// Sends a command on the Control Register of the PIT.
+///
+/// # Arguments
+///
+/// * `channel` - The [`Channel`] to setup.
+/// * `count_mode` - The desired [`CountMode`] of the channel.
+/// * `ope_mode` - The desired [`OperatingMode`] of the channel.
+/// * `policy` - The desired [`AccessPolicy`] of the channel.
 unsafe fn send_command(
     channel: Channel,
     count_mode: CountMode,
@@ -101,7 +117,12 @@ unsafe fn send_command(
     out_byte(CONTROL_REG, command);
 }
 
-// Setup one channel as a Rate Generator for a desired frequency
+/// Setup a given channel as a Rate Generator on a desired frequency.
+///
+/// # Arguments
+///
+/// * `channel` - The [`Channel`] to setup.
+/// * `frequency` - The desired interrupt frequency.
 unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
     send_command(
         channel,
@@ -112,7 +133,7 @@ unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
 
     let divisor: u16 = (INTERNAL_FREQUENCY / (frequency as u32)) as u16;
     if divisor == 1 {
-        panic!("PIT 8284: Illegal divisor of 1 in Mode 2.");
+        panic!("PIT 8254: Illegal divisor of 1 in Mode 2.");
     }
 
     // Set desired frequency, least significant byte first.
@@ -120,19 +141,27 @@ unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
     out_byte(channel.address(), divisor.get_bits(8..=15) as u8);
 }
 
-// Setup a Rate Generator of DESIRED_FREQUENCY on IRQ0.
+/// Setup the 8254 PIT with a Rate Generator of [`DESIRED_FREQUENCY`] on IRQ0.
 pub fn setup_pit() {
     unsafe {
         setup_rate_generator(Channel::Channel0, DESIRED_FREQUENCY);
     }
 }
 
+/// A struct representing a tick counter.
 pub struct TickCounter {
+    /// Elasped ticks.
     ticks: u32,
+    /// Counter expected frequency.
     frequency: u16,
 }
 
 impl TickCounter {
+    /// Initializes a [`TickCounter`].
+    ///
+    /// # Arguments
+    ///
+    /// * `frequency` - The frequency at which *increment* will be called.
     pub const fn new(frequency: u16) -> Self {
         Self {
             ticks: 0,
@@ -140,17 +169,21 @@ impl TickCounter {
         }
     }
 
+    /// Increments the counter.
     pub fn increment(&mut self) {
         self.ticks += 1;
     }
 
+    /// Returns the elasped ticks.
     pub fn elasped_ticks(&self) -> u32 {
         self.ticks
     }
 
+    /// Returns the elasped seconds.
     pub fn elasped_seconds(&self) -> u32 {
         self.ticks / (self.frequency as u32)
     }
 }
 
+/// 8254 PIT's Channel 0 tick counter.
 pub static mut TICK_COUNTER: TickCounter = TickCounter::new(DESIRED_FREQUENCY);
