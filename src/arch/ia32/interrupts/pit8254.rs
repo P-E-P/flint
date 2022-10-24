@@ -142,7 +142,7 @@ unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
 }
 
 /// Setup the 8254 PIT with a Rate Generator of [`DESIRED_FREQUENCY`] on IRQ0.
-pub fn setup_pit() {
+pub fn setup() {
     unsafe {
         setup_rate_generator(Channel::Channel0, DESIRED_FREQUENCY);
     }

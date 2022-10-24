@@ -1,4 +1,6 @@
 use crate::arch::ia32::address::VirtualAddress;
+use crate::arch::ia32::interrupts::pic8259a;
+use crate::arch::ia32::interrupts::pit8254;
 use crate::arch::ia32::interrupts::pic8259a::*;
 use crate::arch::ia32::interrupts::pit8254::*;
 use crate::arch::ia32e::{
@@ -166,13 +168,13 @@ unsafe fn setup_predefined() {
 pub fn setup_idt() {
     unsafe {
         trace!("Setting up idt...");
-        setup_pic(
+        pic8259a::setup(
             0b11111111_u8
                 .set_bit(KEYBOARD_IRQ, false)
                 .set_bit(PIT_IRQ, false),
             0b11111111,
         );
-        setup_pit();
+        pit8254::setup();
         setup_predefined();
         trace!("Loading idt...");
         IDT.load();

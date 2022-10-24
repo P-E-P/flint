@@ -14,9 +14,37 @@ pub const PIC_OFFSET: usize = 32;
 pub const PIT_IRQ: usize = 0;
 pub const KEYBOARD_IRQ: usize = 1;
 
+/// An enum defining how interrupts are triggered.
+#[derive(PartialEq)]
+enum TriggerMode {
+    /// Level triggered interrupts
+    LEVEL,
+    /// Edge triggered interrupts
+    EDGE,
+}
+
+impl From<TriggerMode> for bool {
+    fn from(value: TriggerMode) -> Self {
+        value == TriggerMode::LEVEL
+    }
+}
+
+/// An enum defining the CALL Address Interval.
+#[derive(PartialEq)]
+enum AddressInterval {
+    FOUR,
+    EIGHT
+}
+
+impl From<AddressInterval> for bool {
+    fn from(value: AddressInterval) -> Self {
+        value == AddressInterval::FOUR
+    }
+}
+
 /// A structure representing the first initialisation command for a 8259 PIC.
 #[derive(Clone, Copy)]
-pub struct ICW1(u8);
+struct ICW1(u8);
 
 impl ICW1 {
     /// Creates a [`ICW1`] byte from parameters.
@@ -25,14 +53,14 @@ impl ICW1 {
     ///
     /// * `has_icw4` - If true, ICW4 will be expected in initialisation phase.
     /// * `single` - Single mode (true) or Cascaded mode (false).
-    /// * `adi` - CALL Address Inverval (true = 4, false = 8).
-    /// * `ltim` - Level Triggered mode (true) or Edge Triggered mode (false).
-    pub fn new(has_icw4: bool, single: bool, adi: bool, ltim: bool) -> Self {
+    /// * `adi` - CALL Address Inverval
+    /// * `ltim` - Level Triggered mode or Edge Triggered mode.
+    pub fn new(has_icw4: bool, single: bool, adi: AddressInterval, ltim: TriggerMode) -> Self {
         Self(
             0_u8.set_bit(0, has_icw4)
                 .set_bit(1, single)
-                .set_bit(2, adi)
-                .set_bit(3, ltim)
+                .set_bit(2, adi.into())
+                .set_bit(3, ltim.into())
                 .set_bit(4, true),
         )
     }
@@ -46,7 +74,7 @@ impl From<ICW1> for u8 {
 
 /// Enum to describe the cascading role of the 8259 PIC.
 #[derive(PartialEq)]
-enum PicRole {
+enum PICRole {
     /// No cascading.
     SINGLE,
     /// Slave in cascading.
@@ -56,7 +84,7 @@ enum PicRole {
 }
 
 /// Struct representing a 8259 PIC
-pub struct PIC8259a {
+struct PIC8259a {
     /// Command port of the chip.
     com_port: Port<u8>,
     /// Data port of the chip.
@@ -66,7 +94,7 @@ pub struct PIC8259a {
     /// PIC IRQs offset in Interrupt Descriptor Table.
     offset: u8,
     /// PIC Role.
-    role: PicRole,
+    role: PICRole,
 }
 
 impl PIC8259a {
@@ -86,7 +114,7 @@ impl PIC8259a {
             data_port: Port::new(addr + 1),
             pin: None,
             offset: offset,
-            role: PicRole::SINGLE,
+            role: PICRole::SINGLE,
         }
     }
 
@@ -111,7 +139,7 @@ impl PIC8259a {
             data_port: Port::new(addr + 1),
             pin: Some(slave_pin),
             offset: offset,
-            role: PicRole::MASTER,
+            role: PICRole::MASTER,
         }
     }
 
@@ -136,7 +164,7 @@ impl PIC8259a {
             data_port: Port::new(addr + 1),
             pin: Some(slave_pin),
             offset: offset,
-            role: PicRole::SLAVE,
+            role: PICRole::SLAVE,
         }
     }
 
@@ -145,10 +173,10 @@ impl PIC8259a {
     /// # Arguments
     ///
     /// * `has_icw4` - If true, ICW4 will be expected.
-    /// * `adi` - CALL Address Inverval (true = 4, false = 8).
-    /// * `ltim` - Level Triggered mode (true) or Edge Triggered mode (false).
-    pub unsafe fn send_icw1(&self, has_icw4: bool, adi: bool, ltim: bool) {
-        let com = ICW1::new(has_icw4, self.role == PicRole::SINGLE, adi, ltim);
+    /// * `adi` - CALL Address Inverval
+    /// * `ltim` - Level Triggered mode or Edge Triggered mode.
+    pub unsafe fn send_icw1(&self, has_icw4: bool, adi: AddressInterval, ltim: TriggerMode) {
+        let com = ICW1::new(has_icw4, self.role == PICRole::SINGLE, adi, ltim);
         self.com_port.write(com.into());
     }
 
@@ -160,11 +188,11 @@ impl PIC8259a {
     /// Sends the Initialisation Command Word 3.
     pub unsafe fn send_icw3(&self) {
         match self.role {
-            PicRole::SINGLE => panic!("ICW3: Nothing to be sent in single mode."),
-            PicRole::MASTER => self
+            PICRole::SINGLE => panic!("ICW3: Nothing to be sent in single mode."),
+            PICRole::MASTER => self
                 .data_port
                 .write(0_u8.set_bit(self.pin.unwrap().into(), true)),
-            PicRole::SLAVE => self.data_port.write(self.pin.unwrap()),
+            PICRole::SLAVE => self.data_port.write(self.pin.unwrap()),
         };
     }
 
@@ -179,7 +207,7 @@ impl PIC8259a {
         let com = 0_u8
             .set_bit(0, true)
             .set_bit(1, aeoi)
-            .set_bit(2, self.role == PicRole::MASTER)
+            .set_bit(2, self.role == PICRole::MASTER)
             .set_bit(3, buffered)
             .set_bit(4, fully_nested);
         self.data_port.write(com);
@@ -209,16 +237,12 @@ static SLAVE_PIC: PIC8259a = PIC8259a::slave(SLAVE_PIC_COM, 2, (PIC_OFFSET + 8) 
 ///
 /// * `master_mask` - Master PIC IRQs bitmask (1 = IRQ disabled).
 /// * `slave_mask` - Slave PIC IRQs bitmask (1 = IRQ disabled).
-pub fn setup_pic(master_mask: u8, slave_mask: u8) {
-    if PIC_OFFSET % 8 != 0 {
-        panic!("PIC offset must be a multiple of 8.");
-    }
-
+pub fn setup(master_mask: u8, slave_mask: u8) {
     trace!("Setting up 8259a PICs...");
 
     unsafe {
-        MASTER_PIC.send_icw1(true, false, false);
-        SLAVE_PIC.send_icw1(true, false, false);
+        MASTER_PIC.send_icw1(true, AddressInterval::EIGHT, TriggerMode::EDGE);
+        SLAVE_PIC.send_icw1(true, AddressInterval::EIGHT, TriggerMode::EDGE);
 
         MASTER_PIC.send_icw2();
         SLAVE_PIC.send_icw2();
