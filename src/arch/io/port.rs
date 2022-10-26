@@ -8,7 +8,7 @@ pub struct Port<T> {
 }
 
 impl<T> Port<T> {
-    pub fn new(address: u16) -> Self {
+    pub const fn new(address: u16) -> Self {
         Port {
             address,
             phantom: PhantomData,
