@@ -69,7 +69,7 @@ impl Add for VirtualAddress {
 
 impl AddAssign for VirtualAddress {
     fn add_assign(&mut self, other: Self) {
-        (*self).0 = (*self).0 + other.0;
+        self.0 += other.0;
     }
 }
 
@@ -83,7 +83,7 @@ impl Sub for VirtualAddress {
 
 impl SubAssign for VirtualAddress {
     fn sub_assign(&mut self, other: Self) {
-        (*self).0 = (*self).0 - other.0;
+        self.0 -= other.0;
     }
 }
 
@@ -145,7 +145,7 @@ impl Add for PhysicalAddress {
 
 impl AddAssign for PhysicalAddress {
     fn add_assign(&mut self, other: Self) {
-        (*self).0 = (*self).0 + other.0;
+        self.0 += other.0;
     }
 }
 
@@ -159,7 +159,7 @@ impl Sub for PhysicalAddress {
 
 impl SubAssign for PhysicalAddress {
     fn sub_assign(&mut self, other: Self) {
-        (*self).0 = (*self).0 - other.0;
+        self.0 -= other.0;
     }
 }
 

@@ -58,9 +58,7 @@ impl InterruptDescriptorTable {
 impl fmt::Display for InterruptDescriptorTable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for entry in self.entries {
-            if let Err(why) = writeln!(f, "{}", entry) {
-                return Err(why);
-            }
+            writeln!(f, "{}", entry)?;
         }
         Ok(())
     }
