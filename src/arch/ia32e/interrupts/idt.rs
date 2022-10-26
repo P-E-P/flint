@@ -1,8 +1,8 @@
 use crate::arch::ia32::address::VirtualAddress;
 use crate::arch::ia32::interrupts::pic;
 use crate::arch::ia32::interrupts::pic::*;
-use crate::arch::ia32::interrupts::pit8254;
-use crate::arch::ia32::interrupts::pit8254::*;
+use crate::arch::ia32::interrupts::pit;
+use crate::arch::ia32::interrupts::pit::*;
 use crate::arch::ia32e::{
     descriptor::gate::Gate,
     interrupts::frame::InterruptStackFrame,
@@ -174,7 +174,7 @@ pub fn setup_idt() {
                 .set_bit(PIT_IRQ, false),
             0b11111111,
         );
-        pit8254::setup();
+        pit::setup();
         setup_predefined();
         trace!("Loading idt...");
         IDT.load();

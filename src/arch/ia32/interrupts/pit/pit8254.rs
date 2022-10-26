@@ -8,8 +8,6 @@ const COUNTER_2: u16 = 0x42;
 const CONTROL_REG: u16 = 0x43;
 
 const INTERNAL_FREQUENCY: u32 = 1193182;
-/// PIT Channel 0 interrupt frequency.
-pub const DESIRED_FREQUENCY: u16 = 100; // 100 Hz
 
 /// An enum representing the counter representation mode of a [`Channel`].
 #[derive(PartialEq)]
@@ -67,8 +65,8 @@ impl From<AccessPolicy> for u8 {
 }
 
 /// An enum representing the three channels present on a 8254 PIT.
-#[derive(PartialEq, Clone, Copy)]
-enum Channel {
+#[derive(PartialEq, Clone, Copy, Eq)]
+pub enum Channel {
     Channel0,
     Channel1,
     Channel2,
@@ -123,7 +121,11 @@ unsafe fn send_command(
 ///
 /// * `channel` - The [`Channel`] to setup.
 /// * `frequency` - The desired interrupt frequency.
-unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
+///
+/// # Safety
+///
+/// The selected channel and frequency must be consistent.
+pub unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
     send_command(
         channel,
         CountMode::Binary,
@@ -140,50 +142,3 @@ unsafe fn setup_rate_generator(channel: Channel, frequency: u16) {
     out_byte(channel.address(), divisor.get_bits(0..=7) as u8);
     out_byte(channel.address(), divisor.get_bits(8..=15) as u8);
 }
-
-/// Setup the 8254 PIT with a Rate Generator of [`DESIRED_FREQUENCY`] on IRQ0.
-pub fn setup() {
-    unsafe {
-        setup_rate_generator(Channel::Channel0, DESIRED_FREQUENCY);
-    }
-}
-
-/// A struct representing a tick counter.
-pub struct TickCounter {
-    /// Elasped ticks.
-    ticks: u32,
-    /// Counter expected frequency.
-    frequency: u16,
-}
-
-impl TickCounter {
-    /// Initializes a [`TickCounter`].
-    ///
-    /// # Arguments
-    ///
-    /// * `frequency` - The frequency at which *increment* will be called.
-    pub const fn new(frequency: u16) -> Self {
-        Self {
-            ticks: 0,
-            frequency: frequency,
-        }
-    }
-
-    /// Increments the counter.
-    pub fn increment(&mut self) {
-        self.ticks += 1;
-    }
-
-    /// Returns the elasped ticks.
-    pub fn elasped_ticks(&self) -> u32 {
-        self.ticks
-    }
-
-    /// Returns the elasped seconds.
-    pub fn elasped_seconds(&self) -> u32 {
-        self.ticks / (self.frequency as u32)
-    }
-}
-
-/// 8254 PIT's Channel 0 tick counter.
-pub static mut TICK_COUNTER: TickCounter = TickCounter::new(DESIRED_FREQUENCY);
