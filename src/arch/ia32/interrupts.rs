@@ -1,7 +1,7 @@
 use core::arch::asm;
 
 pub mod idt;
-pub mod pic8259a;
+pub mod pic;
 pub mod pit8254;
 
 /// Disable maskable external interrupts.
