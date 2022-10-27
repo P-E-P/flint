@@ -28,7 +28,7 @@ impl Configuration {
     /// Get the bits (19:16) of the limit value stored in the configuration
     /// field.
     pub fn get_limit(&self) -> u8 {
-        self.0.clone().get_bits(..4)
+        self.0.get_bits(..4)
     }
 
     /// Change a [`Configuration`]'s limit bits (19:16) to a new value.

@@ -120,7 +120,7 @@ impl Gate {
     /// * `present` - The desired bit value. Use `true` for 1 and `false` for 0.
     pub fn present(self, value: bool) -> Self {
         Self {
-            configuration: self.configuration.present(value.into()),
+            configuration: self.configuration.present(value),
             ..self
         }
     }
